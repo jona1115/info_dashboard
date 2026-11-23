@@ -41,6 +41,7 @@ body { margin: 0; background: var(--page); color: var(--ink); font-size: 14px; l
 a { color: var(--link); text-decoration: none; }
 a:hover { text-decoration: underline; }
 .muted { color: var(--muted); }
+#generated.stale { color: var(--down); font-weight: 600; }
 .small { font-size: 12px; }
 .num { font-variant-numeric: tabular-nums; }
 

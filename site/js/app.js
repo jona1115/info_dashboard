@@ -133,7 +133,13 @@ function rerenderAll() {
 function tick() {
   document.querySelectorAll("[data-rel]").forEach((n) => { n.textContent = relTime(n.dataset.rel); });
   if (manifest) {
-    generatedEl.textContent = `Data collected ${relTime(manifest.generated)}`;
+    // Collection runs every 30 minutes; flag it if the last run is much older than that.
+    const age = Date.now() - Date.parse(manifest.generated);
+    const stuck = age > 90 * 60e3;
+    generatedEl.classList.toggle("stale", stuck);
+    generatedEl.textContent = stuck
+      ? `⚠ Data last collected ${relTime(manifest.generated)}: collection may be stuck`
+      : `Data collected ${relTime(manifest.generated)}`;
     generatedEl.title = `Collected ${absTime(manifest.generated, site.timezone)}; page checked ${absTime(new Date(lastCheck).toISOString(), site.timezone)}`;
   }
 }

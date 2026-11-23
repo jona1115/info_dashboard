@@ -2,7 +2,9 @@ name: Collect & deploy
 
 on:
   schedule:
-    - cron: "7,37 * * * *"        # every 30 minutes (GitHub may run it a few minutes late)
+    # Every 30 minutes. GitHub's scheduler is best-effort (runs can be late or skipped), so an
+    # external cron service also calls workflow_dispatch as a backup; see README "Reliable scheduling".
+    - cron: "7,37 * * * *"
   workflow_dispatch:
     inputs:
       force:

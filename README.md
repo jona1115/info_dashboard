@@ -69,6 +69,27 @@ YAML gotcha: unquoted `on`, `off`, `yes` and `no` become true/false. Quote them.
    - Recommended: verify the domain under your *account* Settings → Pages, so nobody else can claim it.
 6. **Optional: EIA API key.** The gas chart's weekly history uses EIA's shared `DEMO_KEY`, which is rate-limited. A free personal key takes a minute at <https://www.eia.gov/opendata/register.php>. Add it as a repo secret named `EIA_API_KEY` (Settings → Secrets and variables → Actions → New repository secret).
 
+## Reliable scheduling
+
+GitHub's built-in `schedule` is best-effort: runs can start late, be skipped when GitHub is busy, or take
+a while to begin on a new workflow. A free external cron service is used as a backup that asks GitHub to
+start the workflow every 30 minutes. If both fire, the extra run just finds nothing due.
+
+1. **Token.** In GitHub, go to Settings → Developer settings → Personal access tokens → **Fine-grained tokens** →
+   Generate new token:
+   - Name: `dashboard-cron`, expiration up to 1 year (set a reminder to renew).
+   - Repository access: **Only select repositories** → `info_dashboard`.
+   - Permissions → Repository permissions → **Actions: Read and write**. Nothing else.
+2. **Cron job.** At <https://cron-job.org> (free account), create a cron job:
+   - URL: `https://api.github.com/repos/jona1115/info_dashboard/actions/workflows/collect.yml/dispatches`
+   - Schedule: every 30 minutes, at minutes 22 and 52 (between GitHub's own :07 / :37).
+   - Advanced → Request method **POST**. Headers:
+     `Accept: application/vnd.github+json`, `Authorization: Bearer <token>`,
+     `X-GitHub-Api-Version: 2022-11-28`, `Content-Type: application/json`.
+     Request body: `{"ref":"main"}`.
+   - Use **Test run**: a `204` response means it worked, and a new run appears in the Actions tab.
+3. If data collection stalls for more than 90 minutes, the page header turns red ("collection may be stuck").
+
 ## Running locally
 
 ```powershell
