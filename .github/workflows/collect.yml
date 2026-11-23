@@ -1,0 +1,106 @@
+name: Collect & deploy
+
+on:
+  schedule:
+    - cron: "7,37 * * * *"        # every 30 minutes (GitHub may run it a few minutes late)
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Re-collect every widget now (ignore refresh intervals)"
+        type: boolean
+        default: false
+  push:
+    branches: [main]
+    paths:
+      - "config/**"
+      - "collector/**"
+      - "site/**"
+      - "tests/**"
+      - "requirements.txt"
+      - ".github/workflows/collect.yml"
+
+permissions:
+  contents: write     # push the data branch
+  pages: write        # deploy GitHub Pages
+  id-token: write     # required by deploy-pages
+
+concurrency:
+  group: collect
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      EIA_API_KEY: ${{ secrets.EIA_API_KEY }}   # optional; falls back to EIA's DEMO_KEY
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements.txt
+
+      - name: Test
+        run: python -m pytest -q tests
+
+      - name: Fetch stored data (data branch)
+        env:
+          TOKEN: ${{ github.token }}
+        run: |
+          remote="https://x-access-token:${TOKEN}@github.com/${GITHUB_REPOSITORY}.git"
+          set +e
+          git ls-remote --exit-code --heads "$remote" data > /dev/null
+          code=$?
+          set -e
+          if [ "$code" = "0" ]; then
+            git clone --quiet --depth 1 --branch data "$remote" store
+          elif [ "$code" = "2" ]; then
+            echo "No data branch yet: starting fresh."
+            git init --quiet -b data store
+            git -C store remote add origin "$remote"
+          else
+            echo "::error::Could not reach the repository (exit $code); not touching stored data."
+            exit 1
+          fi
+
+      - name: Collect
+        run: |
+          python -m collector.run --data-dir store/data \
+            ${{ (github.event_name == 'workflow_dispatch' && inputs.force) && '--force' || '' }}
+
+      - name: Save data branch
+        working-directory: store
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898273+github-actions[bot]@users.noreply.github.com"
+          # Keep the branch as a single commit: the history lives in the CSV files, not in git,
+          # so the repository stays small no matter how long this runs.
+          git checkout --quiet --orphan snapshot
+          git add -A data
+          git commit --quiet -m "data $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push --quiet --force origin snapshot:data
+
+      - name: Build site
+        run: |
+          mkdir -p _site
+          cp -r site/. _site/
+          cp -r store/data _site/data
+
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    needs: collect
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

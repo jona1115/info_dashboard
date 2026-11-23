@@ -1,0 +1,303 @@
+# Dashboard configuration: this is the only file you need to edit to add,
+# remove, reorder or retune widgets. Order here = order on the page.
+#
+# Every widget:
+#   id:       unique, lowercase-with-dashes (also the data file name; changing it starts fresh history)
+#   type:     rss | arxiv | crossref | stock | aaa_gas | costco_gas   (see collector/sources/)
+#   title:    shown on the card
+#   refresh:  how often to collect: 30m, 2h, 1d ... (the scheduler wakes every 30 minutes)
+#   size:     normal | wide   (wide spans two columns on large screens)
+#   enabled:  false to hide a widget without deleting it
+#   options:  type-specific settings (documented at the top of each collector file)
+
+site:
+  title: Dashboard
+  timezone: America/Chicago
+  refresh_minutes: 5          # how often an open browser tab checks for new data
+
+widgets:
+  - id: gas-aaa
+    type: aaa_gas
+    title: Gas Prices · AAA
+    refresh: 6h
+    size: wide
+    options:
+      regions:
+        - {key: national, label: U.S.}
+        - {key: TX, label: Texas}
+        - {key: "TX:Austin-San Marcos", label: Austin}
+      chart_grade: regular
+      window_days: 180
+      eia:                      # weekly EIA backfill so the chart has 6 months on day one
+        national: EMM_EPMR_PTE_NUS_DPG
+        TX: EMM_EPMR_PTE_STX_DPG
+
+  - id: costco-gas
+    type: costco_gas
+    title: Costco Gas · Austin
+    refresh: 3h
+    options:
+      latitude: 30.2672         # downtown Austin
+      longitude: -97.7431
+      count: 5
+      chart_count: 3
+      window_days: 180
+
+  - id: intc-stock
+    type: stock
+    title: Intel (INTC)
+    refresh: 1h
+    options:
+      tickers: [INTC]
+      range: 6mo
+
+  - id: markets
+    type: stock
+    title: Markets
+    refresh: 30m
+    size: wide
+    options:
+      display: table
+      range: 6mo
+      groups:
+        - label: U.S. Indexes
+          tickers:
+            - {symbol: "^GSPC", label: S&P 500}
+            - {symbol: "^DJI", label: Dow Jones}
+            - {symbol: "^IXIC", label: Nasdaq}
+        - label: Asia
+          tickers:
+            - {symbol: "^KLSE", label: Malaysia · KLCI}
+            - {symbol: "000001.SS", label: China · Shanghai Composite}
+            - {symbol: "^N225", label: Japan · Nikkei 225}
+            - {symbol: "^KS11", label: Korea · KOSPI}
+            - {symbol: "^TWII", label: Taiwan · TAIEX}
+            - {symbol: "^STI", label: Singapore · STI}
+        - label: Funds
+          tickers:
+            - {symbol: VOO, label: Vanguard S&P 500}
+            - {symbol: VGT, label: Vanguard Info Tech}
+
+  - id: sectors
+    type: stock
+    title: S&P 500 Sectors · SPDR ETFs
+    refresh: 30m
+    size: wide
+    options:
+      display: table
+      range: 6mo
+      sort: day                 # best day on top
+      tickers:
+        - {symbol: XLK, label: Technology}
+        - {symbol: XLC, label: Communication Svcs}
+        - {symbol: XLY, label: Consumer Discretionary}
+        - {symbol: XLP, label: Consumer Staples}
+        - {symbol: XLF, label: Financials}
+        - {symbol: XLV, label: Health Care}
+        - {symbol: XLI, label: Industrials}
+        - {symbol: XLE, label: Energy}
+        - {symbol: XLB, label: Materials}
+        - {symbol: XLRE, label: Real Estate}
+        - {symbol: XLU, label: Utilities}
+
+  - id: world-economy
+    type: macro
+    title: World Economy
+    refresh: 12h
+    size: wide
+    options:
+      history_months: 24
+      countries:
+        - {label: U.S., oecd: USA, bis: US}
+        - {label: Euro area, oecd: EA20, bis: XM}
+        - {label: Germany, oecd: DEU, bis: DE}
+        - {label: U.K., oecd: GBR, bis: GB}
+        - {label: Japan, oecd: JPN, bis: JP}
+        - {label: China, oecd: CHN, bis: CN}
+        - {label: India, oecd: IND, bis: IN}
+        - {label: Korea, oecd: KOR, bis: KR}
+        - {label: Malaysia, oecd: MYS, bis: MY, dosm: true}
+
+  - id: us-yield-curve
+    type: treasury_curve
+    title: U.S. Treasury Yield Curve
+    refresh: 3h
+    options:
+      compare_days: [30, 365]
+      spread_days: 365
+
+  - id: intel-news
+    type: rss
+    title: Intel Stock News
+    refresh: 1h
+    options:
+      max_items: 10
+      max_age_days: 10
+      include: ['(?-i:Intel|INTC)']       # case-sensitive: skips "intel chief" etc.
+      exclude: ['intelligence (chief|agency|officials?|community)']
+      feeds:
+        - url: https://feeds.finance.yahoo.com/rss/2.0/headline?s=INTC&region=US&lang=en-US
+          source: Yahoo Finance
+        - https://news.google.com/rss/search?q=Intel+stock+OR+INTC+when:7d&hl=en-US&gl=US&ceid=US:en
+
+  - id: headlines-world
+    type: rss
+    title: Headlines · U.S. & World
+    refresh: 1h
+    size: wide
+    options:
+      max_items: 5
+      max_age_days: 2
+      exclude: ['^sitemap ']   # drop CNN's sitemap entries
+      groups:
+        - label: CNN
+          feeds:
+            - {url: "https://news.google.com/rss/search?q=site:cnn.com+when:1d&hl=en-US&gl=US&ceid=US:en", source: CNN}
+        - label: Wall Street Journal
+          feeds:
+            - {url: "https://news.google.com/rss/search?q=site:wsj.com+when:1d&hl=en-US&gl=US&ceid=US:en", source: WSJ}
+        - label: Fox News
+          feeds:
+            - {url: "https://moxie.foxnews.com/google-publisher/latest.xml", source: Fox News}
+        - label: New York Times
+          feeds:
+            - {url: "https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml", source: NYT}
+        - label: Reuters
+          feeds:
+            - {url: "https://news.google.com/rss/search?q=site:reuters.com+when:1d&hl=en-US&gl=US&ceid=US:en", source: Reuters}
+        - label: BBC
+          feeds:
+            - {url: "https://feeds.bbci.co.uk/news/rss.xml", source: BBC}
+
+  - id: headlines-malaysia
+    type: rss
+    title: Headlines · Malaysia
+    refresh: 1h
+    size: wide
+    options:
+      max_items: 5
+      max_age_days: 3
+      groups:
+        - label: 星洲日报 Sin Chew
+          feeds:
+            # sinchew.com.my blocks automated readers; Google News' Taiwan edition lists its Chinese headlines.
+            - url: "https://news.google.com/rss/search?q=site:sinchew.com.my+when:2d&hl=zh-TW&gl=TW&ceid=TW:zh-Hant"
+              source: 星洲日报
+              exclude: ['星洲人', 'VIP']              # paywalled
+              require: ['[一-鿿]']           # Chinese headlines only
+              strip: [' - .*$']                      # drop the " - 国内 - 即时国内" section trail
+        - label: New Straits Times
+          feeds:
+            - {url: "https://news.google.com/rss/search?q=site:nst.com.my+when:1d&hl=en-MY&gl=MY&ceid=MY:en", source: NST}
+        - label: Malaysiakini
+          feeds:
+            - {url: "https://www.malaysiakini.com/rss/en/news.rss", source: Malaysiakini}
+        - label: 当今大马 Malaysiakini 中文
+          feeds:
+            - {url: "https://www.malaysiakini.com/rss/zh/news.rss", source: 当今大马}
+        - label: The Star
+          feeds:
+            - {url: "https://news.google.com/rss/search?q=site:thestar.com.my+when:1d&hl=en-MY&gl=MY&ceid=MY:en", source: The Star}
+
+  - id: ai-news
+    type: rss
+    title: AI News
+    refresh: 1h
+    size: wide
+    options:
+      max_items: 14
+      max_age_days: 4
+      # U.S. outlets only (matched against the publisher name)
+      source_include:
+        - '^(The )?New York Times$'
+        - 'Wall Street Journal|^WSJ$'
+        - 'Washington Post'
+        - '^CNN'
+        - '^CNBC$'
+        - 'Bloomberg'
+        - '^(The )?Associated Press$|^AP News$'
+        - '^Axios$'
+        - '^The Verge$'
+        - '^TechCrunch$'
+        - '^WIRED$|^Wired$'
+        - '^Fortune$'
+        - '^Forbes$'
+        - 'Business Insider'
+        - '^NBC News$|^CBS News$|^ABC News$|^Fox News$|^Fox Business$'
+        - '^NPR$'
+        - '^Politico$|^POLITICO$'
+        - '^The Atlantic$'
+        - 'Ars Technica'
+        - '^VentureBeat$'
+        - '^ZDNET$|^ZDNet$'
+        - '^CNET$'
+        - '^Engadget$'
+        - 'MIT Technology Review'
+        - '^Semafor$'
+        - '^The Information$'
+        - '^Yahoo Finance$|^Yahoo News$'
+        - '^MarketWatch$'
+        - "^Barron's$"
+        - '^USA Today$|^USA TODAY$'
+        - 'Los Angeles Times'
+        - '^TIME$|^Time$'
+        - '^Newsweek$'
+        - '^Vox$'
+        - '^Fast Company$'
+        - '^The Hill$'
+        - '^Quartz$'
+      feeds:
+        - https://news.google.com/rss/search?q=%22artificial+intelligence%22+OR+%22generative+AI%22+OR+OpenAI+OR+Anthropic+when:2d&hl=en-US&gl=US&ceid=US:en
+        - url: https://techcrunch.com/category/artificial-intelligence/feed/
+          source: TechCrunch
+        - url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+          source: The Verge
+
+  - id: isu-sports
+    type: espn_team
+    title: Iowa State Cyclones · Scores
+    refresh: 30m
+    size: wide
+    options:
+      team_id: 66               # ESPN's id for Iowa State
+      recent: 3                 # last 3 finals per sport; live games always shown
+      sports:
+        - {label: Football, path: football/college-football, periods: 4}
+        - {label: Men's Basketball, path: basketball/mens-college-basketball, periods: 2}
+        - {label: Women's Basketball, path: basketball/womens-college-basketball, periods: 4}
+
+  - id: fpga-venues
+    type: crossref
+    title: FPGA Research · TRETS / FPL / FPT
+    refresh: 1d
+    size: wide
+    options:
+      max_items: 6
+      venues:
+        - label: TRETS
+          issn: 1936-7406
+        - label: FPL
+          container_query: International Conference on Field Programmable Logic and Applications
+          match: 'field[- ]programmable logic'
+        - label: FPT
+          container_query: International Conference on Field Programmable Technology
+          match: 'field[- ]programmable technology'
+
+  - id: fpga-arxiv
+    type: arxiv
+    title: FPGA / ASIC Preprints · arXiv
+    refresh: 6h
+    options:
+      query: '(cat:cs.AR OR cat:eess.SP OR cat:cs.LG) AND (abs:FPGA OR abs:ASIC OR ti:FPGA OR ti:ASIC)'
+      max_items: 10
+
+  - id: fpga-news
+    type: rss
+    title: FPGA / ASIC Industry News
+    refresh: 3h
+    options:
+      max_items: 10
+      max_age_days: 14
+      exclude: ['Australian Securities', 'ASIC (says|sues|fines|bans|regulator|chair|commissioner)', 'corporate regulator']
+      feeds:
+        - https://news.google.com/rss/search?q=FPGA+OR+%22ASIC+chip%22+OR+%22custom+ASIC%22+OR+%22AI+ASIC%22+when:14d&hl=en-US&gl=US&ceid=US:en

@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+# local runs (the real data lives on the "data" branch)
+data/
+_local/
+_site/
+store/
+*.tmp

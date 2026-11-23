@@ -1,0 +1,7 @@
+{"status":"ok","message":{"items":[
+ {"DOI":"10.1109/FPL1.2026.1","title":["Table of Contents"],"container-title":["2026 36th International Conference on Field-Programmable Logic and Applications (FPL)"],"published":{"date-parts":[[2026,9]]}},
+ {"DOI":"10.1109/FPL1.2026.2","title":["Jack of All Scales: A Tensor Block"],"container-title":["2026 36th International Conference on Field-Programmable Logic and Applications (FPL)"],"published":{"date-parts":[[2026,9]]},
+  "author":[{"given":"Ann","family":"Lee"},{"given":"Bo","family":"Chen"}]},
+ {"DOI":"10.1117/other","title":["Unrelated SPIE paper"],"container-title":["Applications of Digital Image Processing XLIX"],"published":{"date-parts":[[2026,11,19]]}},
+ {"DOI":"10.1109/FPL1.2025.3","title":["S\n <sup>2</sup>\n MM: Older FPL paper"],"container-title":["2025 35th International Conference on Field Programmable Logic and Applications (FPL)"],"published":{"date-parts":[[2025,9,1]]}}
+]}}

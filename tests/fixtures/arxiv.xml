@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom" xmlns:arxiv="http://arxiv.org/schemas/atom">
+  <title>arXiv Query</title>
+  <entry>
+    <id>http://arxiv.org/abs/2611.00001v1</id>
+    <published>2026-11-19T17:59:00Z</published>
+    <title>An FPGA
+      Accelerator for Things</title>
+    <author><name>A. One</name></author><author><name>B. Two</name></author>
+    <author><name>C. Three</name></author><author><name>D. Four</name></author>
+    <link href="http://arxiv.org/abs/2611.00001v1" rel="alternate" type="text/html"/>
+    <arxiv:primary_category term="cs.AR"/>
+  </entry>
+</feed>

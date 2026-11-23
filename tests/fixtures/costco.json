@@ -1,0 +1,10 @@
+[true,
+ {"stlocID":681,"identifier":"681","city":"AUSTIN","locationName":"Austin","address1":"10401 RESEARCH BLVD","distance":7.2577,"hasGasDepartment":true,
+  "gasPrices":{"warehouseid":"681","regular":"2.759","premium":"3.439","oid":{"dao":"dao/gasprice"}},
+  "gasStationHours":[{"title":"Mon-Fri. ","code":"open","time":"6:00am - 10:00pm"}]},
+ {"stlocID":1629,"identifier":"1629","city":"KYLE","address1":"19086 IH 35","distance":18.7,"hasGasDepartment":true,
+  "gasPrices":{"regular":"2.699","premium":"3.349","diesel":"bad"},"gasStationHours":[]},
+ {"stlocID":1152,"identifier":"1152","city":"CEDAR PARK","address1":"4601 183A TOLL RD","distance":16.5,"hasGasDepartment":true,
+  "gasPrices":{"regular":"2.639","premium":"3.239","diesel":"3.999"}},
+ {"stlocID":999,"identifier":"999","city":"NOGAS","address1":"1 MAIN ST","distance":3.0,"hasGasDepartment":false}
+]
