@@ -30,6 +30,7 @@ GitHub Actions (every 30 min)                       GitHub Pages
 | headlines-world | `rss` | CNN, WSJ, Reuters (via Google News), Fox News, NYT, BBC |
 | headlines-malaysia | `rss` | Sin Chew 星洲日报 (Chinese headlines via Google News; its own site blocks bots), NST, The Star (via Google News), Malaysiakini EN + 中文 |
 | ai-news | `rss` | Google News + TechCrunch AI + The Verge AI, U.S. publishers only (`source_include`) |
+| sports-news | `espn_news` | Game results only (ESPN "Recap" articles) for NFL, NBA, NCAA football & basketball, FIFA/international and club soccer, MLB, NHL; Olympics (Google News) only during the Games; leagues with no recent games are hidden |
 | isu-sports | `espn_team` | Iowa State football, men's and women's basketball: final and quarter/half scores, live games (ESPN) |
 | fpga-venues | `crossref` | Newest TRETS articles and FPL / FPT proceedings papers (Crossref) |
 | fpga-arxiv | `arxiv` | Newest FPGA/ASIC preprints on arXiv |

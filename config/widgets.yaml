@@ -22,6 +22,7 @@ site:
     - {id: home, title: Home}
     - {id: markets, title: Markets & Economy}
     - {id: news, title: News}
+    - {id: sports, title: Sports}
     - {id: gas, title: Gas Prices}
 
 widgets:
@@ -282,10 +283,38 @@ widgets:
         - url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
           source: The Verge
 
+  - id: sports-news
+    type: espn_news
+    title: Sports · Game Results
+    refresh: 1h
+    section: sports
+    size: wide
+    options:
+      types: [Recap]            # ESPN game recaps only (add Preview for upcoming games)
+      max_items: 5
+      max_age_days: 3
+      hide_empty: true          # skip leagues with no recent games (off-season)
+      groups:
+        - {label: NFL, espn: [football/nfl]}
+        - {label: NBA, espn: [basketball/nba]}
+        - {label: NCAA Football, espn: [football/college-football]}
+        - {label: NCAA Basketball, espn: [basketball/mens-college-basketball, basketball/womens-college-basketball]}
+        - label: Soccer · FIFA & international
+          espn: [soccer/fifa.world, soccer/fifa.friendly, soccer/fifa.worldq.uefa, soccer/uefa.nations]
+        - label: Soccer · Clubs
+          espn: [soccer/uefa.champions, soccer/eng.1, soccer/usa.1]
+        - {label: MLB, espn: [baseball/mlb]}
+        - {label: NHL, espn: [hockey/nhl]}
+        - label: Olympics
+          # ESPN has no Olympics feed: Google News, result-style headlines, only during the Games.
+          rss: ["https://news.google.com/rss/search?q=Olympics+when:2d&hl=en-US&gl=US&ceid=US:en"]
+          require: ['olympi', '\b(wins?|won|beats?|gold|silver|bronze|medals?|final|record)\b']
+          active: [[2028-07-14, 2028-07-30]]   # LA 2028; add the next Games' dates here
+
   - id: isu-sports
     type: espn_team
     title: Iowa State Cyclones · Scores
-    section: news
+    section: sports
     refresh: 30m
     size: wide
     options:

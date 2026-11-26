@@ -223,7 +223,10 @@ def test_real_config_sections():
     cfg = run.load_config(ROOT / "config" / "widgets.yaml")
     pinned = [w["id"] for w in cfg["widgets"] if w["pinned"]]
     assert pinned == ["gas-aaa", "costco-gas", "markets"]
-    assert {w["section"] for w in cfg["widgets"]} == {"markets", "news", "gas"}
+    assert {w["section"] for w in cfg["widgets"]} == {"markets", "news", "sports", "gas"}
+    assert [s["id"] for s in cfg["site"]["sections"]] == ["home", "markets", "news", "sports", "gas"]
+    assert not [w["id"] for w in cfg["widgets"] if w["section"] in ("news", "sports") and w["pinned"]],         "no news/sports widget pinned by default"
+    assert next(w for w in cfg["widgets"] if w["id"] == "isu-sports")["section"] == "sports"
     assert "intc-stock" not in {w["id"] for w in cfg["widgets"]}
     candles = next(w for w in cfg["widgets"] if w["type"] == "candles")
     assert [t["symbol"] for t in candles["options"]["tickers"]] == ["VOO", "QQQM", "INTC"]

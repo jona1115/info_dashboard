@@ -478,3 +478,68 @@ def test_eia_failure_warns_only_when_data_is_old(monkeypatch, ctx, fake_http):
     c = _gas_ctx(ctx, monkeypatch, fake_http, None)                   # nothing to fall back on
     aaa_gas.collect(c)
     assert len(c.warnings) == 1
+
+
+# ------------------------------------------------------------------ espn game news
+
+from collector.sources import espn_news  # noqa: E402
+
+
+def _art(title, typ="Recap", hours_ago=2, url="http://www.espn.com/nba/recap?gameId=1"):
+    from datetime import datetime, timedelta, timezone
+    when = (datetime.now(timezone.utc) - timedelta(hours=hours_ago)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    return {"headline": title, "type": typ, "published": when, "links": {"web": {"href": url}}}
+
+
+def test_espn_news_parse_keeps_only_requested_types():
+    payload = {"articles": [_art("Bears beat Lions 39-35"), _art("Trade rumor", "HeadlineNews"),
+                            _art("Watch: dunk", "Media"), _art("No link", url=None)]}
+    payload["articles"][3]["links"] = {}
+    items = espn_news.parse_espn_news(payload, {"Recap"})
+    assert [i["title"] for i in items] == ["Bears beat Lions 39-35"]
+    assert items[0]["url"].startswith("https://") and items[0]["source"] == "ESPN"
+    assert len(espn_news.parse_espn_news(payload, {"Recap", "HeadlineNews"})) == 2
+
+
+def test_espn_news_active_windows():
+    w = [["2028-07-14", "2028-07-30"]]
+    assert not espn_news.active_now(w, date(2026, 11, 26))
+    assert espn_news.active_now(w, date(2028, 7, 14)) and espn_news.active_now(w, date(2028, 7, 30))
+    assert espn_news.active_now(None, date(2026, 11, 26))
+
+
+def test_espn_news_collect(monkeypatch, ctx):
+    from conftest import FakeResponse
+    import json as _json
+    feeds = {
+        "basketball/nba": {"articles": [_art("Blazers beat Spurs", hours_ago=1), _art("Old game", hours_ago=24 * 5),
+                                        _art("Warriors win", hours_ago=3)]},
+        "basketball/mens-college-basketball": {"articles": [_art("Texas tops Georgetown 92-83", hours_ago=2)]},
+        "basketball/womens-college-basketball": {"articles": [_art("Texas tops Georgetown 92-83!", hours_ago=4)]},  # dup title
+        "baseball/mlb": {"articles": [_art("Offseason signing", "HeadlineNews")]},
+    }
+    def fake(url, **kw):
+        for path, payload in feeds.items():
+            if f"/{path}/news" in url:
+                return FakeResponse(_json.dumps(payload).encode())
+        raise CollectError("HTTP 404")
+    monkeypatch.setattr(espn_news, "http_get", fake)
+    c = ctx({"max_items": 5, "max_age_days": 3, "groups": [
+        {"label": "NBA", "espn": ["basketball/nba"]},
+        {"label": "NCAA", "espn": ["basketball/mens-college-basketball", "basketball/womens-college-basketball"]},
+        {"label": "MLB", "espn": ["baseball/mlb"]},
+        {"label": "Olympics", "rss": ["https://x/olympics"], "active": [["2028-07-14", "2028-07-30"]]},
+        {"label": "Broken", "espn": ["nope/nope"]},
+    ]}, previous={"groups": [{"label": "Broken", "items": [{"title": "kept", "url": "https://e"}]}]})
+    monkeypatch.setattr(c, "today", lambda: date(2026, 11, 26))
+    d = espn_news.collect(c)
+    labels = [g["label"] for g in d["groups"]]
+    assert labels == ["NBA", "NCAA", "Broken"]                     # MLB empty -> hidden; Olympics inactive
+    nba = d["groups"][0]["items"]
+    assert [i["title"] for i in nba] == ["Blazers beat Spurs", "Warriors win"]   # newest first, 5-day-old dropped
+    assert [i["title"] for i in d["groups"][1]["items"]] == ["Texas tops Georgetown 92-83"]  # merged + deduped
+    assert d["groups"][2]["stale"] and any("Broken" in w for w in c.warnings)
+    c2 = ctx({"hide_empty": False, "groups": [{"label": "MLB", "espn": ["baseball/mlb"]}]})
+    assert espn_news.collect(c2)["groups"] == [{"label": "MLB", "items": []}]
+    with pytest.raises(CollectError):
+        espn_news.collect(ctx({"groups": [{"label": "x"}]}))
