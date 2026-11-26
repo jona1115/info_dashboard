@@ -23,6 +23,7 @@ GitHub Actions (every 30 min)                       GitHub Pages
 | costco-gas | `costco_gas` | costco.com warehouse locator: the 5 warehouses nearest downtown Austin, recorded daily |
 | intc-stock | `stock` | Yahoo Finance chart data: price, daily change, 6-month closes |
 | markets | `stock` (table) | S&P 500, Dow, Nasdaq; Asia (KLCI, Shanghai, Nikkei 225, KOSPI, TAIEX, STI); VOO, VGT: price, day / 1-month / 6-month change, trend line |
+| etf-candles | `candles` | Tabbed daily candlestick charts (VOO, QQQM) with MA20/50/200 and period buttons (1W–1Y, MTD, YTD); add tickers for more tabs |
 | sectors | `stock` (table) | The 11 SPDR sector ETFs (XLK, XLF, ...), sorted by today's change. Trend lines are red when the 6-month change is negative |
 | world-economy | `macro` | GDP growth, inflation, unemployment, policy rate, 10Y yield for U.S., euro area, Germany, U.K., Japan, China, India, Korea, Malaysia (OECD, BIS, data.gov.my) |
 | us-yield-curve | `treasury_curve` | U.S. Treasury yield curve vs 1 month / 1 year ago; 10Y−2Y and 10Y−3M spreads |
@@ -51,6 +52,8 @@ Most new widgets are just another `rss` entry. Any RSS/Atom feed works, includin
 ```
 
 Options for each type are documented at the top of its file in `collector/sources/`. RSS filters are `include` (any must match), `require` (all must match), `exclude` and `latin_only`. They can be set per feed, per group or per widget.
+
+Interactive widgets can reuse `site/js/tabs.js` (tab bar, segmented buttons, remembered per-widget UI state).
 
 **A new kind of widget** takes two files: a collector in `collector/sources/` (a function decorated with `@source("type", view="...")`, imported in `sources/__init__.py`) and, if it needs a new look, a renderer in `site/js/renderers/` registered in `renderers/index.js`. A test checks that every collector view has a renderer.
 
@@ -95,7 +98,7 @@ start the workflow every 30 minutes. If both fire, the extra run just finds noth
 ```powershell
 python -m venv .venv
 .venv\Scripts\pip install -r requirements.txt
-.venv\Scripts\python -m pytest -q tests                                  # offline tests
+.venv\Scripts\python -m pytest -q tests                                  # offline tests (+ browser tests if Chrome/Edge is installed)
 .venv\Scripts\python -m collector.run --data-dir _local/data --force     # live collection
 # preview: copy site/ and the data folder together, then serve
 robocopy site _local\_site /E; robocopy _local\data _local\_site\data /E

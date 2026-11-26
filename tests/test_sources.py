@@ -355,3 +355,52 @@ def test_rss_source_filter_and_strip(monkeypatch, ctx):
                                      "require": ["[\u4e00-\u9fff]"], "strip": [" - .*$"]}]}))
     assert [i["title"] for i in d["groups"][0]["items"]] == ["卫部审查确认"]
     assert d["groups"][0]["items"][0]["source"] == "星洲日报"
+
+
+# ------------------------------------------------------------------ candles
+
+from collector.sources import candles  # noqa: E402
+
+
+def test_sma():
+    assert candles.sma([1, 2, 3, 4, 5], 2) == [None, 1.5, 2.5, 3.5, 4.5]
+    assert candles.sma([1, 2, 3], 3) == [None, None, 2.0]
+    assert candles.sma([1, 2], 5) == [None, None]
+
+
+def test_parse_ohlc_skips_gaps_fixes_bounds_and_uses_live_price():
+    payload = {"chart": {"result": [{
+        "meta": {"symbol": "VOO", "currency": "USD", "regularMarketPrice": 661.0, "regularMarketTime": 1795208401,
+                 "exchangeTimezoneName": "America/New_York", "longName": "Vanguard S&P 500 ETF"},
+        "timestamp": [1794925800, 1795012200, 1795098600, 1795185000],   # Nov 17..20, 2026 (ET)
+        "indicators": {"quote": [{
+            "open":  [650.0, None, 655.0, 657.0],
+            "high":  [652.0, 660.0, 654.0, 662.0],    # Nov 19 high below its open: widen to cover the body
+            "low":   [648.0, 650.0, 653.0, 656.0],
+            "close": [651.0, 659.0, 653.5, 660.0],
+        }]}}], "error": None}}
+    q = candles.parse_ohlc(payload)
+    assert [c[0] for c in q["candles"]] == ["2026-11-17", "2026-11-19", "2026-11-20"]   # Nov 18 incomplete -> skipped
+    assert q["candles"][1] == ["2026-11-19", 655.0, 655.0, 653.0, 653.5]
+    assert q["candles"][2][4] == 661.0 and q["candles"][2][2] == 662.0                 # live price replaces close
+    assert q["name"] == "Vanguard S&P 500 ETF"
+
+
+def test_candles_collect_options_and_stale(monkeypatch, ctx):
+    def fake(sym):
+        if sym == "BAD":
+            raise CollectError("BAD: HTTP 404")
+        return {"symbol": sym, "candles": [[f"2026-01-{i:02d}", 1, 2, 0.5, float(i)] for i in range(1, 6)]}
+    monkeypatch.setattr(candles, "fetch_ohlc", fake)
+    monkeypatch.setattr(candles.time, "sleep", lambda s: None)
+    prev = {"tabs": [{"symbol": "BAD", "candles": [], "ma": {}}]}
+    d = candles.collect(ctx({"tickers": ["voo", {"symbol": "BAD", "label": "Bad"}], "ma": [2, 3],
+                             "periods": ["1m", "1Y"], "default_period": "6M"}, previous=prev))
+    assert d["periods"] == ["1M", "1Y"] and d["default_period"] == "1M"   # default not offered -> first
+    voo, bad = d["tabs"]
+    assert voo["symbol"] == "VOO" and voo["label"] == "VOO"
+    assert voo["ma"]["2"] == [None, 1.5, 2.5, 3.5, 4.5] and voo["ma"]["3"][:3] == [None, None, 2.0]
+    assert bad["stale"] and bad["label"] == "Bad"
+    for bad_opts in ({"tickers": ["A"], "periods": ["2Y"]}, {"tickers": ["A"], "ma": [1]}, {"tickers": []}):
+        with pytest.raises(CollectError):
+            candles.collect(ctx(bad_opts))

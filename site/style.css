@@ -127,9 +127,27 @@ table.box th:first-child, table.box td:first-child { text-align: left; width: 40
 table.box td:last-child, table.box th:last-child { text-align: right; }
 table.box tr.win td:first-child { font-weight: 600; }
 
+/* tabs and segmented buttons (see js/tabs.js) */
+.tab-controls { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 6px 12px;
+  border-bottom: 1px solid var(--grid); }
+.tabbar { display: flex; gap: 2px; }
+.tabbar button { border: 0; border-bottom: 2px solid transparent; border-radius: 0; background: none; padding: 6px 10px;
+  font-size: 13px; color: var(--ink-2); }
+.tabbar button.active { color: var(--ink); border-bottom-color: var(--series-1); font-weight: 600; }
+.seg { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; margin-bottom: 5px; }
+.seg button { border: 0; border-radius: 0; padding: 3px 8px; font-size: 11px; background: none; }
+.seg button + button { border-left: 1px solid var(--border); }
+.seg button.active { background: var(--ink); color: var(--surface); }
+.tab-panel { display: flex; flex-direction: column; gap: 8px; padding-top: 8px; }
+.quote a.price { color: inherit; }
+.candle-key { display: inline-block; width: 6px; height: 11px; border-radius: 1px; margin-right: 2px; vertical-align: -1px; }
+.up-bg { background: var(--up); }
+.down-bg { background: var(--down); margin-right: 5px; }
+
 /* charts */
 .chart { position: relative; height: 230px; }
 .chart.short { height: 170px; }
+.chart.tall { height: 320px; }
 .legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 11px; color: var(--ink-2); }
 .legend .sw { display: inline-block; width: 16px; height: 0; border-top: 2px solid; margin-right: 5px; vertical-align: 3px; }
 .legend .sw.dash { border-top-style: dashed; }

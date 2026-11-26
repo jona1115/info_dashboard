@@ -78,6 +78,19 @@ widgets:
             - {symbol: VOO, label: Vanguard S&P 500}
             - {symbol: VGT, label: Vanguard Info Tech}
 
+  - id: etf-candles
+    type: candles
+    title: ETF Charts · Daily Candles
+    refresh: 30m
+    size: wide
+    options:
+      tickers:                  # one tab each; add more tickers to get more tabs
+        - {symbol: VOO, label: VOO}
+        - {symbol: QQQM, label: QQQM}
+      ma: [20, 50, 200]         # simple moving averages of the daily close
+      periods: [1W, 1M, 3M, 6M, MTD, YTD, 1Y]
+      default_period: 3M
+
   - id: sectors
     type: stock
     title: S&P 500 Sectors · SPDR ETFs

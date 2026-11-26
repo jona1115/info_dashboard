@@ -226,6 +226,70 @@ export function categoryChart(container, labels, series, { yFormat = (v) => v, s
   return new window.Chart(canvas, { type: "line", data: { labels, datasets }, options: opts });
 }
 
+/**
+ * Daily candlestick chart with optional line overlays (e.g. moving averages).
+ * candles: [["YYYY-MM-DD", open, high, low, close], ...]
+ * lines:   [{label, color, values: [number|null, ...]}]   (same length as candles)
+ */
+export function candleChart(container, candles, lines = [], { yFormat = (v) => v.toFixed(2), tall = true } = {}) {
+  setupChart();
+  const box = el("div", { class: tall ? "chart tall" : "chart" });
+  const canvas = el("canvas", { role: "img", "aria-label": `Daily candlestick chart, ${candles.length} days` });
+  box.append(canvas);
+  container.append(box);
+  if (!window.Chart) {
+    box.replaceChildren(el("p", { class: "muted small" }, "Chart library failed to load."));
+    return null;
+  }
+  const up = cssVar("--up"), down = cssVar("--down"), surface = cssVar("--surface");
+  const colors = candles.map((c) => (c[4] >= c[1] ? up : down));
+  const lo = Math.min(...candles.map((c) => c[3])), hi = Math.max(...candles.map((c) => c[2]));
+  const eps = (hi - lo || 1) * 0.0015; // keep a doji (open == close) visible
+  const labels = candles.map((c) => c[0]);
+  const datasets = [
+    ...lines.map((l) => ({
+      type: "line", label: l.label, data: l.values, order: 0,
+      borderColor: l.color, backgroundColor: l.color, borderWidth: 1.5,
+      pointRadius: 0, pointHoverRadius: 3, pointBorderColor: surface, spanGaps: false, tension: 0,
+    })),
+    {
+      type: "bar", label: "body", order: 1, grouped: false,
+      data: candles.map((c) => (Math.abs(c[4] - c[1]) < eps ? [c[1] - eps, c[1] + eps] : [Math.min(c[1], c[4]), Math.max(c[1], c[4])])),
+      backgroundColor: colors, borderColor: colors, borderWidth: 0,
+      barPercentage: 0.75, categoryPercentage: 1, minBarLength: 1,
+    },
+    {
+      type: "bar", label: "wick", order: 2, grouped: false,
+      data: candles.map((c) => [c[3], c[2]]),
+      backgroundColor: colors, borderWidth: 0, maxBarThickness: 1.5, barPercentage: 0.12, categoryPercentage: 1,
+    },
+  ];
+  const opts = baseOptions(yFormat, (items) => (items.length ? fmtDayY(dayMs(labels[items[0].dataIndex])) : ""),
+    (item) => {
+      if (item.dataset.label === "body") {
+        const [, o, h, l, c] = candles[item.dataIndex];
+        const prev = item.dataIndex > 0 ? candles[item.dataIndex - 1][4] : null;
+        const chg = prev ? ` (${c >= prev ? "▲ +" : "▼ −"}${Math.abs((c / prev - 1) * 100).toFixed(2)}%)` : "";
+        return [` Open ${yFormat(o)}`, ` High ${yFormat(h)}`, ` Low ${yFormat(l)}`, ` Close ${yFormat(c)}${chg}`];
+      }
+      return item.parsed.y == null ? "" : ` ${item.dataset.label}: ${yFormat(item.parsed.y)}`;
+    });
+  opts.interaction = { mode: "index", intersect: false };
+  opts.plugins.tooltip.filter = (item) => item.dataset.label !== "wick" && item.parsed.y != null;
+  opts.plugins.tooltip.itemSort = (a, b) => (a.dataset.label === "body" ? -1 : b.dataset.label === "body" ? 1 : 0);
+  opts.scales.y.beginAtZero = false;
+  opts.scales.y.grace = "3%";
+  opts.scales.x = {
+    type: "category",
+    ticks: {
+      color: cssVar("--muted"), font: { size: 11 }, maxRotation: 0, autoSkip: true, maxTicksLimit: 8,
+      callback: (v, i) => fmtDay(dayMs(labels[i])),
+    },
+    grid: { display: false }, border: { color: cssVar("--axis") },
+  };
+  return new window.Chart(canvas, { data: { labels, datasets }, options: opts });
+}
+
 /** Tiny inline SVG trend line (no axes). */
 export function sparkline(points, color, { width = 96, height = 26 } = {}) {
   const W = width, H = height, P = 2;

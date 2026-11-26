@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div id="hosts" style="width: 1000px"></div>
+  <pre id="results">pending</pre>
+  <script src="/vendor/chart.umd.min.js"></script>
+  <script type="module">
+    import { periodBounds, periodStart, render } from "/js/renderers/candles.js";
+
+    const results = [];
+    async function t(name, fn) {
+      try { await fn(); results.push({ name, ok: true }); }
+      catch (e) { results.push({ name, ok: false, err: String((e && e.stack) || e) }); }
+    }
+    const eq = (a, b, msg = "") => {
+      const A = JSON.stringify(a), B = JSON.stringify(b);
+      if (A !== B) throw new Error(`${msg} expected ${B} got ${A}`);
+    };
+    const ok = (c, msg = "assertion failed") => { if (!c) throw new Error(msg); };
+
+    // ---- synthetic data: weekdays from 2024-11-01 to Wed 2026-11-25
+    function weekdays(from, to) {
+      const out = [];
+      for (let d = new Date(from + "T00:00:00Z"); d <= new Date(to + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + 1)) {
+        const w = d.getUTCDay();
+        if (w && w < 6) out.push(d.toISOString().slice(0, 10));
+      }
+      return out;
+    }
+    const DAYS = weekdays("2024-11-01", "2026-11-25");
+    const makeCandles = (base) => DAYS.map((d, i) => {
+      const o = base + i * 0.1;
+      const c = i % 3 === 0 ? o - 1 : i % 7 === 0 ? o : o + 1;       // down, doji, up
+      return [d, o, Math.max(o, c) + 0.5, Math.min(o, c) - 0.5, c];
+    });
+    const sma = (v, n) => { let s = 0; return v.map((x, i) => { s += x; if (i >= n) s -= v[i - n]; return i >= n - 1 ? s / n : null; }); };
+    const makeTab = (sym, base, extra = {}) => {
+      const cs = makeCandles(base), cl = cs.map((c) => c[4]);
+      return { symbol: sym, label: sym, name: `${sym} fund`, currency: "USD", candles: cs,
+               ma: { 20: sma(cl, 20), 50: sma(cl, 50), 200: sma(cl, 200) }, ...extra };
+    };
+    const DATA = { periods: ["1W", "1M", "3M", "6M", "MTD", "YTD", "1Y"], default_period: "3M", ma: [20, 50, 200],
+                   tabs: [makeTab("VOO", 600), makeTab("QQQM", 250)] };
+    const countAfter = (d) => DAYS.filter((x) => x > d).length;
+    const countFrom = (d) => DAYS.filter((x) => x >= d).length;
+
+    function mount(data, id = "w1") {
+      const body = document.createElement("div");
+      body.className = "card-body";
+      document.getElementById("hosts").append(body);
+      render(body, data, { id }, { timezone: "America/Chicago" });
+      return body;
+    }
+    function unmount(body) {
+      body.querySelectorAll("canvas").forEach((c) => Chart.getChart(c)?.destroy());
+      body.remove();
+    }
+    const chartOf = (body) => Chart.getChart(body.querySelector("canvas"));
+    const activeTab = (body) => body.querySelector(".tabbar button.active")?.dataset.key;
+    const activePeriod = (body) => body.querySelector(".seg button.active")?.dataset.key;
+    const click = (body, sel, key) => body.querySelector(`${sel} button[data-key="${key}"]`).click();
+    const cssVar = (n) => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+    await t("periodBounds: rolling and to-date periods", () => {
+      eq(periodBounds("2026-11-25", "1W"), { after: "2026-11-18" });
+      eq(periodBounds("2026-11-25", "1M"), { after: "2026-10-25" });
+      eq(periodBounds("2026-11-25", "3M"), { after: "2026-08-25" });
+      eq(periodBounds("2026-11-25", "6M"), { after: "2026-05-25" });
+      eq(periodBounds("2026-11-25", "1Y"), { after: "2025-11-25" });
+      eq(periodBounds("2026-11-25", "MTD"), { from: "2026-11-01" });
+      eq(periodBounds("2026-11-25", "YTD"), { from: "2026-01-01" });
+      eq(periodBounds("2026-03-31", "1M"), { after: "2026-02-28" }, "month-end clamps");
+      eq(periodBounds("2028-03-31", "1M"), { after: "2028-02-29" }, "leap year");
+      eq(periodBounds("2026-01-15", "3M"), { after: "2025-10-15" }, "crosses year");
+    });
+
+    await t("periodStart picks the first candle in the period", () => {
+      const cs = DATA.tabs[0].candles;
+      eq(cs[periodStart(cs, "1W")][0], "2026-11-19");
+      eq(cs.length - periodStart(cs, "1W"), 5, "1W = 5 trading days");
+      eq(cs[periodStart(cs, "MTD")][0], "2026-11-02");          // Nov 1 2026 is a Sunday
+      eq(cs[periodStart(cs, "YTD")][0], "2026-01-01");
+      eq(cs[periodStart(cs, "1Y")][0], "2025-11-26");
+      eq(periodStart([["2026-11-02", 1, 1, 1, 1]], "MTD"), 0, "single candle");
+    });
+
+    let body;
+    await t("first render: tabs, periods, default selection", () => {
+      localStorage.clear();
+      body = mount(DATA);
+      eq([...body.querySelectorAll(".tabbar button")].map((b) => b.textContent), ["VOO", "QQQM"]);
+      eq([...body.querySelectorAll(".seg button")].map((b) => b.textContent), DATA.periods);
+      eq(activeTab(body), "VOO");
+      eq(activePeriod(body), "3M");
+      eq(body.querySelector(".tabbar button.active").getAttribute("aria-selected"), "true");
+    });
+
+    await t("chart: daily candles for the period + MA20/50/200 lines", () => {
+      const ch = chartOf(body);
+      ok(ch, "chart exists");
+      eq(ch.data.labels.length, countAfter("2026-08-25"), "3M candle count");
+      eq(ch.data.labels.at(-1), "2026-11-25");
+      const lines = ch.data.datasets.filter((d) => d.type === "line").map((d) => d.label);
+      eq(lines, ["MA20", "MA50", "MA200"]);
+      eq(ch.data.datasets.filter((d) => d.type === "bar").map((d) => d.label), ["body", "wick"]);
+      for (const d of ch.data.datasets.filter((d) => d.type === "line")) {
+        eq(d.data.length, ch.data.labels.length, `${d.label} aligned`);
+        ok(d.data.every((v) => v != null), `${d.label} complete in 3M`);
+      }
+      // MA values line up with the source series (last value = last MA value)
+      eq(ch.data.datasets[2].data.at(-1), DATA.tabs[0].ma[200].at(-1), "MA200 aligned to last candle");
+    });
+
+    await t("candle colours and doji visibility", () => {
+      const ch = chartOf(body), shown = DATA.tabs[0].candles.slice(-ch.data.labels.length);
+      const bodyDs = ch.data.datasets.find((d) => d.label === "body");
+      const up = shown.findIndex((c) => c[4] > c[1]), down = shown.findIndex((c) => c[4] < c[1]);
+      const doji = shown.findIndex((c) => c[4] === c[1]);
+      eq(bodyDs.backgroundColor[up], cssVar("--up"), "up candle colour");
+      eq(bodyDs.backgroundColor[down], cssVar("--down"), "down candle colour");
+      ok(doji >= 0, "test data has a doji");
+      ok(bodyDs.data[doji][1] - bodyDs.data[doji][0] > 0, "doji body has height");
+      const wick = ch.data.datasets.find((d) => d.label === "wick");
+      eq(wick.data[up], [shown[up][3], shown[up][2]], "wick spans low..high");
+    });
+
+    await t("tooltip shows OHLC for the hovered day", () => {
+      const ch = chartOf(body), i = ch.data.labels.length - 1;
+      const lab = ch.options.plugins.tooltip.callbacks.label({ dataset: { label: "body" }, dataIndex: i, parsed: { y: 0 } });
+      ok(Array.isArray(lab) && lab.length === 4, "4 lines");
+      ok(lab[0].includes("Open") && lab[3].includes("Close"), lab.join("|"));
+      const title = ch.options.plugins.tooltip.callbacks.title([{ dataIndex: i }]);
+      ok(/2026/.test(title), `title has date: ${title}`);
+    });
+
+    await t("switching tab redraws the other ticker and remembers it", () => {
+      click(body, ".tabbar", "QQQM");
+      eq(activeTab(body), "QQQM");
+      const ch = chartOf(body);
+      const firstBody = ch.data.datasets.find((d) => d.label === "body").data[0];
+      ok(firstBody[0] < 400, `QQQM prices (~250+), got ${firstBody}`);
+      ok(body.querySelector(".tab-panel").textContent.includes("QQQM fund"), "QQQM header");
+      eq(JSON.parse(localStorage.getItem("dash:ui:w1")).tab, "QQQM");
+      eq(body.querySelectorAll("canvas").length, 1, "one canvas after redraw");
+    });
+
+    await t("switching period keeps daily candles; MA200 complete for 1Y", () => {
+      click(body, ".seg", "1Y");
+      const ch = chartOf(body);
+      eq(ch.data.labels.length, countAfter("2025-11-25"), "1Y = daily candles for a year");
+      ok(ch.data.datasets.find((d) => d.label === "MA200").data.every((v) => v != null), "MA200 has warm-up");
+      click(body, ".seg", "1W");
+      eq(chartOf(body).data.labels.length, 5);
+      click(body, ".seg", "MTD");
+      eq(chartOf(body).data.labels.length, countFrom("2026-11-01"));
+      click(body, ".seg", "YTD");
+      eq(chartOf(body).data.labels.length, countFrom("2026-01-01"));
+      click(body, ".seg", "1Y");
+      eq(Object.keys(Chart.instances).length, 1, "old charts destroyed");
+      eq(JSON.parse(localStorage.getItem("dash:ui:w1")).period, "1Y");
+    });
+
+    await t("a data refresh re-render restores the chosen tab and period", () => {
+      unmount(body);
+      body = mount(DATA);
+      eq(activeTab(body), "QQQM");
+      eq(activePeriod(body), "1Y");
+      eq(chartOf(body).data.labels.length, countAfter("2025-11-25"));
+      unmount(body);
+    });
+
+    await t("remembered ticker that was removed falls back to the first tab", () => {
+      localStorage.setItem("dash:ui:w2", JSON.stringify({ tab: "XYZ", period: "10Y" }));
+      const b = mount(DATA, "w2");
+      eq(activeTab(b), "VOO");
+      eq(activePeriod(b), "3M");
+      unmount(b);
+    });
+
+    await t("more tabs and a stale tab", () => {
+      const data = { ...DATA, tabs: [...DATA.tabs, makeTab("SCHD", 80, { stale: true })] };
+      const b = mount(data, "w3");
+      eq(b.querySelectorAll(".tabbar button").length, 3);
+      click(b, ".tabbar", "SCHD");
+      ok(b.querySelector(".tab-panel .tag")?.textContent === "stale", "stale tag");
+      unmount(b);
+    });
+
+    await t("each widget remembers its own state", () => {
+      eq(JSON.parse(localStorage.getItem("dash:ui:w1")).tab, "QQQM");
+      eq(JSON.parse(localStorage.getItem("dash:ui:w3")).tab, "SCHD");
+    });
+
+    document.getElementById("results").textContent = JSON.stringify(results);
+    document.body.dataset.done = "1";
+  </script>
+</body>
+</html>

@@ -6,10 +6,11 @@ import { render as costco } from "./costco.js";
 import { render as macro } from "./macro.js";
 import { render as yield_curve } from "./yield_curve.js";
 import { render as scores } from "./scores.js";
+import { render as candles } from "./candles.js";
 import { el } from "../util.js";
 
 function raw(body, data) {
   body.append(el("pre", { class: "raw" }, JSON.stringify(data, null, 1)));
 }
 
-export const RENDERERS = { list, gas, stock, costco, macro, yield_curve, scores, raw };
+export const RENDERERS = { list, gas, stock, costco, macro, yield_curve, scores, candles, raw };
