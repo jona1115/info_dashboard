@@ -19,11 +19,10 @@ GitHub Actions (every 30 min)                       GitHub Pages
 
 | id | type | source |
 |---|---|---|
-| gas-aaa | `aaa_gas` | gasprices.aaa.com (U.S., Texas, Austin), recorded daily, plus EIA weekly prices for six months of history from day one |
+| gas-aaa | `aaa_gas` | gasprices.aaa.com (U.S., Texas, Austin), recorded daily, plus EIA weekly prices for six months of history from day one (EIA API, or EIA's history page when the API is down; reused for 20 h) |
 | costco-gas | `costco_gas` | costco.com warehouse locator: the 5 warehouses nearest downtown Austin, recorded daily |
-| intc-stock | `stock` | Yahoo Finance chart data: price, daily change, 6-month closes |
 | markets | `stock` (table) | S&P 500, Dow, Nasdaq; Asia (KLCI, Shanghai, Nikkei 225, KOSPI, TAIEX, STI); VOO, VGT: price, day / 1-month / 6-month change, trend line |
-| etf-candles | `candles` | Tabbed daily candlestick charts (VOO, QQQM) with MA20/50/200 and period buttons (1W–1Y, MTD, YTD); add tickers for more tabs |
+| etf-candles | `candles` | Tabbed daily candlestick charts with volume (VOO, QQQM, INTC), MA20/50/200, period buttons (1W, 1M, 3M, 6M, YTD, 1Y); add tickers for more tabs |
 | sectors | `stock` (table) | The 11 SPDR sector ETFs (XLK, XLF, ...), sorted by today's change. Trend lines are red when the 6-month change is negative |
 | world-economy | `macro` | GDP growth, inflation, unemployment, policy rate, 10Y yield for U.S., euro area, Germany, U.K., Japan, China, India, Korea, Malaysia (OECD, BIS, data.gov.my) |
 | us-yield-curve | `treasury_curve` | U.S. Treasury yield curve vs 1 month / 1 year ago; 10Y−2Y and 10Y−3M spreads |
@@ -35,6 +34,13 @@ GitHub Actions (every 30 min)                       GitHub Pages
 | fpga-venues | `crossref` | Newest TRETS articles and FPL / FPT proceedings papers (Crossref) |
 | fpga-arxiv | `arxiv` | Newest FPGA/ASIC preprints on arXiv |
 | fpga-news | `rss` | Google News for FPGA / ASIC chip news (filters out Australia's ASIC regulator) |
+
+## Page sections and pinning
+
+`site.sections` in the config defines the tabs at the top of the page. The first one, `home`, shows
+**pinned** widgets; every widget belongs to exactly one other section (`section:`). `pinned: true` pins
+a widget to Home by default. Visitors can pin or unpin any card with its ☆ / ★ button, and that choice
+is saved in their own browser (localStorage). Links like `/#news` open a section directly.
 
 ## Adding or changing widgets
 
@@ -91,7 +97,7 @@ start the workflow every 30 minutes. If both fire, the extra run just finds noth
      `X-GitHub-Api-Version: 2022-11-28`, `Content-Type: application/json`.
      Request body: `{"ref":"main"}`.
    - Use **Test run**: a `204` response means it worked, and a new run appears in the Actions tab.
-3. If data collection stalls for more than 90 minutes, the page header turns red ("collection may be stuck").
+3. If no data has been collected for 12 hours, the page header turns red ("collection may be stuck").
 
 ## Running locally
 

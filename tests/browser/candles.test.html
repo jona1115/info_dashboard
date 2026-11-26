@@ -190,6 +190,49 @@
       unmount(b);
     });
 
+    await t("volume pane under the candles when volume is present", () => {
+      const withVol = (tab) => ({ ...tab, candles: tab.candles.map((c, i) => [...c.slice(0, 5), 1e6 + i]) });
+      const b = mount({ ...DATA, tabs: DATA.tabs.map(withVol) }, "w4");
+      const ch = chartOf(b);
+      const vol = ch.data.datasets.find((d) => d.label === "volume");
+      ok(vol, "volume dataset");
+      eq(vol.yAxisID, "volume");
+      eq(vol.data.length, ch.data.labels.length);
+      eq(vol.data.at(-1), 1e6 + DAYS.length - 1, "volume of the last day");
+      eq(ch.options.scales.volume.stack, "panes", "separate pane, not an overlay axis");
+      for (const d of ch.data.datasets.filter((d) => d.label !== "volume")) eq(d.yAxisID, "y", `${d.label} on the price axis`);
+      const ys = ch.scales.y, vs = ch.scales.volume;
+      ok(vs.top >= ys.bottom - 1, `volume pane is below the price pane (price ${ys.top}-${ys.bottom}, volume ${vs.top}-${vs.bottom})`);
+      const shownLo = Math.min(...DATA.tabs[0].candles.slice(-ch.data.labels.length).map((c) => c[3]));
+      ok(ys.min <= shownLo && ys.min > shownLo * 0.5, `price axis fits the prices (min ${ys.min}, lowest low ${shownLo})`);
+      eq(ch.options.scales.y.stack, "panes");
+      ok(ch.options.scales.y.stackWeight > ch.options.scales.volume.stackWeight, "price pane is the big one");
+      const lab = ch.options.plugins.tooltip.callbacks.label({ dataset: { label: "body" }, dataIndex: ch.data.labels.length - 1, parsed: { y: 0 } });
+      ok(lab.some((x) => x.includes("Volume")), lab.join("|"));
+      ok(!ch.options.plugins.tooltip.filter({ dataset: { label: "volume" }, parsed: { y: 5 } }), "volume bar not a separate tooltip row");
+      ok(b.querySelector(".legend").textContent.includes("volume"), "legend mentions volume");
+      unmount(b);
+      // and no pane when the data has no volume (the default test data)
+      const b2 = mount(DATA, "w5");
+      ok(!chartOf(b2).data.datasets.some((d) => d.label === "volume"), "no volume dataset");
+      ok(!chartOf(b2).options.scales.volume, "no volume scale");
+      unmount(b2);
+    });
+
+    await t("price axis fits a wide price range instead of dropping to 0", () => {
+      // Like INTC: lows near 50, highs near 150 (default 'nice' ticks would round the axis down to 0).
+      const wide = DAYS.slice(-130).map((d, i) => { const o = 150 - i * 0.78; return [d, o, o + 1, o - 1.5, o - 0.5, 5e7]; });
+      const tab = { ...makeTab("WIDE", 100), candles: wide, ma: {} };
+      const b = mount({ ...DATA, ma: [], tabs: [tab] }, "w6");
+      click(b, ".seg", "6M");
+      const ch = chartOf(b), lo = Math.min(...wide.slice(-ch.data.labels.length).map((c) => c[3]));
+      ok(ch.scales.y.min > lo * 0.85 && ch.scales.y.min <= lo, `axis min ${ch.scales.y.min} vs lowest low ${lo}`);
+      const labels = ch.scales.y.ticks.map((x) => x.value);
+      ok(labels.length >= 3, `enough price labels: ${labels}`);
+      ok(labels.every((v) => Math.abs(v - Math.round(v / 5) * 5) < 1e-9), `round price labels: ${labels}`);
+      unmount(b);
+    });
+
     await t("each widget remembers its own state", () => {
       eq(JSON.parse(localStorage.getItem("dash:ui:w1")).tab, "QQQM");
       eq(JSON.parse(localStorage.getItem("dash:ui:w3")).tab, "SCHD");

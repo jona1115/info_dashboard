@@ -30,6 +30,7 @@ from .sources import REGISTRY
 ROOT = Path(__file__).resolve().parent.parent
 ID_CHARS = set("abcdefghijklmnopqrstuvwxyz0123456789-")
 SIZES = {"normal", "wide"}
+HOME = "home"                      # section that shows pinned widgets
 SLACK = timedelta(minutes=5)       # cron jitter tolerance
 ERROR_RETRY = timedelta(hours=1)   # retry failed widgets at least this often
 
@@ -55,6 +56,20 @@ def load_config(path: Path) -> dict:
         raise ConfigError(f"site.timezone {site['timezone']!r} is not a valid IANA time zone")
     if not isinstance(site["refresh_minutes"], (int, float)) or site["refresh_minutes"] < 1:
         raise ConfigError("site.refresh_minutes must be a number >= 1")
+    sections = site.get("sections") or []
+    if not isinstance(sections, list):
+        raise ConfigError("site.sections must be a list of {id, title}")
+    section_ids = []
+    for j, sec in enumerate(sections):
+        sid = sec.get("id") if isinstance(sec, dict) else None
+        if not isinstance(sid, str) or not sid or not set(sid) <= ID_CHARS:
+            raise ConfigError(f"site.sections[{j}].id must be lowercase letters, digits and dashes")
+        if sid in section_ids:
+            raise ConfigError(f"site.sections: duplicate id {sid!r}")
+        section_ids.append(sid)
+        sec.setdefault("title", sid)
+    if sections and section_ids[0] != HOME:
+        raise ConfigError(f"site.sections must start with {{id: {HOME}}} (the page that shows pinned widgets)")
 
     widgets, seen = [], set()
     for i, w in enumerate(raw.get("widgets") or []):
@@ -82,6 +97,15 @@ def load_config(path: Path) -> dict:
         opts = w.get("options") or {}
         if not isinstance(opts, dict):
             raise ConfigError(f"{where}: options must be a mapping")
+        section = w.get("section")
+        if sections:
+            if section not in section_ids or section == HOME:
+                raise ConfigError(f"{where}: section must be one of {[x for x in section_ids if x != HOME]}"
+                                  f" (got {section!r}); use pinned: true to also show it on {HOME}")
+        elif section is not None:
+            raise ConfigError(f"{where}: has a section but site.sections is not defined")
+        if not isinstance(w.get("pinned", False), bool):
+            raise ConfigError(f"{where}: pinned must be true or false")
         widgets.append({
             "id": wid,
             "type": w["type"],
@@ -89,6 +113,8 @@ def load_config(path: Path) -> dict:
             "refresh": str(w.get("refresh", "1h")),
             "size": size,
             "enabled": bool(w.get("enabled", True)),
+            "section": section,
+            "pinned": bool(w.get("pinned", False)),
             "options": opts,
         })
     if not widgets:
@@ -195,6 +221,7 @@ def main(argv=None) -> int:
         if prev:
             entries.append({
                 "id": w["id"], "title": w["title"], "view": prev.get("view"), "size": w["size"],
+                "section": w["section"], "pinned": w["pinned"],
                 "refresh": w["refresh"], "status": prev.get("status"), "updated": prev.get("updated"),
                 "attempted": prev.get("attempted"),
             })

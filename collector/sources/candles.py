@@ -1,4 +1,6 @@
-"""Daily candlestick data with simple moving averages, one tab per ticker (Yahoo Finance chart data).
+"""Daily candlestick data (+ volume) with simple moving averages, one tab per ticker (Yahoo Finance chart data).
+
+Each candle is [date, open, high, low, close, volume]; volume may be null.
 
 The page picks the visible period (1W, 1M, ... 1Y); candles are always daily. History is fetched far
 enough back that the longest moving average is already valid at the start of the longest period.
@@ -6,7 +8,7 @@ enough back that the longest moving average is already valid at the start of the
 options:
   tickers: [VOO, {symbol: QQQM, label: Invesco Nasdaq 100}]   # one tab each, in this order
   ma: [20, 50, 200]                                            # simple moving averages of the close
-  periods: [1W, 1M, 3M, 6M, MTD, YTD, 1Y]                      # buttons shown (subset/order of these)
+  periods: [1W, 1M, 3M, 6M, YTD, 1Y]                           # buttons shown; MTD is also available
   default_period: 3M
 """
 from __future__ import annotations
@@ -20,7 +22,8 @@ from ..core import CollectError, Context, http_get, iso
 from . import source
 from .stock import HOSTS
 
-PERIODS = ["1W", "1M", "3M", "6M", "MTD", "YTD", "1Y"]
+PERIODS = ["1W", "1M", "3M", "6M", "MTD", "YTD", "1Y"]   # all supported
+DEFAULT_PERIODS = ["1W", "1M", "3M", "6M", "YTD", "1Y"]
 RANGE = "2y"   # >= 1 year shown + 200 trading days of warm-up for MA200
 
 
@@ -41,14 +44,15 @@ def parse_ohlc(payload: dict) -> dict:
     m = r.get("meta") or {}
     tz = ZoneInfo(m.get("exchangeTimezoneName") or "America/New_York")
     q = ((r.get("indicators") or {}).get("quote") or [{}])[0]
-    cols = [q.get(k) or [] for k in ("open", "high", "low", "close")]
+    cols = [q.get(k) or [] for k in ("open", "high", "low", "close", "volume")]
     rows: dict[str, list] = {}
     for i, t in enumerate(r.get("timestamp") or []):
-        o, h, l, c = (_f(col[i]) if i < len(col) else None for col in cols)
+        o, h, l, c, v = (_f(col[i]) if i < len(col) else None for col in cols)
         if None in (o, h, l, c):
             continue  # incomplete candle (data gap)
         d = datetime.fromtimestamp(t, timezone.utc).astimezone(tz).date().isoformat()
-        rows[d] = [d, round(o, 4), round(max(h, o, c), 4), round(min(l, o, c), 4), round(c, 4)]
+        vol = int(v) if v is not None and v >= 0 else None
+        rows[d] = [d, round(o, 4), round(max(h, o, c), 4), round(min(l, o, c), 4), round(c, 4), vol]
     candles = [rows[d] for d in sorted(rows)]
     if not candles:
         raise CollectError("no complete daily candles")
@@ -109,7 +113,7 @@ def collect(ctx: Context) -> dict:
     mas = [int(n) for n in o.get("ma", [20, 50, 200])]
     if any(n < 2 for n in mas):
         raise CollectError("moving averages must be 2 days or longer")
-    periods = [str(p).upper() for p in o.get("periods", PERIODS)]
+    periods = [str(p).upper() for p in o.get("periods", DEFAULT_PERIODS)]
     bad = [p for p in periods if p not in PERIODS]
     if bad or not periods:
         raise CollectError(f"unknown period(s) {bad}; choose from {PERIODS}")

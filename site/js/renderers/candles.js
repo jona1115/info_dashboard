@@ -1,6 +1,6 @@
 // Tabbed daily candlestick charts with moving averages.
 // data: {periods: ["1W", ...], default_period, ma: [20, 50, 200],
-//        tabs: [{symbol, label, name, currency, market_time, stale, candles: [[d, o, h, l, c]], ma: {"20": [...]}}]}
+//        tabs: [{symbol, label, name, currency, market_time, stale, candles: [[d, o, h, l, c, volume]], ma: {"20": [...]}}]}
 import { absTime, candleChart, el, seriesColor } from "../util.js";
 import { buttonGroup, uiState } from "../tabs.js";
 
@@ -83,7 +83,8 @@ function drawTab(area, tab, period, data, site) {
     { yFormat: (v) => NUM.format(v) });
 
   area.append(el("div", { class: "legend" },
-    el("span", {}, el("span", { class: "candle-key up-bg" }), el("span", { class: "candle-key down-bg" }), "Daily candle (up / down)"),
+    el("span", {}, el("span", { class: "candle-key up-bg" }), el("span", { class: "candle-key down-bg" }),
+      shown.some((c) => c[5] != null) ? "Daily candle and volume (up / down)" : "Daily candle (up / down)"),
     mas.map((m) => {
       const v = m.values[m.values.length - 1];
       const rel = v == null ? "" : last[4] >= v ? " (price above)" : " (price below)";

@@ -34,6 +34,55 @@ pytestmark = pytest.mark.skipif(CHROME is None or bool(os.environ.get("CI")),
                                 reason="needs a local Chrome/Edge; skipped in CI")
 
 
+def write_fixture_data(root: Path) -> None:
+    """A small data/ folder for app-level tests (times are relative to now)."""
+    from datetime import date, datetime, timedelta, timezone
+
+    now = datetime.now(timezone.utc)
+    ts = lambda delta: (now - delta).strftime("%Y-%m-%dT%H:%M:%SZ")  # noqa: E731
+    items = lambda n: [{"title": f"Item {i}", "url": f"https://example.com/{i}", "source": "Src"} for i in range(n)]  # noqa: E731
+    d0, candles = date(2025, 1, 1), []
+    while len(candles) < 300:
+        if d0.weekday() < 5:
+            i = len(candles)
+            o = 100 + i * 0.2
+            c = o + (1 if i % 2 else -1)
+            candles.append([d0.isoformat(), o, max(o, c) + 0.5, min(o, c) - 0.5, c, 1_000_000 + i * 1000])
+        d0 += timedelta(days=1)
+    closes = [c[4] for c in candles]
+    sma = lambda n: [None if i < n - 1 else sum(closes[i - n + 1:i + 1]) / n for i in range(len(closes))]  # noqa: E731
+    widgets = [
+        ("gas-a", "Gas A", "list", "gas", True, {"groups": [{"label": None, "items": items(2)}]}),
+        ("mkt", "Markets A", "list", "markets", True, {"groups": [{"label": None, "items": items(3)}]}),
+        ("chart", "Charts", "candles", "markets", False, {
+            "periods": ["1M", "3M"], "default_period": "3M", "ma": [20, 50],
+            "tabs": [{"symbol": "AAA", "label": "AAA", "name": "AAA fund", "currency": "USD", "candles": candles,
+                      "ma": {"20": sma(20), "50": sma(50)}}]}),
+        ("news-a", "News A", "list", "news", False, {"groups": [{"label": None, "items": items(4)}]}),
+    ]
+    data = root / "data"
+    (data / "widgets").mkdir(parents=True, exist_ok=True)
+    entries = []
+    for wid, title, view, section, pinned, payload in widgets:
+        w = {"id": wid, "title": title, "type": "x", "view": view, "status": "ok", "updated": ts(timedelta(hours=11)),
+             "attempted": ts(timedelta(hours=11)), "error": None, "warnings": [], "data": payload}
+        (data / "widgets" / f"{wid}.json").write_text(json.dumps(w), encoding="utf-8")
+        entries.append({"id": wid, "title": title, "view": view, "size": "wide" if view == "candles" else "normal",
+                        "section": section, "pinned": pinned, "refresh": "30m", "status": "ok",
+                        "updated": w["updated"], "attempted": w["attempted"]})
+    manifest = {"site": {"title": "Test", "timezone": "America/Chicago", "refresh_minutes": 5, "sections": [
+        {"id": "home", "title": "Home"}, {"id": "markets", "title": "Markets & Economy"},
+        {"id": "news", "title": "News"}, {"id": "gas", "title": "Gas Prices"}]},
+        "generated": ts(timedelta(hours=11)), "widgets": entries}
+    (data / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
+    # Same site under /stale/ with data collected 13 hours ago (past the 12-hour warning).
+    stale = root / "stale"
+    shutil.copytree(ROOT / "site", stale, dirs_exist_ok=True)
+    shutil.copytree(data, stale / "data", dirs_exist_ok=True)
+    (stale / "data" / "manifest.json").write_text(
+        json.dumps(dict(manifest, generated=ts(timedelta(hours=13)))), encoding="utf-8")
+
+
 class _Quiet(SimpleHTTPRequestHandler):
     def log_message(self, *a):
         pass
@@ -46,6 +95,7 @@ def server(tmp_path_factory):
     (root / "__tests__").mkdir()
     for p in PAGES:
         shutil.copy(p, root / "__tests__" / p.name)
+    write_fixture_data(root)
     httpd = ThreadingHTTPServer(("127.0.0.1", 0), functools.partial(_Quiet, directory=str(root)))
     threading.Thread(target=httpd.serve_forever, daemon=True).start()
     yield f"http://127.0.0.1:{httpd.server_address[1]}", tmp_path_factory.mktemp("chrome")

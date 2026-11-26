@@ -8,17 +8,28 @@
 #   refresh:  how often to collect: 30m, 2h, 1d ... (the scheduler wakes every 30 minutes)
 #   size:     normal | wide   (wide spans two columns on large screens)
 #   enabled:  false to hide a widget without deleting it
+#   section:  which page tab it lives on (see site.sections)
+#   pinned:   true = also shown on Home by default (each browser can change this)
 #   options:  type-specific settings (documented at the top of each collector file)
 
 site:
   title: Dashboard
   timezone: America/Chicago
   refresh_minutes: 5          # how often an open browser tab checks for new data
+  # Page tabs. "home" shows pinned widgets (pinned: true below = pinned by default;
+  # each browser can pin/unpin and remembers it). Every widget belongs to one other section.
+  sections:
+    - {id: home, title: Home}
+    - {id: markets, title: Markets & Economy}
+    - {id: news, title: News}
+    - {id: gas, title: Gas Prices}
 
 widgets:
   - id: gas-aaa
     type: aaa_gas
     title: Gas Prices · AAA
+    section: gas
+    pinned: true
     refresh: 6h
     size: wide
     options:
@@ -35,6 +46,8 @@ widgets:
   - id: costco-gas
     type: costco_gas
     title: Costco Gas · Austin
+    section: gas
+    pinned: true
     refresh: 3h
     options:
       latitude: 30.2672         # downtown Austin
@@ -43,17 +56,11 @@ widgets:
       chart_count: 3
       window_days: 180
 
-  - id: intc-stock
-    type: stock
-    title: Intel (INTC)
-    refresh: 1h
-    options:
-      tickers: [INTC]
-      range: 6mo
-
   - id: markets
     type: stock
     title: Markets
+    section: markets
+    pinned: true
     refresh: 30m
     size: wide
     options:
@@ -80,20 +87,23 @@ widgets:
 
   - id: etf-candles
     type: candles
-    title: ETF Charts · Daily Candles
+    title: Stock & ETF Charts · Daily Candles
+    section: markets
     refresh: 30m
     size: wide
     options:
       tickers:                  # one tab each; add more tickers to get more tabs
         - {symbol: VOO, label: VOO}
         - {symbol: QQQM, label: QQQM}
+        - {symbol: INTC, label: INTC}
       ma: [20, 50, 200]         # simple moving averages of the daily close
-      periods: [1W, 1M, 3M, 6M, MTD, YTD, 1Y]
+      periods: [1W, 1M, 3M, 6M, YTD, 1Y]     # MTD is also available
       default_period: 3M
 
   - id: sectors
     type: stock
     title: S&P 500 Sectors · SPDR ETFs
+    section: markets
     refresh: 30m
     size: wide
     options:
@@ -116,6 +126,7 @@ widgets:
   - id: world-economy
     type: macro
     title: World Economy
+    section: markets
     refresh: 12h
     size: wide
     options:
@@ -134,6 +145,7 @@ widgets:
   - id: us-yield-curve
     type: treasury_curve
     title: U.S. Treasury Yield Curve
+    section: markets
     refresh: 3h
     options:
       compare_days: [30, 365]
@@ -142,6 +154,7 @@ widgets:
   - id: intel-news
     type: rss
     title: Intel Stock News
+    section: news
     refresh: 1h
     options:
       max_items: 10
@@ -156,6 +169,7 @@ widgets:
   - id: headlines-world
     type: rss
     title: Headlines · U.S. & World
+    section: news
     refresh: 1h
     size: wide
     options:
@@ -185,6 +199,7 @@ widgets:
   - id: headlines-malaysia
     type: rss
     title: Headlines · Malaysia
+    section: news
     refresh: 1h
     size: wide
     options:
@@ -215,6 +230,7 @@ widgets:
   - id: ai-news
     type: rss
     title: AI News
+    section: news
     refresh: 1h
     size: wide
     options:
@@ -269,6 +285,7 @@ widgets:
   - id: isu-sports
     type: espn_team
     title: Iowa State Cyclones · Scores
+    section: news
     refresh: 30m
     size: wide
     options:
@@ -282,6 +299,7 @@ widgets:
   - id: fpga-venues
     type: crossref
     title: FPGA Research · TRETS / FPL / FPT
+    section: news
     refresh: 1d
     size: wide
     options:
@@ -299,6 +317,7 @@ widgets:
   - id: fpga-arxiv
     type: arxiv
     title: FPGA / ASIC Preprints · arXiv
+    section: news
     refresh: 6h
     options:
       query: '(cat:cs.AR OR cat:eess.SP OR cat:cs.LG) AND (abs:FPGA OR abs:ASIC OR ti:FPGA OR ti:ASIC)'
@@ -307,6 +326,7 @@ widgets:
   - id: fpga-news
     type: rss
     title: FPGA / ASIC Industry News
+    section: news
     refresh: 3h
     options:
       max_items: 10

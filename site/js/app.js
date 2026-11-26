@@ -1,10 +1,13 @@
 // Dashboard shell: loads data/manifest.json, draws one card per widget, and re-checks periodically.
 import { RENDERERS } from "./renderers/index.js";
 import { absTime, el, relTime } from "./util.js";
+import { HOME, isPinned, sectionFromHash, setPinned, visibleIn } from "./sections.js";
 
 const DATA = "data/";
 const grid = document.getElementById("grid");
 const generatedEl = document.getElementById("generated");
+const nav = document.getElementById("sections");
+const STALE_PAGE_MS = 12 * 3600e3;   // GitHub's scheduler runs a few times a day; warn only when it has stopped
 const cache = new Map();   // id -> {key, json}
 let site = { title: "Dashboard", timezone: undefined, refresh_minutes: 5 };
 let manifest = null;
@@ -28,16 +31,67 @@ function rel(iso) {
   return el("span", { "data-rel": iso || "" }, relTime(iso));
 }
 
+function pinButton(card) {
+  const b = el("button", { type: "button", class: "pin" });
+  b.addEventListener("click", () => {
+    const entry = card._entry;
+    setPinned(entry, !isPinned(entry));
+    applySections();
+  });
+  return b;
+}
+
 function cardFor(entry) {
   let card = document.getElementById(`w-${entry.id}`);
   if (!card) {
     card = el("section", { class: "card", id: `w-${entry.id}` },
-      el("div", { class: "card-head" }, el("h2", {}), el("span", { class: "card-meta" })),
+      el("div", { class: "card-head" }, el("h2", {}),
+        el("span", { class: "card-tools" }, el("span", { class: "card-meta" }))),
       el("div", { class: "card-body" }, el("p", { class: "muted small" }, "Loading…")));
+    card.querySelector(".card-tools").append(pinButton(card));
   }
+  card._entry = entry;
   card.classList.toggle("wide", entry.size === "wide");
   card.querySelector("h2").textContent = entry.title;
   return card;
+}
+
+/** Show the cards that belong to the current section; update the tab bar and pin buttons. */
+function applySections() {
+  if (!manifest) return;
+  const sections = (site.sections || []).filter((s) => s && s.id);
+  const current = sectionFromHash(sections);
+  nav.hidden = !sections.length;
+  nav.replaceChildren(...sections.map((s) => el("a", {
+    href: `#${s.id}`, class: s.id === current ? "active" : "", "aria-current": s.id === current ? "page" : null,
+  }, s.title)));
+  let shown = 0;
+  for (const entry of manifest.widgets) {
+    const card = document.getElementById(`w-${entry.id}`);
+    if (!card) continue;
+    const vis = visibleIn(entry, current, sections);
+    card.hidden = !vis;
+    if (vis) shown++;
+    const pin = card.querySelector(".pin");
+    const on = isPinned(entry);
+    pin.hidden = !sections.length;
+    pin.textContent = on ? "★" : "☆";
+    pin.setAttribute("aria-pressed", String(on));
+    pin.title = on ? "Pinned to Home (click to unpin)" : "Pin to Home";
+    pin.setAttribute("aria-label", `${on ? "Unpin" : "Pin"} ${entry.title} ${on ? "from" : "to"} Home`);
+  }
+  let empty = document.getElementById("empty-section");
+  if (!shown && manifest.widgets.length) {
+    if (!empty) { empty = el("p", { id: "empty-section", class: "muted" }); grid.append(empty); }
+    empty.textContent = current === HOME
+      ? "Nothing pinned yet. Use ☆ on any card to pin it here."
+      : "No widgets in this section.";
+    empty.hidden = false;
+  } else if (empty) {
+    empty.hidden = true;
+  }
+  const title = sections.find((s) => s.id === current);
+  document.title = title && current !== HOME ? `${title.title} · ${site.title}` : site.title;
 }
 
 function destroyCharts(node) {
@@ -62,7 +116,7 @@ function renderCard(card, entry, w) {
     body.append(el("p", { class: "notice err" },
       `Couldn't update ${relTime(w.attempted)}: ${w.error || "unknown error"}.`,
       w.data ? ` Showing data from ${relTime(updated)}.` : ""));
-  } else if (updated && Date.now() - Date.parse(updated) > 3 * intervalMs(entry.refresh) + 3600e3) {
+  } else if (updated && Date.now() - Date.parse(updated) > Math.max(3 * intervalMs(entry.refresh), STALE_PAGE_MS) + 3600e3) {
     body.append(el("p", { class: "notice" }, `This data is ${relTime(updated).replace(" ago", "")} old.`));
   }
   if (w.warnings && w.warnings.length) {
@@ -91,7 +145,6 @@ async function refresh() {
   }
   lastCheck = Date.now();
   site = { ...site, ...(manifest.site || {}) };
-  document.title = site.title;
   document.getElementById("site-title").textContent = site.title;
   document.getElementById("boot")?.remove();
 
@@ -116,6 +169,7 @@ async function refresh() {
   });
   await Promise.all(jobs);
   if (!manifest.widgets.length) grid.replaceChildren(el("p", { class: "muted" }, "No widgets configured."));
+  applySections();
   tick();
   document.body.dataset.state = renderErrors.length ? "render-error" : "ready";
   schedule();
@@ -133,9 +187,9 @@ function rerenderAll() {
 function tick() {
   document.querySelectorAll("[data-rel]").forEach((n) => { n.textContent = relTime(n.dataset.rel); });
   if (manifest) {
-    // Collection runs every 30 minutes; flag it if the last run is much older than that.
+    // GitHub's scheduler runs a few times a day at irregular times; flag only a long silence.
     const age = Date.now() - Date.parse(manifest.generated);
-    const stuck = age > 90 * 60e3;
+    const stuck = age > STALE_PAGE_MS;
     generatedEl.classList.toggle("stale", stuck);
     generatedEl.textContent = stuck
       ? `⚠ Data last collected ${relTime(manifest.generated)}: collection may be stuck`
@@ -161,6 +215,7 @@ window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", rer
 document.addEventListener("visibilitychange", () => {
   if (document.visibilityState === "visible" && lastCheck && Date.now() - lastCheck > 60e3) refresh();
 });
+window.addEventListener("hashchange", () => { applySections(); window.scrollTo(0, 0); });
 setInterval(tick, 30e3);
-window.__dashboard = { renderErrors, refresh };
+window.__dashboard = { renderErrors, refresh, applySections };
 refresh();

@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"></head>
+<body>
+  <iframe id="f" style="width: 1300px; height: 900px; border: 0"></iframe>
+  <pre id="results">pending</pre>
+  <script type="module">
+    // App-level tests: loads the real index.html (with fixture data from tests/test_browser.py) in an iframe.
+    const results = [];
+    async function t(name, fn) {
+      try { await fn(); results.push({ name, ok: true }); }
+      catch (e) { results.push({ name, ok: false, err: String((e && e.stack) || e) }); }
+    }
+    const eq = (a, b, msg = "") => {
+      const A = JSON.stringify(a), B = JSON.stringify(b);
+      if (A !== B) throw new Error(`${msg} expected ${B} got ${A}`);
+    };
+    const ok = (c, msg = "assertion failed") => { if (!c) throw new Error(msg); };
+    const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+    const frame = document.getElementById("f");
+    const doc = () => frame.contentDocument;
+    async function until(cond, what, ms = 8000) {
+      for (let waited = 0; waited < ms; waited += 50) {
+        try { if (cond()) return; } catch (e) { /* not ready */ }
+        await sleep(50);
+      }
+      throw new Error(`timed out waiting for ${what}`);
+    }
+    async function load(url) {
+      frame.src = "about:blank";
+      await sleep(50);
+      frame.src = url;
+      await until(() => doc().body.dataset.state === "ready" && doc().querySelector("#sections a"), `${url} ready`);
+    }
+    const visible = () => [...doc().querySelectorAll(".card")].filter((c) => !c.hidden).map((c) => c.id.slice(2));
+    const navTo = async (id) => {
+      frame.contentWindow.location.hash = id;
+      await until(() => doc().querySelector(`#sections a[href="#${id}"]`).classList.contains("active"), `section ${id}`);
+    };
+    const pin = (id) => doc().querySelector(`#w-${id} .pin`);
+
+    localStorage.clear();
+
+    await t("home is the default section and shows the default pins", async () => {
+      await load("/index.html");
+      eq([...doc().querySelectorAll("#sections a")].map((a) => a.textContent), ["Home", "Markets & Economy", "News", "Gas Prices"]);
+      eq(doc().querySelector("#sections a.active").textContent, "Home");
+      eq(visible(), ["gas-a", "mkt"]);
+      eq(pin("mkt").getAttribute("aria-pressed"), "true");
+      eq(pin("news-a").getAttribute("aria-pressed"), "false");
+    });
+
+    await t("each section shows its own widgets", async () => {
+      await navTo("markets"); eq(visible(), ["mkt", "chart"]);
+      await navTo("news"); eq(visible(), ["news-a"]);
+      await navTo("gas"); eq(visible(), ["gas-a"]);
+      ok(frame.contentDocument.title.startsWith("Gas Prices"), frame.contentDocument.title);
+      await navTo("home"); eq(visible(), ["gas-a", "mkt"]);
+    });
+
+    await t("a chart rendered while hidden is sized once its section is shown", async () => {
+      await navTo("markets");
+      const canvas = doc().querySelector("#w-chart canvas");
+      await until(() => canvas.clientWidth > 200 && frame.contentWindow.Chart.getChart(canvas).width > 200, "chart resize");
+      const ch = frame.contentWindow.Chart.getChart(canvas);
+      ok(ch.data.datasets.some((d) => d.label === "volume"), "volume pane");
+    });
+
+    await t("unpin from Home hides it there and is remembered", async () => {
+      await navTo("home");
+      pin("mkt").click();
+      eq(visible(), ["gas-a"]);
+      eq(JSON.parse(localStorage.getItem("dash:pins")), { mkt: false });
+      await navTo("markets");
+      eq(visible(), ["mkt", "chart"], "still in its own section");
+      eq(pin("mkt").textContent, "☆");
+    });
+
+    await t("pin another widget from its section", async () => {
+      await navTo("news");
+      pin("news-a").click();
+      eq(pin("news-a").getAttribute("aria-pressed"), "true");
+      eq(visible(), ["news-a"], "stays visible in its section");
+      await navTo("home");
+      eq(visible(), ["gas-a", "news-a"]);
+    });
+
+    await t("pins survive a reload", async () => {
+      await load("/index.html");
+      eq(visible(), ["gas-a", "news-a"]);
+      eq(JSON.parse(localStorage.getItem("dash:pins")), { mkt: false, "news-a": true });
+    });
+
+    await t("re-pinning a default pin forgets the override", async () => {
+      pin("mkt").click();
+      eq(JSON.parse(localStorage.getItem("dash:pins")), { "news-a": true });
+      eq(visible(), ["gas-a", "mkt", "news-a"]);
+    });
+
+    await t("empty Home explains how to pin", async () => {
+      for (const id of ["gas-a", "mkt", "news-a"]) pin(id).click();
+      eq(visible(), []);
+      const msg = doc().getElementById("empty-section");
+      ok(msg && !msg.hidden && msg.textContent.includes("pin"), "empty message");
+      localStorage.removeItem("dash:pins");   // back to config defaults for the next tests
+    });
+
+    await t("a direct link to a section opens it", async () => {
+      await load("/index.html#news");
+      eq(doc().querySelector("#sections a.active").textContent, "News");
+      eq(visible(), ["news-a"]);
+    });
+
+    await t("11h-old data: no 'stuck' warning", async () => {
+      await load("/index.html");
+      const g = doc().getElementById("generated");
+      ok(!g.classList.contains("stale"), g.textContent);
+      ok(/Data collected 11h ago/.test(g.textContent), g.textContent);
+    });
+
+    await t("13h-old data: header warns that collection may be stuck", async () => {
+      await load("/stale/index.html");
+      const g = doc().getElementById("generated");
+      ok(g.classList.contains("stale"), "stale class");
+      ok(g.textContent.includes("collection may be stuck"), g.textContent);
+    });
+
+    document.getElementById("results").textContent = JSON.stringify(results);
+  </script>
+</body>
+</html>

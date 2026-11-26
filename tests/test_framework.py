@@ -177,3 +177,54 @@ def test_macro_skips_nan_observations():
     rows = [{"REF_AREA": "US", "TIME_PERIOD": "2025-10", "OBS_VALUE": "NaN"},
             {"REF_AREA": "US", "TIME_PERIOD": "2025-11", "OBS_VALUE": "3.1"}]
     assert _by_area(rows) == {"US": [["2025-11", 3.1]]}
+
+
+# ------------------------------------------------------------------ sections / pins
+
+SECTIONS = """site:
+  sections:
+    - {id: home, title: Home}
+    - {id: markets, title: Markets}
+widgets:
+"""
+
+
+@pytest.mark.parametrize("widgets, msg", [
+    ("  - {id: a, type: rss}", "section must be one of"),                      # missing section
+    ("  - {id: a, type: rss, section: home}", "section must be one of"),       # home is for pins only
+    ("  - {id: a, type: rss, section: nope}", "section must be one of"),
+    ("  - {id: a, type: rss, section: markets, pinned: maybe}", "pinned must be true or false"),
+])
+def test_bad_section_configs(tmp_path, widgets, msg):
+    with pytest.raises(run.ConfigError, match=msg):
+        run.load_config(_cfg(tmp_path, SECTIONS + widgets))
+
+
+def test_sections_must_start_with_home_and_be_unique(tmp_path):
+    with pytest.raises(run.ConfigError, match="start with"):
+        run.load_config(_cfg(tmp_path, "site: {sections: [{id: news}]}\nwidgets: [{id: a, type: rss, section: news}]"))
+    with pytest.raises(run.ConfigError, match="duplicate"):
+        run.load_config(_cfg(tmp_path, "site: {sections: [{id: home}, {id: home}]}\nwidgets: [{id: a, type: rss}]"))
+    with pytest.raises(run.ConfigError, match="site.sections is not defined"):
+        run.load_config(_cfg(tmp_path, "widgets: [{id: a, type: rss, section: news}]"))
+
+
+def test_manifest_carries_section_and_pin(tmp_path, fake_source):
+    data = tmp_path / "data"
+    cfg = _cfg(tmp_path, SECTIONS + "  - {id: one, type: fake, section: markets, pinned: true}\n"
+                                   "  - {id: two, type: fake, section: markets}\n")
+    assert run.main(["--config", str(cfg), "--data-dir", str(data)]) == 0
+    m = json.loads((data / "manifest.json").read_text())
+    assert [s["id"] for s in m["site"]["sections"]] == ["home", "markets"]
+    assert [(w["id"], w["section"], w["pinned"]) for w in m["widgets"]] == [("one", "markets", True), ("two", "markets", False)]
+
+
+def test_real_config_sections():
+    cfg = run.load_config(ROOT / "config" / "widgets.yaml")
+    pinned = [w["id"] for w in cfg["widgets"] if w["pinned"]]
+    assert pinned == ["gas-aaa", "costco-gas", "markets"]
+    assert {w["section"] for w in cfg["widgets"]} == {"markets", "news", "gas"}
+    assert "intc-stock" not in {w["id"] for w in cfg["widgets"]}
+    candles = next(w for w in cfg["widgets"] if w["type"] == "candles")
+    assert [t["symbol"] for t in candles["options"]["tickers"]] == ["VOO", "QQQM", "INTC"]
+    assert "MTD" not in candles["options"]["periods"] and "YTD" in candles["options"]["periods"]

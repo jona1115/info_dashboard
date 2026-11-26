@@ -155,8 +155,12 @@ export function lineChart(container, series, { minMs, maxMs, yFormat = (v) => mo
   opts.parsing = false;
   opts.scales.x = {
     type: "linear", min: lo, max: hi,
+    // Month labels for long ranges; day labels ("Nov 23") when the range is under ~2 months.
     afterBuildTicks: (scale) => { const t = monthTicks(lo, hi); if (t.length >= 2) scale.ticks = t; },
-    ticks: { color: cssVar("--muted"), font: { size: 11 }, maxRotation: 0, callback: (v) => MON_FMT.format(v) },
+    ticks: {
+      color: cssVar("--muted"), font: { size: 11 }, maxRotation: 0, maxTicksLimit: 8,
+      callback: (v) => (monthTicks(lo, hi).length >= 2 ? MON_FMT.format(v) : fmtDay(v)),
+    },
     grid: { display: false }, border: { color: cssVar("--axis") },
   };
   return new window.Chart(canvas, { type: "line", data: { datasets }, options: opts });
@@ -227,8 +231,8 @@ export function categoryChart(container, labels, series, { yFormat = (v) => v, s
 }
 
 /**
- * Daily candlestick chart with optional line overlays (e.g. moving averages).
- * candles: [["YYYY-MM-DD", open, high, low, close], ...]
+ * Daily candlestick chart with optional line overlays (e.g. moving averages) and a volume pane.
+ * candles: [["YYYY-MM-DD", open, high, low, close, volume?], ...]
  * lines:   [{label, color, values: [number|null, ...]}]   (same length as candles)
  */
 export function candleChart(container, candles, lines = [], { yFormat = (v) => v.toFixed(2), tall = true } = {}) {
@@ -248,37 +252,69 @@ export function candleChart(container, candles, lines = [], { yFormat = (v) => v
   const labels = candles.map((c) => c[0]);
   const datasets = [
     ...lines.map((l) => ({
-      type: "line", label: l.label, data: l.values, order: 0,
+      type: "line", label: l.label, data: l.values, order: 0, yAxisID: "y",
       borderColor: l.color, backgroundColor: l.color, borderWidth: 1.5,
       pointRadius: 0, pointHoverRadius: 3, pointBorderColor: surface, spanGaps: false, tension: 0,
     })),
     {
-      type: "bar", label: "body", order: 1, grouped: false,
+      type: "bar", label: "body", order: 1, grouped: false, yAxisID: "y",
       data: candles.map((c) => (Math.abs(c[4] - c[1]) < eps ? [c[1] - eps, c[1] + eps] : [Math.min(c[1], c[4]), Math.max(c[1], c[4])])),
       backgroundColor: colors, borderColor: colors, borderWidth: 0,
       barPercentage: 0.75, categoryPercentage: 1, minBarLength: 1,
     },
     {
-      type: "bar", label: "wick", order: 2, grouped: false,
+      type: "bar", label: "wick", order: 2, grouped: false, yAxisID: "y",
       data: candles.map((c) => [c[3], c[2]]),
       backgroundColor: colors, borderWidth: 0, maxBarThickness: 1.5, barPercentage: 0.12, categoryPercentage: 1,
     },
   ];
+  const hasVolume = candles.some((c) => c[5] != null);
+  if (hasVolume) {
+    datasets.push({
+      type: "bar", label: "volume", yAxisID: "volume", order: 3,
+      data: candles.map((c) => c[5]),
+      backgroundColor: colors.map((c) => withAlpha(c, 0.45)), borderWidth: 0,
+      barPercentage: 0.75, categoryPercentage: 1,
+    });
+  }
   const opts = baseOptions(yFormat, (items) => (items.length ? fmtDayY(dayMs(labels[items[0].dataIndex])) : ""),
     (item) => {
       if (item.dataset.label === "body") {
-        const [, o, h, l, c] = candles[item.dataIndex];
+        const [, o, h, l, c, v] = candles[item.dataIndex];
         const prev = item.dataIndex > 0 ? candles[item.dataIndex - 1][4] : null;
         const chg = prev ? ` (${c >= prev ? "▲ +" : "▼ −"}${Math.abs((c / prev - 1) * 100).toFixed(2)}%)` : "";
-        return [` Open ${yFormat(o)}`, ` High ${yFormat(h)}`, ` Low ${yFormat(l)}`, ` Close ${yFormat(c)}${chg}`];
+        const out = [` Open ${yFormat(o)}`, ` High ${yFormat(h)}`, ` Low ${yFormat(l)}`, ` Close ${yFormat(c)}${chg}`];
+        if (v != null) out.push(` Volume ${compact(v)}`);
+        return out;
       }
       return item.parsed.y == null ? "" : ` ${item.dataset.label}: ${yFormat(item.parsed.y)}`;
     });
   opts.interaction = { mode: "index", intersect: false };
-  opts.plugins.tooltip.filter = (item) => item.dataset.label !== "wick" && item.parsed.y != null;
+  opts.plugins.tooltip.filter = (item) => !["wick", "volume"].includes(item.dataset.label) && item.parsed.y != null;
   opts.plugins.tooltip.itemSort = (a, b) => (a.dataset.label === "body" ? -1 : b.dataset.label === "body" ? 1 : 0);
+  // Fit the axis to the visible prices + averages with a small margin (Chart.js' default "nice"
+  // bounds can round a wide range down to 0, which squashes the candles).
+  const vis = [...candles.flatMap((c) => [c[2], c[3]]), ...lines.flatMap((l) => l.values)].filter((v) => v != null);
+  const yLo = Math.min(...vis), yHi = Math.max(...vis), pad = (yHi - yLo || yHi * 0.01 || 1) * 0.04;
   opts.scales.y.beginAtZero = false;
-  opts.scales.y.grace = "3%";
+  opts.scales.y.min = yLo - pad;
+  opts.scales.y.max = yHi + pad;
+  opts.scales.y.ticks.includeBounds = false;   // label round values only, not the odd padded edges
+  opts.scales.y.ticks.maxTicksLimit = 7;
+  if (hasVolume) {
+    // Separate pane under the price chart (stacked scales), not a second axis over the candles.
+    opts.scales.y.stack = "panes";
+    opts.scales.y.stackWeight = 4;
+    // Chart.js stacks panes bottom-up in the order the scales are defined: volume first = bottom pane.
+    opts.scales = {
+      volume: {
+        type: "linear", position: "left", stack: "panes", stackWeight: 1, offset: true, beginAtZero: true,
+        ticks: { color: cssVar("--muted"), font: { size: 10 }, maxTicksLimit: 2, callback: (v) => compact(v) },
+        grid: { color: cssVar("--grid") }, border: { display: false },
+      },
+      ...opts.scales,
+    };
+  }
   opts.scales.x = {
     type: "category",
     ticks: {
@@ -289,6 +325,17 @@ export function candleChart(container, candles, lines = [], { yFormat = (v) => v
   };
   return new window.Chart(canvas, { data: { labels, datasets }, options: opts });
 }
+
+/** "#2a78d6" + 0.45 -> "rgba(42,120,214,0.45)" (other colour formats are returned unchanged). */
+export function withAlpha(color, a) {
+  const m = /^#([0-9a-f]{6})$/i.exec(color.trim());
+  if (!m) return color;
+  const n = parseInt(m[1], 16);
+  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`;
+}
+
+const COMPACT = new Intl.NumberFormat("en-US", { notation: "compact", maximumFractionDigits: 1 });
+export const compact = (v) => (v == null ? "—" : COMPACT.format(v));
 
 /** Tiny inline SVG trend line (no axes). */
 export function sparkline(points, color, { width = 96, height = 26 } = {}) {

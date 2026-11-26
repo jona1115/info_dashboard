@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import os
 import re
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 
 from bs4 import BeautifulSoup
 
@@ -29,6 +29,9 @@ from . import source
 
 AAA = "https://gasprices.aaa.com/"
 EIA = "https://api.eia.gov/v2/petroleum/pri/gnd/data/"
+EIA_HTML = "https://www.eia.gov/dnav/pet/hist/LeafHandler.ashx"
+EIA_REUSE = timedelta(hours=20)     # weekly data: no need to fetch it on every run
+EIA_STALE_DAYS = 10                 # only warn once a weekly release has clearly been missed
 GRADES = {"regular": "regular", "mid-grade": "mid", "mid": "mid", "premium": "premium", "diesel": "diesel", "e85": "e85"}
 ROWS = {"current avg.": "current", "yesterday avg.": "yesterday", "week ago avg.": "week_ago",
         "month ago avg.": "month_ago", "year ago avg.": "year_ago"}
@@ -91,13 +94,13 @@ def parse_asof(html: str) -> date | None:
         return None
 
 
-def fetch_eia(series_id: str, start: date) -> list[list]:
+def fetch_eia_api(series_id: str, start: date) -> list[list]:
     key = os.environ.get("EIA_API_KEY") or "DEMO_KEY"
     r = http_get(EIA, params={
         "api_key": key, "frequency": "weekly", "data[0]": "value",
         "facets[series][]": series_id, "start": start.isoformat(),
         "sort[0][column]": "period", "sort[0][direction]": "asc", "length": 5000,
-    }, timeout=60)
+    }, timeout=30, retries=0)
     rows = (r.json().get("response") or {}).get("data") or []
     pts = []
     for row in rows:
@@ -106,8 +109,64 @@ def fetch_eia(series_id: str, start: date) -> list[list]:
         except (KeyError, TypeError, ValueError):
             continue
     if not pts:
-        raise CollectError(f"EIA returned no data for {series_id}")
+        raise CollectError(f"EIA API returned no data for {series_id}")
     return pts
+
+
+MONTH = {m: i for i, m in enumerate("Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec".split(), 1)}
+
+
+def parse_eia_history(html: str) -> list[list]:
+    """EIA's weekly history page: rows of "YYYY-Mon" followed by (MM/DD, price) pairs."""
+    soup = BeautifulSoup(html, "html.parser")
+    pts = []
+    for tr in soup.find_all("tr"):
+        head = tr.find("td", class_="B6")
+        if head is None:
+            continue
+        m = re.match(r"(\d{4})-([A-Za-z]{3})", clean_text(head.get_text()))
+        if not m or m.group(2) not in MONTH:
+            continue
+        year, row_month = int(m.group(1)), MONTH[m.group(2)]
+        dates = [clean_text(td.get_text()) for td in tr.find_all("td", class_="B5")]
+        vals = [clean_text(td.get_text()) for td in tr.find_all("td", class_="B3")]
+        for d, v in zip(dates, vals):
+            dm = re.match(r"(\d{1,2})/(\d{1,2})", d)
+            try:
+                value = float(v)
+            except ValueError:
+                continue
+            if not dm:
+                continue
+            mo, day = int(dm.group(1)), int(dm.group(2))
+            y = year + 1 if mo < row_month else year  # a week dated in January listed under December
+            try:
+                pts.append([date(y, mo, day).isoformat(), round(value, 4)])
+            except ValueError:
+                continue
+    if not pts:
+        raise CollectError("EIA history page had no data (layout changed?)")
+    return sorted(pts)
+
+
+def fetch_eia_html(series_id: str, start: date) -> list[list]:
+    r = http_get(EIA_HTML, params={"n": "PET", "s": series_id, "f": "W"}, browser=True, timeout=45)
+    return [p for p in parse_eia_history(r.text) if p[0] >= start.isoformat()]
+
+
+def fetch_eia(series_id: str, start: date, try_api: bool = True) -> tuple[list[list], bool]:
+    """EIA's API first; its public history page if the API is down (it often times out).
+    Returns (points, api_ok)."""
+    api_err = "skipped (failed earlier this run)"
+    if try_api:
+        try:
+            return fetch_eia_api(series_id, start), True
+        except Exception as e:  # noqa: BLE001
+            api_err = e
+    try:
+        return fetch_eia_html(series_id, start), False
+    except Exception as html_err:  # noqa: BLE001
+        raise CollectError(f"API: {api_err}; history page: {html_err}")
 
 
 @source("aaa_gas", view="gas")
@@ -162,16 +221,34 @@ def collect(ctx: Context) -> dict:
         out_regions.append(entry)
 
     since = (today - timedelta(days=window)).isoformat()
-    eia_series, eia_ok = {}, 0
+    prev = ctx.previous or {}
+    prev_fetched = prev.get("eia_fetched") or {}
+    eia_series, eia_fetched, eia_ok, api_up = {}, {}, 0, True
+    now = datetime.now(timezone.utc)
     for key, sid in eia_map.items():
-        pts = attempt(ctx, f"EIA {key}", lambda sid=sid: fetch_eia(sid, today - timedelta(days=window)))
-        if pts:
-            eia_series[key] = [p for p in pts if p[0] >= since]
+        old, old_at = (prev.get("eia") or {}).get(key), prev_fetched.get(key)
+        if old and old_at and now - datetime.fromisoformat(old_at) < EIA_REUSE:
+            eia_series[key] = [p for p in old if p[0] >= since]
+            eia_fetched[key] = old_at
             eia_ok += 1
-        else:
-            old = ((ctx.previous or {}).get("eia") or {}).get(key)
+            continue
+        try:
+            pts, api_up = fetch_eia(sid, today - timedelta(days=window), try_api=api_up)
+            eia_series[key] = [p for p in pts if p[0] >= since]
+            eia_fetched[key] = now.isoformat(timespec="seconds")
+            eia_ok += 1
+        except Exception as e:  # noqa: BLE001
             if old:
-                eia_series[key] = old
+                eia_series[key] = [p for p in old if p[0] >= since]
+                if old_at:
+                    eia_fetched[key] = old_at  # keep the old time, so the next run tries again
+                age = (today - date.fromisoformat(old[-1][0])).days if old else None
+                if age is None or age > EIA_STALE_DAYS:
+                    ctx.warn(f"EIA {key}: {e} (showing data from {old[-1][0]})")
+                else:
+                    print(f"       note: EIA {key} unavailable, reusing data through {old[-1][0]}: {e}")
+            else:
+                ctx.warn(f"EIA {key}: {e}")
 
     if not aaa_ok and not eia_ok:
         raise CollectError("; ".join(ctx.warnings) or "no data")
@@ -182,5 +259,6 @@ def collect(ctx: Context) -> dict:
         "regions": out_regions,
         "history": {r["key"]: hist.series(f"{r['key']}:{grade}", since) for r in regions},
         "eia": eia_series,
+        "eia_fetched": eia_fetched,
         "fetched": datetime.now(ctx.tz).isoformat(timespec="minutes"),
     }

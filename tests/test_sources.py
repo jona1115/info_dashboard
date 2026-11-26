@@ -378,10 +378,12 @@ def test_parse_ohlc_skips_gaps_fixes_bounds_and_uses_live_price():
             "high":  [652.0, 660.0, 654.0, 662.0],    # Nov 19 high below its open: widen to cover the body
             "low":   [648.0, 650.0, 653.0, 656.0],
             "close": [651.0, 659.0, 653.5, 660.0],
+            "volume": [1000, 2000, None, 4000],
         }]}}], "error": None}}
     q = candles.parse_ohlc(payload)
     assert [c[0] for c in q["candles"]] == ["2026-11-17", "2026-11-19", "2026-11-20"]   # Nov 18 incomplete -> skipped
-    assert q["candles"][1] == ["2026-11-19", 655.0, 655.0, 653.0, 653.5]
+    assert q["candles"][1] == ["2026-11-19", 655.0, 655.0, 653.0, 653.5, None]      # missing volume -> None
+    assert q["candles"][0][5] == 1000 and q["candles"][2][5] == 4000
     assert q["candles"][2][4] == 661.0 and q["candles"][2][2] == 662.0                 # live price replaces close
     assert q["name"] == "Vanguard S&P 500 ETF"
 
@@ -404,3 +406,75 @@ def test_candles_collect_options_and_stale(monkeypatch, ctx):
     for bad_opts in ({"tickers": ["A"], "periods": ["2Y"]}, {"tickers": ["A"], "ma": [1]}, {"tickers": []}):
         with pytest.raises(CollectError):
             candles.collect(ctx(bad_opts))
+
+
+# ------------------------------------------------------------------ EIA fallback + reuse
+
+EIA_PAGE = """<table><tr><td class='B6'>&nbsp;&nbsp;2025-Dec</td>
+<td class='B5'>12/22&nbsp;</td><td class='B3'>2.900&nbsp;</td><td class='B5'>12/29&nbsp;</td><td class='B3'>2.950&nbsp;</td>
+<td class='B5'>&nbsp;</td><td class='B3'>&nbsp;</td></tr>
+<tr><td class='B6'>&nbsp;&nbsp;2026-Jan</td><td class='B5'>01/05&nbsp;</td><td class='B3'>3.000&nbsp;</td>
+<td class='B5'>01/12&nbsp;</td><td class='B3'>NA</td></tr>
+<tr><td class='B6'>&nbsp;&nbsp;2026-Nov</td><td class='B5'>11/23&nbsp;</td><td class='B3'>3.033&nbsp;</td></tr></table>"""
+
+
+def test_parse_eia_history_page():
+    assert aaa_gas.parse_eia_history(EIA_PAGE) == [
+        ["2025-12-22", 2.9], ["2025-12-29", 2.95], ["2026-01-05", 3.0], ["2026-11-23", 3.033]]
+    with pytest.raises(CollectError):
+        aaa_gas.parse_eia_history("<html>maintenance</html>")
+
+
+def test_fetch_eia_falls_back_and_skips_api_after_failure(monkeypatch):
+    calls = []
+    def api(sid, start):
+        calls.append("api")
+        raise CollectError("HTTP 504")
+    def page(sid, start):
+        calls.append("page")
+        return [["2026-11-23", 3.0]]
+    monkeypatch.setattr(aaa_gas, "fetch_eia_api", api)
+    monkeypatch.setattr(aaa_gas, "fetch_eia_html", page)
+    assert aaa_gas.fetch_eia("X", date(2026, 1, 1)) == ([["2026-11-23", 3.0]], False)
+    assert aaa_gas.fetch_eia("X", date(2026, 1, 1), try_api=False) == ([["2026-11-23", 3.0]], False)
+    assert calls == ["api", "page", "page"]
+
+
+def _gas_ctx(ctx, monkeypatch, fake_http, previous=None):
+    fake_http(aaa_gas, {'"state": "TX"': "aaa_tx.html", "gasprices.aaa.com/{}": "aaa_national.html"})
+    c = ctx({"regions": [{"key": "national", "label": "U.S."}], "eia": {"national": "S1"}}, wid="gas", previous=previous)
+    monkeypatch.setattr(c, "today", lambda: date(2026, 11, 26))
+    return c
+
+
+def test_eia_reused_within_20h_and_refetched_after(monkeypatch, ctx, fake_http):
+    from datetime import datetime, timedelta, timezone
+    fresh = (datetime.now(timezone.utc) - timedelta(hours=2)).isoformat(timespec="seconds")
+    prev = {"eia": {"national": [["2026-11-23", 3.6]]}, "eia_fetched": {"national": fresh}}
+    def boom(*a, **k):
+        raise AssertionError("should not fetch EIA within 20h")
+    monkeypatch.setattr(aaa_gas, "fetch_eia", boom)
+    d = aaa_gas.collect(_gas_ctx(ctx, monkeypatch, fake_http, prev))
+    assert d["eia"]["national"] == [["2026-11-23", 3.6]] and d["eia_fetched"]["national"] == fresh
+
+    old = (datetime.now(timezone.utc) - timedelta(hours=21)).isoformat(timespec="seconds")
+    monkeypatch.setattr(aaa_gas, "fetch_eia", lambda sid, start, try_api=True: ([["2026-11-23", 3.64]], True))
+    d = aaa_gas.collect(_gas_ctx(ctx, monkeypatch, fake_http, dict(prev, eia_fetched={"national": old})))
+    assert d["eia"]["national"] == [["2026-11-23", 3.64]] and d["eia_fetched"]["national"] != old
+
+
+def test_eia_failure_warns_only_when_data_is_old(monkeypatch, ctx, fake_http):
+    def fail(sid, start, try_api=True):
+        raise CollectError("API: HTTP 504; history page: HTTP 503")
+    monkeypatch.setattr(aaa_gas, "fetch_eia", fail)
+    recent = {"eia": {"national": [["2026-11-23", 3.6]]}}             # 3 days old: fine, no warning
+    c = _gas_ctx(ctx, monkeypatch, fake_http, recent)
+    d = aaa_gas.collect(c)
+    assert d["eia"]["national"] == [["2026-11-23", 3.6]] and c.warnings == []
+    stale = {"eia": {"national": [["2026-11-09", 3.8]]}}              # 17 days old: a release was missed
+    c = _gas_ctx(ctx, monkeypatch, fake_http, stale)
+    aaa_gas.collect(c)
+    assert len(c.warnings) == 1 and "2026-11-09" in c.warnings[0]
+    c = _gas_ctx(ctx, monkeypatch, fake_http, None)                   # nothing to fall back on
+    aaa_gas.collect(c)
+    assert len(c.warnings) == 1
