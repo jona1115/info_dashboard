@@ -155,6 +155,23 @@ table.box tr.win td:first-child { font-weight: 600; }
 .up-bg { background: var(--up); }
 .down-bg { background: var(--down); margin-right: 5px; }
 
+/* calendar */
+.cal { list-style: none; margin: 0; padding: 0; }
+.cal li { display: grid; grid-template-columns: 82px 1fr auto; gap: 10px; align-items: baseline;
+  padding: 6px 0; border-top: 1px solid var(--grid); }
+.cal li:first-child { border-top: 0; }
+.cal .sub { display: block; font-size: 11px; color: var(--muted); }
+.cal-what a { color: var(--ink); }
+.cal-when { text-align: right; white-space: nowrap; }
+.cal li.soon .cal-when .sub { color: var(--ink); font-weight: 600; }
+
+/* AI briefing */
+.brief-title { font-weight: 600; margin: 0; }
+.brief { margin: 0; padding: 0; list-style: none; }
+.brief li { padding: 5px 0; border-top: 1px solid var(--grid); }
+.brief li:first-child { border-top: 0; }
+.brief .tag { margin: 0 4px 0 0; }
+
 /* charts */
 .chart { position: relative; height: 230px; }
 .chart.short { height: 170px; }

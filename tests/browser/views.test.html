@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><link rel="stylesheet" href="/style.css"></head>
+<body>
+  <div id="hosts" style="width: 900px"></div>
+  <pre id="results">pending</pre>
+  <script src="/vendor/chart.umd.min.js"></script>
+  <script type="module">
+    import { render as calendar, countdown, daysUntil } from "/js/renderers/calendar.js";
+    import { render as summary } from "/js/renderers/summary.js";
+    import { render as stock } from "/js/renderers/stock.js";
+
+    const results = [];
+    async function t(name, fn) {
+      try { await fn(); results.push({ name, ok: true }); }
+      catch (e) { results.push({ name, ok: false, err: String((e && e.stack) || e) }); }
+    }
+    const eq = (a, b, msg = "") => { const A = JSON.stringify(a), B = JSON.stringify(b); if (A !== B) throw new Error(`${msg} expected ${B} got ${A}`); };
+    const ok = (c, msg = "assertion failed") => { if (!c) throw new Error(msg); };
+    const mount = () => { const b = document.createElement("div"); b.className = "card-body"; document.getElementById("hosts").append(b); return b; };
+    const SITE = { timezone: "America/Chicago" };
+    const iso = (d) => d.toLocaleDateString("en-CA", { timeZone: "America/Chicago" });
+    const addDays = (n) => { const d = new Date(); d.setDate(d.getDate() + n); return iso(d); };
+
+    await t("countdown wording", () => {
+      eq([0, 1, 5, 13, 21].map(countdown), ["today", "tomorrow", "in 5 days", "in 13 days", "in 3 weeks"]);
+      eq(daysUntil(addDays(0), "America/Chicago"), 0);
+      eq(daysUntil(addDays(10), "America/Chicago"), 10);
+    });
+
+    await t("calendar rows: dates, ranges, tags, countdowns, links", () => {
+      const b = mount();
+      calendar(b, { events: [
+        { date: addDays(0), title: "Markets closed · Thanksgiving", category: "Market" },
+        { date: "2026-12-08", end: "2026-12-09", title: "FOMC meeting · rate decision", category: "Fed",
+          time: "2:00 PM ET (decision)", url: "https://www.federalreserve.gov/x", note: "Decision Dec 9" },
+        { date: "2027-04-30", end: "2027-05-01", title: "FOMC (cross-month)", category: "Fed" },
+        { date: "2026-12-10", title: "COST earnings (after the close)", category: "Earnings", note: "expected",
+          url: "javascript:alert(1)" },
+      ] }, {}, SITE);
+      const rows = [...b.querySelectorAll(".cal li")];
+      eq(rows.length, 4);
+      ok(rows[0].classList.contains("soon") && rows[0].textContent.includes("today"), "today row");
+      eq(rows[1].querySelector(".cal-date strong").textContent, "Dec 8–9");
+      eq(rows[2].querySelector(".cal-date strong").textContent, "Apr 30–May 1");
+      eq(rows[1].querySelector(".tag").textContent, "Fed");
+      ok(rows[1].textContent.includes("2:00 PM ET"), "time shown");
+      eq(rows[1].querySelector("a").href, "https://www.federalreserve.gov/x");
+      ok(!rows[3].querySelector("a"), "unsafe link not rendered");
+      ok(rows[3].textContent.includes("expected"), "earnings marked as expected");
+    });
+
+    await t("calendar empty state", () => {
+      const b = mount();
+      calendar(b, { events: [] }, {}, SITE);
+      ok(b.textContent.includes("Nothing scheduled"), b.textContent);
+    });
+
+    await t("AI briefing: title, topic tags, disclaimer", () => {
+      const b = mount();
+      summary(b, { title: "Stocks slip; gas eases", date: "2026-11-26", model: "claude-opus-5-5",
+        bullets: [{ topic: "Markets", text: "S&P 500 fell 0.25%." }, { topic: "Gas", text: "Texas $3.07." }] });
+      eq(b.querySelector(".brief-title").textContent, "Stocks slip; gas eases");
+      eq([...b.querySelectorAll(".brief li .tag")].map((x) => x.textContent), ["Markets", "Gas"]);
+      ok(b.textContent.includes("can make mistakes"), "disclaimer");
+      ok(b.textContent.includes("claude-opus-5-5"), "model named");
+    });
+
+    await t("USD→MYR card: currency formatting and link", () => {
+      const b = mount();
+      const closes = Array.from({ length: 30 }, (_, i) => [`2026-10-${String(i + 1).padStart(2, "0")}`, 4.2 - i * 0.003]);
+      stock(b, { range: "6mo", groups: [{ label: null, quotes: [{ symbol: "MYR=X", label: "USD → MYR", name: "USD/MYR",
+        type: "CURRENCY", currency: "MYR", price: 4.115, change: 0.0024, change_pct: 0.058, closes,
+        market_time: "2026-11-26T22:32:45Z" }] }] }, {}, SITE);
+      const price = b.querySelector(".price").textContent;
+      ok(/^4[.,]1150 MYR$/.test(price), `price ${price}`);
+      ok(!price.includes("$"), "no dollar sign");
+      ok(b.textContent.includes("1 USD = 4"), b.textContent);
+      eq(b.querySelector("a").href, "https://finance.yahoo.com/quote/MYR%3DX/");
+      const ch = Chart.getChart(b.querySelector("canvas"));
+      ok(ch.options.scales.y.ticks.callback(4.1234).startsWith("4.12"), "3-decimal axis");
+    });
+
+    document.getElementById("results").textContent = JSON.stringify(results);
+  </script>
+</body>
+</html>

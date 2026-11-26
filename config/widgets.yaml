@@ -57,6 +57,16 @@ widgets:
       chart_count: 3
       window_days: 180
 
+  - id: usd-myr
+    type: stock
+    title: USD → MYR
+    section: markets
+    pinned: true
+    refresh: 1h
+    options:
+      tickers: [{symbol: "MYR=X", label: USD → MYR}]   # Yahoo: Malaysian ringgit per U.S. dollar
+      range: 6mo
+
   - id: markets
     type: stock
     title: Markets
@@ -151,6 +161,34 @@ widgets:
     options:
       compare_days: [30, 365]
       spread_days: 365
+
+  - id: key-dates
+    type: calendar
+    title: Key Dates
+    section: markets
+    refresh: 12h
+    options:
+      horizon_days: 90
+      max_items: 14
+      fomc: true
+      bea: ['^GDP \(', 'Personal Income and Outlays']   # national GDP estimates; PCE inflation
+      market_holidays: true
+      earnings: [INTC]
+      events: []    # your own dates, e.g. {date: 2027-01-13, title: CPI (December), time: 8:30 AM ET, category: Data}
+
+  - id: ai-briefing
+    type: ai_summary
+    title: Daily AI Briefing
+    section: news
+    refresh: 1d
+    size: wide
+    options:
+      model: claude-opus-5-5
+      effort: low
+      bullets: 7
+      per_group: 5
+      inputs: [headlines-world, headlines-malaysia, ai-news, intel-news, markets, usd-myr, sectors,
+               world-economy, us-yield-curve, gas-aaa, costco-gas, sports-news, isu-sports, key-dates]
 
   - id: intel-news
     type: rss

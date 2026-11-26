@@ -3,4 +3,5 @@ feedparser==6.0.14
 PyYAML==6.0.4
 beautifulsoup4==4.15.0
 tzdata==2026.6
+anthropic==2.14.0
 pytest==9.2.0

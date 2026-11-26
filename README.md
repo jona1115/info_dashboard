@@ -21,11 +21,14 @@ GitHub Actions (every 30 min)                       GitHub Pages
 |---|---|---|
 | gas-aaa | `aaa_gas` | gasprices.aaa.com (U.S., Texas, Austin), recorded daily, plus EIA weekly prices for six months of history from day one (EIA API, or EIA's history page when the API is down; reused for 20 h) |
 | costco-gas | `costco_gas` | costco.com warehouse locator: the 5 warehouses nearest downtown Austin, recorded daily |
+| usd-myr | `stock` | USD → MYR exchange rate (Yahoo `MYR=X`): rate, daily change, 6-month chart. Pinned to Home |
+| key-dates | `calendar` | Upcoming Fed meetings (federalreserve.gov), GDP & PCE releases (bea.gov), NYSE holidays/early closes, INTC earnings (Nasdaq, once announced), plus your own dates |
 | markets | `stock` (table) | S&P 500, Dow, Nasdaq; Asia (KLCI, Shanghai, Nikkei 225, KOSPI, TAIEX, STI); VOO, VGT: price, day / 1-month / 6-month change, trend line |
 | etf-candles | `candles` | Tabbed daily candlestick charts with volume (VOO, QQQM, INTC), MA20/50/200, period buttons (1W, 1M, 3M, 6M, YTD, 1Y); add tickers for more tabs |
 | sectors | `stock` (table) | The 11 SPDR sector ETFs (XLK, XLF, ...), sorted by today's change. Trend lines are red when the 6-month change is negative |
 | world-economy | `macro` | GDP growth, inflation, unemployment, policy rate, 10Y yield for U.S., euro area, Germany, U.K., Japan, China, India, Korea, Malaysia (OECD, BIS, data.gov.my) |
 | us-yield-curve | `treasury_curve` | U.S. Treasury yield curve vs 1 month / 1 year ago; 10Y−2Y and 10Y−3M spreads |
+| ai-briefing | `ai_summary` | Daily AI briefing: Claude summarizes the other widgets' data into ~7 bullets (needs `ANTHROPIC_API_KEY`) |
 | intel-news | `rss` | Yahoo Finance INTC headlines + Google News |
 | headlines-world | `rss` | CNN, WSJ, Reuters (via Google News), Fox News, NYT, BBC |
 | headlines-malaysia | `rss` | Sin Chew 星洲日报 (Chinese headlines via Google News; its own site blocks bots), NST, The Star (via Google News), Malaysiakini EN + 中文 |
@@ -99,6 +102,24 @@ start the workflow every 30 minutes. If both fire, the extra run just finds noth
      Request body: `{"ref":"main"}`.
    - Use **Test run**: a `204` response means it worked, and a new run appears in the Actions tab.
 3. If no data has been collected for 12 hours, the page header turns red ("collection may be stuck").
+
+## Daily AI briefing
+
+The `ai-briefing` widget runs after the others in a collection run and sends Claude a compact digest of
+what they collected (headlines, market numbers, gas prices, scores, upcoming dates), using
+`claude-opus-5-5` at low effort with structured JSON output. It refreshes once a day.
+
+To turn it on, create an API key at <https://console.anthropic.com> (Settings → API keys) and add it as a
+repository secret named `ANTHROPIC_API_KEY` (Settings → Secrets and variables → Actions). Without it, the
+card shows "ANTHROPIC_API_KEY is not set". Each briefing uses a few thousand tokens, a few cents a day;
+the card's data (`data/widgets/ai-briefing.json`) records the exact token counts. Choose which widgets
+feed it with `inputs:` in the config. The summary only ever sees this dashboard's public data.
+
+## Key dates you add yourself
+
+CPI and jobs-report dates are published by bls.gov, which blocks automated readers, so add the ones you
+care about under `events:` in the `key-dates` widget, for example:
+`- {date: 2027-01-13, title: CPI (December), time: 8:30 AM ET, category: Data}`.
 
 ## Running locally
 

@@ -222,7 +222,7 @@ def test_manifest_carries_section_and_pin(tmp_path, fake_source):
 def test_real_config_sections():
     cfg = run.load_config(ROOT / "config" / "widgets.yaml")
     pinned = [w["id"] for w in cfg["widgets"] if w["pinned"]]
-    assert pinned == ["gas-aaa", "costco-gas", "markets"]
+    assert pinned == ["gas-aaa", "costco-gas", "usd-myr", "markets"]
     assert {w["section"] for w in cfg["widgets"]} == {"markets", "news", "sports", "gas"}
     assert [s["id"] for s in cfg["site"]["sections"]] == ["home", "markets", "news", "sports", "gas"]
     assert not [w["id"] for w in cfg["widgets"] if w["section"] in ("news", "sports") and w["pinned"]],         "no news/sports widget pinned by default"

@@ -19,19 +19,20 @@ class Source:
     type: str
     view: str
     collect: Callable
+    late: bool = False   # run after all other widgets (e.g. a summary of what they collected)
 
 
 REGISTRY: dict[str, Source] = {}
 
 
-def source(type_name: str, view: str):
+def source(type_name: str, view: str, late: bool = False):
     def deco(fn):
         if type_name in REGISTRY:
             raise RuntimeError(f"duplicate source type {type_name}")
-        REGISTRY[type_name] = Source(type_name, view, fn)
+        REGISTRY[type_name] = Source(type_name, view, fn, late)
         return fn
     return deco
 
 
 # Import modules so they register themselves.
-from . import rss, arxiv, crossref, stock, aaa_gas, costco_gas, macro, treasury, espn, candles, espn_news  # noqa: E402,F401
+from . import rss, arxiv, crossref, stock, aaa_gas, costco_gas, macro, treasury, espn, candles, espn_news, calendar, ai_summary  # noqa: E402,F401

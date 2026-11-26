@@ -196,28 +196,35 @@ def main(argv=None) -> int:
     now = utcnow()
     failed = 0
     entries = []
-    for w in cfg["widgets"]:
+    # Run phase: ordinary widgets first, then "late" ones (e.g. the AI summary, which reads the others).
+    latest: dict[str, dict | None] = {}
+    order = sorted(cfg["widgets"], key=lambda w: REGISTRY[w["type"]].late)
+    for w in order:
         path = wdir / f"{w['id']}.json"
         prev = read_json(path)
-        if w["enabled"]:
-            want = (w["id"] in only) if only else (a.force or is_due(w, prev, now))
-            if want:
-                t0 = time.monotonic()
-                result = run_widget(w, prev, data_dir, tz)
-                took = time.monotonic() - t0
-                flag = "ok " if result["status"] == "ok" else "ERR"
-                print(f"[{flag}] {w['id']:<22} {took:5.1f}s  {result['error'] or ''}")
-                for warn in result["warnings"]:
-                    print(f"       warning: {warn}")
-                if result["status"] != "ok":
-                    failed += 1
-                write_json(path, result)
-                prev = result
-            else:
-                print(f"[--] {w['id']:<22} not due")
-        else:
+        if not w["enabled"]:
             print(f"[off] {w['id']}")
             continue
+        want = (w["id"] in only) if only else (a.force or is_due(w, prev, now))
+        if want:
+            t0 = time.monotonic()
+            result = run_widget(w, prev, data_dir, tz)
+            took = time.monotonic() - t0
+            flag = "ok " if result["status"] == "ok" else "ERR"
+            print(f"[{flag}] {w['id']:<22} {took:5.1f}s  {result['error'] or ''}")
+            for warn in result["warnings"]:
+                print(f"       warning: {warn}")
+            if result["status"] != "ok":
+                failed += 1
+            write_json(path, result)
+            prev = result
+        else:
+            print(f"[--] {w['id']:<22} not due")
+        latest[w["id"]] = prev
+
+    # Manifest in config order (= page order).
+    for w in cfg["widgets"]:
+        prev = latest.get(w["id"])
         if prev:
             entries.append({
                 "id": w["id"], "title": w["title"], "view": prev.get("view"), "size": w["size"],

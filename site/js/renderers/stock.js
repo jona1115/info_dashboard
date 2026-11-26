@@ -5,9 +5,12 @@ import { absTime, cssVar, el, lineChart, money, seriesColor, sparkline } from ".
 
 const NUM = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+const FX = new Intl.NumberFormat(undefined, { minimumFractionDigits: 4, maximumFractionDigits: 4 });
+
 function price(q) {
   if (q.price == null) return "—";
   if (q.type === "INDEX") return NUM.format(q.price);
+  if (q.type === "CURRENCY") return `${FX.format(q.price)} ${q.currency || ""}`.trim();
   return q.currency === "USD" ? `$${NUM.format(q.price)}` : `${NUM.format(q.price)} ${q.currency || ""}`;
 }
 
@@ -67,10 +70,14 @@ function cards(body, groups, data, site) {
       el("span", { class: "num" }, pct(q.change_pct)),
       el("span", { class: "muted small" }, [q.symbol, q.exchange].filter(Boolean).join(" · ")),
       q.stale ? el("span", { class: "tag" }, "stale") : null));
-    body.append(el("p", { class: "muted small" },
-      link(q.symbol, q.label || q.name), `. Change vs previous close. Last trade ${absTime(q.market_time, site.timezone)}.`));
+    const what = q.type === "CURRENCY"
+      ? [link(q.symbol, q.label || q.name), `: 1 USD = ${FX.format(q.price)} ${q.currency}. Change vs previous close.`]
+      : [link(q.symbol, q.label || q.name), ". Change vs previous close."];
+    body.append(el("p", { class: "muted small" }, ...what, ` Last update ${absTime(q.market_time, site.timezone)}.`));
     if ((q.closes || []).length > 1) {
-      const fmt = q.type === "INDEX" ? (v) => NUM.format(v) : (v) => money(v, v >= 100 ? 0 : 2, q.currency);
+      const fmt = q.type === "INDEX" ? (v) => NUM.format(v)
+        : q.type === "CURRENCY" ? (v) => Number(v).toFixed(3)
+        : (v) => money(v, v >= 100 ? 0 : 2, q.currency);
       lineChart(body, [{ label: `${q.symbol} close`, color: seriesColor(0), points: q.closes }], { yFormat: fmt, short: true });
       body.append(el("p", { class: "muted small" }, `Daily closes, last ${data.range}.`));
     }
