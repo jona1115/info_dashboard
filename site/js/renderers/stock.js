@@ -1,7 +1,7 @@
 // Stocks / ETFs / indexes.
 // data: {range, display: "cards"|"table", groups: [{label, quotes: [{symbol, label, type, price, change, change_pct,
 //        chg_1m_pct, chg_range_pct, currency, market_time, closes}]}]}   (older data: {range, quotes})
-import { absTime, cssVar, el, lineChart, money, seriesColor, sparkline } from "../util.js";
+import { absTime, cssVar, el, lineChart, money, safeUrl, seriesColor, sparkline } from "../util.js";
 
 const NUM = new Intl.NumberFormat(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
@@ -70,6 +70,16 @@ function cards(body, groups, data, site) {
       el("span", { class: "num" }, pct(q.change_pct)),
       el("span", { class: "muted small" }, [q.symbol, q.exchange].filter(Boolean).join(" · ")),
       q.stale ? el("span", { class: "tag" }, "stale") : null));
+    if (q.wise && q.wise.value != null) {
+      const url = safeUrl(q.wise.url);
+      const rate = `${FX.format(q.wise.value)} ${q.currency || ""}`.trim();
+      body.append(el("div", { class: "alt-rate" },
+        el("span", { class: "muted small" }, `${q.wise.label || "Wise"} rate`),
+        url ? el("a", { href: url, target: "_blank", rel: "noopener noreferrer", class: "num" }, rate, " ↗")
+            : el("span", { class: "num" }, rate),
+        q.wise.time ? el("span", { class: "muted small" }, `as of ${absTime(q.wise.time, site.timezone)}`) : null,
+        q.wise.stale ? el("span", { class: "tag" }, "stale") : null));
+    }
     const what = q.type === "CURRENCY"
       ? [link(q.symbol, q.label || q.name), `: 1 USD = ${FX.format(q.price)} ${q.currency}. Change vs previous close.`]
       : [link(q.symbol, q.label || q.name), ". Change vs previous close."];

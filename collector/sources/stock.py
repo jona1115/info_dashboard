@@ -7,6 +7,9 @@ options:
   range: 6mo          # 1mo, 3mo, 6mo, 1y, 2y, 5y
   display: cards      # cards (big price + chart each) | table (compact rows with sparklines)
   sort: none          # none | day  (table rows by today's % change, best first)
+
+A currency ticker can also show Wise's rate (number + link, no chart):
+  tickers: [{symbol: "MYR=X", label: USD → MYR, wise: {source: USD, target: MYR}}]
 """
 from __future__ import annotations
 
@@ -101,6 +104,30 @@ def fetch_quote(symbol: str, rng: str) -> dict:
     raise CollectError(f"{symbol}: {last}")
 
 
+WISE_LIVE = "https://wise.com/rates/live"
+WISE_PAGE = "https://wise.com/us/currency-converter/{s}-to-{t}-rate"
+
+
+def fetch_wise(source: str, target: str) -> dict:
+    """Wise's live rate (the rate wise.com shows; it's the mid-market rate Wise converts at)."""
+    r = http_get(WISE_LIVE, params={"source": source, "target": target}, browser=True,
+                 headers={"Accept": "application/json"})
+    d = r.json()
+    try:
+        value = float(d["value"])
+    except (KeyError, TypeError, ValueError):
+        raise CollectError("Wise returned no rate")
+    if not 0 < value < 1e6 or d.get("source") != source or d.get("target") != target:
+        raise CollectError("Wise returned an unexpected rate")
+    when = d.get("time")
+    return {
+        "label": "Wise",
+        "value": round(value, 6),
+        "time": iso(datetime.fromtimestamp(when / 1000, timezone.utc)) if isinstance(when, (int, float)) else None,
+        "url": WISE_PAGE.format(s=source.lower(), t=target.lower()),
+    }
+
+
 def _norm_tickers(items) -> list[dict]:
     out = []
     for t in items or []:
@@ -147,6 +174,15 @@ def collect(ctx: Context) -> dict:
                     continue
                 q = {**prev[t["symbol"]], "stale": True}
             q["label"] = t.get("label") or q.get("name") or t["symbol"]
+            wise = t.get("wise")
+            if wise:
+                try:
+                    q["wise"] = fetch_wise(str(wise["source"]).upper(), str(wise["target"]).upper())
+                except Exception as e:  # noqa: BLE001
+                    ctx.warn(f"Wise {wise.get('source')}->{wise.get('target')}: {e}")
+                    old = (prev.get(t["symbol"]) or {}).get("wise")
+                    if old:
+                        q["wise"] = {**old, "stale": True}
             quotes.append(q)
         if o.get("sort") == "day":
             quotes.sort(key=lambda q: q.get("change_pct") if q.get("change_pct") is not None else -1e9, reverse=True)

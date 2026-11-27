@@ -543,3 +543,36 @@ def test_espn_news_collect(monkeypatch, ctx):
     assert espn_news.collect(c2)["groups"] == [{"label": "MLB", "items": []}]
     with pytest.raises(CollectError):
         espn_news.collect(ctx({"groups": [{"label": "x"}]}))
+
+
+# ------------------------------------------------------------------ Wise rate on a currency ticker
+
+def test_wise_rate_parse_and_fallback(monkeypatch, ctx):
+    import json as _json
+    from conftest import FakeResponse
+    body = {"source": "USD", "target": "MYR", "value": 4.11575, "time": 1795737781034}
+    monkeypatch.setattr(stock, "http_get", lambda url, **kw: FakeResponse(_json.dumps(body).encode()))
+    w = stock.fetch_wise("USD", "MYR")
+    assert w == {"label": "Wise", "value": 4.11575, "time": "2026-11-27T00:03:01Z",
+                 "url": "https://wise.com/us/currency-converter/usd-to-myr-rate"}
+    for bad in ({"source": "USD", "target": "SGD", "value": 1.3}, {"source": "USD", "target": "MYR"},
+                {"source": "USD", "target": "MYR", "value": -1}):
+        monkeypatch.setattr(stock, "http_get", lambda url, bad=bad, **kw: FakeResponse(_json.dumps(bad).encode()))
+        with pytest.raises(CollectError):
+            stock.fetch_wise("USD", "MYR")
+
+    quote = {"symbol": "MYR=X", "price": 4.113, "closes": [["2026-11-26", 4.113]]}
+    monkeypatch.setattr(stock, "fetch_quote", lambda sym, rng: dict(quote))
+    monkeypatch.setattr(stock, "fetch_wise", lambda s, t: {"label": "Wise", "value": 4.1155, "time": None, "url": "u"})
+    opts = {"tickers": [{"symbol": "MYR=X", "label": "USD → MYR", "wise": {"source": "usd", "target": "myr"}}]}
+    d = stock.collect(ctx(opts))
+    assert d["groups"][0]["quotes"][0]["wise"]["value"] == 4.1155
+
+    def down(s, t):
+        raise CollectError("HTTP 503")
+    monkeypatch.setattr(stock, "fetch_wise", down)
+    c = ctx(opts, previous=d)
+    q = stock.collect(c)["groups"][0]["quotes"][0]
+    assert q["wise"]["value"] == 4.1155 and q["wise"]["stale"] and any("Wise" in x for x in c.warnings)
+    q = stock.collect(ctx(opts))["groups"][0]["quotes"][0]            # no previous value: just omitted
+    assert "wise" not in q and q["price"] == 4.113

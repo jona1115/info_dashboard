@@ -71,12 +71,21 @@
       const closes = Array.from({ length: 30 }, (_, i) => [`2026-10-${String(i + 1).padStart(2, "0")}`, 4.2 - i * 0.003]);
       stock(b, { range: "6mo", groups: [{ label: null, quotes: [{ symbol: "MYR=X", label: "USD → MYR", name: "USD/MYR",
         type: "CURRENCY", currency: "MYR", price: 4.115, change: 0.0024, change_pct: 0.058, closes,
-        market_time: "2026-11-26T22:32:45Z" }] }] }, {}, SITE);
+        market_time: "2026-11-26T22:32:45Z",
+        wise: { label: "Wise", value: 4.1155, time: "2026-11-27T00:04:01Z",
+                url: "https://wise.com/us/currency-converter/usd-to-myr-rate" } }] }] }, {}, SITE);
       const price = b.querySelector(".price").textContent;
       ok(/^4[.,]1150 MYR$/.test(price), `price ${price}`);
       ok(!price.includes("$"), "no dollar sign");
       ok(b.textContent.includes("1 USD = 4"), b.textContent);
       eq(b.querySelector("a").href, "https://finance.yahoo.com/quote/MYR%3DX/");
+      const wise = b.querySelector(".alt-rate a");
+      ok(wise, "Wise rate link");
+      eq(wise.href, "https://wise.com/us/currency-converter/usd-to-myr-rate");
+      ok(/^4[.,]1155 MYR/.test(wise.textContent), `wise text ${wise.textContent}`);
+      eq(wise.target, "_blank");
+      ok(b.querySelector(".alt-rate").textContent.startsWith("Wise rate"), "labelled");
+      eq(b.querySelectorAll("canvas").length, 1, "no extra chart for Wise");
       const ch = Chart.getChart(b.querySelector("canvas"));
       ok(ch.options.scales.y.ticks.callback(4.1234).startsWith("4.12"), "3-decimal axis");
     });

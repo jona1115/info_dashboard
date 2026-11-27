@@ -172,6 +172,9 @@ table.box tr.win td:first-child { font-weight: 600; }
 .brief li:first-child { border-top: 0; }
 .brief .tag { margin: 0 4px 0 0; }
 
+.alt-rate { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; font-size: 15px; }
+.alt-rate a { font-weight: 600; }
+
 /* charts */
 .chart { position: relative; height: 230px; }
 .chart.short { height: 170px; }

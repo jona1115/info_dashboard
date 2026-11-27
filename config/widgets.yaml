@@ -64,7 +64,8 @@ widgets:
     pinned: true
     refresh: 1h
     options:
-      tickers: [{symbol: "MYR=X", label: USD → MYR}]   # Yahoo: Malaysian ringgit per U.S. dollar
+      tickers:                  # Yahoo: Malaysian ringgit per U.S. dollar, plus Wise's rate (link, no chart)
+        - {symbol: "MYR=X", label: USD → MYR, wise: {source: USD, target: MYR}}
       range: 6mo
 
   - id: markets

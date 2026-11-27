@@ -21,7 +21,7 @@ GitHub Actions (every 30 min)                       GitHub Pages
 |---|---|---|
 | gas-aaa | `aaa_gas` | gasprices.aaa.com (U.S., Texas, Austin), recorded daily, plus EIA weekly prices for six months of history from day one (EIA API, or EIA's history page when the API is down; reused for 20 h) |
 | costco-gas | `costco_gas` | costco.com warehouse locator: the 5 warehouses nearest downtown Austin, recorded daily |
-| usd-myr | `stock` | USD → MYR exchange rate (Yahoo `MYR=X`): rate, daily change, 6-month chart. Pinned to Home |
+| usd-myr | `stock` | USD → MYR exchange rate (Yahoo `MYR=X`): rate, daily change, 6-month chart, plus Wise's live rate linking to wise.com. Pinned to Home |
 | key-dates | `calendar` | Upcoming Fed meetings (federalreserve.gov), GDP & PCE releases (bea.gov), NYSE holidays/early closes, INTC earnings (Nasdaq, once announced), plus your own dates |
 | markets | `stock` (table) | S&P 500, Dow, Nasdaq; Asia (KLCI, Shanghai, Nikkei 225, KOSPI, TAIEX, STI); VOO, VGT: price, day / 1-month / 6-month change, trend line |
 | etf-candles | `candles` | Tabbed daily candlestick charts with volume (VOO, QQQM, INTC), MA20/50/200, period buttons (1W, 1M, 3M, 6M, YTD, 1Y); add tickers for more tabs |
