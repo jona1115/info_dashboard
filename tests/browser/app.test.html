@@ -125,6 +125,18 @@
       ok(g.textContent.includes("collection may be stuck"), g.textContent);
     });
 
+    await t("the deploy build (versioned code URLs) loads one copy of each module and works", async () => {
+      const scripts = [...doc().querySelectorAll("script[src]")].map((s) => s.getAttribute("src"));
+      ok(scripts.includes("js/app.js?v=test123"), JSON.stringify(scripts));
+      const mods = frame.contentWindow.performance.getEntriesByType("resource").map((r) => r.name).filter((n) => n.includes("/js/"));
+      ok(mods.length > 5 && mods.every((n) => n.endsWith("?v=test123")), JSON.stringify(mods));
+      ok(new Set(mods).size === mods.length, "no module loaded twice");
+      doc().getElementById("layout").click();
+      ok(doc().body.classList.contains("editing"), "Layout button works");
+      ok(frame.contentWindow.Chart.getChart(doc().querySelector("#w-chart canvas")), "renderers work");
+      localStorage.clear();
+    });
+
 
     // ------------------------------------------------------------ layout: reorder + export
     const order = () => JSON.parse(localStorage.getItem("dash:order") || "null");

@@ -75,9 +75,11 @@ def write_fixture_data(root: Path) -> None:
         {"id": "news", "title": "News"}, {"id": "gas", "title": "Gas Prices"}]},
         "generated": ts(timedelta(hours=11)), "widgets": entries}
     (data / "manifest.json").write_text(json.dumps(manifest), encoding="utf-8")
-    # Same site under /stale/ with data collected 13 hours ago (past the 12-hour warning).
+    # Same site under /stale/, built as for deploy (versioned code URLs), with data collected 13 hours
+    # ago (past the 12-hour warning).
+    from collector.build_site import build
     stale = root / "stale"
-    shutil.copytree(ROOT / "site", stale, dirs_exist_ok=True)
+    build(stale, "test123")
     shutil.copytree(data, stale / "data", dirs_exist_ok=True)
     (stale / "data" / "manifest.json").write_text(
         json.dumps(dict(manifest, generated=ts(timedelta(hours=13)))), encoding="utf-8")

@@ -90,8 +90,8 @@ jobs:
 
       - name: Build site
         run: |
-          mkdir -p _site
-          cp -r site/. _site/
+          # Versioned code URLs (?v=<commit>) so browsers never mix cached old and new files.
+          python -m collector.build_site _site --version "${GITHUB_SHA::12}"
           cp -r store/data _site/data
 
       - uses: actions/upload-pages-artifact@v4
