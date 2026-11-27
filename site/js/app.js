@@ -150,7 +150,7 @@ function updateLayoutUI() {
   if (manifest) document.getElementById("layout-reset").disabled = !hasCustomOrder(currentSection());
 }
 
-/** Hidden option (?export in the URL): this browser's layout as JSON, to make it the default. */
+/** This browser's layout as JSON, to make it the default (Layout → Export, or ?export in the URL). */
 function showExport() {
   const text = JSON.stringify(exportLayout(manifest, site), null, 2);
   let dlg = document.getElementById("export");
@@ -353,12 +353,13 @@ function schedule() {
   timer = setTimeout(refresh, Math.max(1, Number(site.refresh_minutes) || 5) * 60e3);
 }
 
-// Hidden option: add ?export to the URL to show this browser's layout as text (pins, order, tab choices).
+// ?export in the URL opens the layout export right away (same as Layout → Export).
 let wantExport = new URLSearchParams(location.search).has("export");
 
 document.getElementById("refresh").addEventListener("click", refresh);
 document.getElementById("layout").addEventListener("click", () => setEditing(!document.body.classList.contains("editing")));
 document.getElementById("layout-done").addEventListener("click", () => setEditing(false));
+document.getElementById("layout-export").addEventListener("click", () => { if (manifest) showExport(); });
 document.getElementById("layout-reset").addEventListener("click", () => {
   resetOrder(currentSection());
   applySections();

@@ -57,8 +57,8 @@ after everything that comes before them by default.
 The default order is the config order. For Home, `site.home_order: [id, ...]` lists pinned widgets
 first in that order; other pinned widgets follow in config order.
 
-**Making your layout the default.** Open the page with `?export` in the URL
-(e.g. `https://dashboard.jonathanstan.com/?export`). A box shows this browser's layout as JSON:
+**Making your layout the default.** Click **Layout → Export** (or open the page with `?export` in the
+URL, e.g. `https://dashboard.jonathanstan.com/?export`). A box shows this browser's layout as JSON:
 the order of every tab, pins, and the tab/period choices inside widgets. Copy it, then reorder the
 widgets in `config/widgets.yaml`, set `pinned:` and `site.home_order` to match (or hand the JSON to
 Claude to do it).

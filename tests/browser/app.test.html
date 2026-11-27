@@ -224,9 +224,19 @@
       eq(doc().getElementById("layout").getAttribute("aria-pressed"), "false");
     });
 
-    await t("export is hidden: no button and no dialog without ?export", async () => {
-      ok(!doc().getElementById("export"), "no dialog");
-      ok(![...doc().querySelectorAll("button, a")].some((b) => /export/i.test(b.textContent)), "no export button");
+    await t("Layout → Export opens the export; closing it stays in layout mode", async () => {
+      ok(!doc().getElementById("export"), "no dialog until asked");
+      ok(!shownEl(doc().getElementById("layout-export")), "Export only shows in layout mode");
+      doc().getElementById("layout").click();
+      doc().getElementById("layout-export").click();
+      const dlg = doc().getElementById("export");
+      ok(dlg && dlg.open, "dialog open");
+      const x = JSON.parse(dlg.querySelector("textarea").value);
+      eq(x.home, ["gas-a", "mkt", "news-a"]);
+      eq(x.sections.markets, ["chart", "mkt"]);
+      dlg.close();
+      ok(doc().body.classList.contains("editing"), "still editing after closing");
+      doc().getElementById("layout-done").click();
     });
 
     await t("?export shows this browser's layout as JSON", async () => {
