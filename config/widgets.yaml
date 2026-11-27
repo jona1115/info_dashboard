@@ -105,12 +105,34 @@ widgets:
     size: wide
     options:
       tickers:                  # one tab each; add more tickers to get more tabs
-        - {symbol: VOO, label: VOO}
-        - {symbol: QQQM, label: QQQM}
+        - {symbol: VOO, label: VOO}       # Vanguard S&P 500
+        - {symbol: QQQM, label: QQQM}     # Invesco Nasdaq 100
+        - {symbol: VGT, label: VGT}       # Vanguard Information Technology
+        - {symbol: SMH, label: SMH}       # VanEck Semiconductor
+        - {symbol: AVUV, label: AVUV}     # Avantis U.S. Small Cap Value
+        - {symbol: SCHD, label: SCHD}     # Schwab U.S. Dividend Equity
+        - {symbol: VXUS, label: VXUS}     # Vanguard Total International Stock
         - {symbol: INTC, label: INTC}
       ma: [20, 50, 200]         # simple moving averages of the daily close
       periods: [1W, 1M, 3M, 6M, YTD, 1Y]     # MTD is also available
       default_period: 3M
+
+  - id: market-sentiment
+    type: sentiment
+    title: Market Sentiment · Fear & Greed
+    section: markets
+    refresh: 30m
+    size: wide
+    options:
+      days: 365                 # chart history; the page offers 1M / 3M / 6M / 1Y
+      crypto: true              # also plot the crypto Fear & Greed Index (same 0-100 scale)
+      volatility:               # the first three (VIX family, same % scale) share the Volatility chart
+        - {symbol: "^VIX", label: VIX, note: S&P 500 expected volatility, next 30 days}
+        - {symbol: "^VIX9D", label: VIX 9-day, note: next 9 days}
+        - {symbol: "^VIX3M", label: VIX 3-month, note: next 3 months}
+        - {symbol: "^VVIX", label: VVIX, note: volatility of the VIX itself}
+        - {symbol: "^SKEW", label: SKEW, note: priced-in risk of a sharp drop (100 = none)}
+      term: ["^VIX", "^VIX3M"]  # VIX / VIX 3-month above 1 = near-term fear (backwardation)
 
   - id: sectors
     type: stock

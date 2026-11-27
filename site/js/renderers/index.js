@@ -9,10 +9,11 @@ import { render as scores } from "./scores.js";
 import { render as candles } from "./candles.js";
 import { render as calendar } from "./calendar.js";
 import { render as summary } from "./summary.js";
+import { render as sentiment } from "./sentiment.js";
 import { el } from "../util.js";
 
 function raw(body, data) {
   body.append(el("pre", { class: "raw" }, JSON.stringify(data, null, 1)));
 }
 
-export const RENDERERS = { list, gas, stock, costco, macro, yield_curve, scores, candles, calendar, summary, raw };
+export const RENDERERS = { list, gas, stock, costco, macro, yield_curve, scores, candles, calendar, summary, sentiment, raw };

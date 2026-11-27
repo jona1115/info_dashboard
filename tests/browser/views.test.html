@@ -9,6 +9,7 @@
     import { render as calendar, countdown, daysUntil } from "/js/renderers/calendar.js";
     import { render as summary } from "/js/renderers/summary.js";
     import { render as stock } from "/js/renderers/stock.js";
+    import { render as sentiment, zoneOf, periodFrom } from "/js/renderers/sentiment.js";
 
     const results = [];
     async function t(name, fn) {
@@ -88,6 +89,100 @@
       eq(b.querySelectorAll("canvas").length, 1, "no extra chart for Wise");
       const ch = Chart.getChart(b.querySelector("canvas"));
       ok(ch.options.scales.y.ticks.callback(4.1234).startsWith("4.12"), "3-decimal axis");
+    });
+
+
+    // ------------------------------------------------------------ market sentiment
+    const days = (n, f) => { const out = []; const d = new Date(Date.UTC(2025, 10, 25));
+      for (let i = 0; i < n; i++) { out.push([d.toISOString().slice(0, 10), f(i)]); d.setUTCDate(d.getUTCDate() + 1); } return out; };
+    const SENT = {
+      cnn: { score: 14.9967, rating: "Extreme fear", previous: { close: 15.23, "1_week": 15.87, "1_month": 29.83, "1_year": 61 },
+        history: days(366, (i) => 20 + (i % 60)),
+        components: [
+          { key: "a", label: "Market momentum", what: "S&P 500 vs its 125-day average", score: 2.8, rating: "Extreme fear" },
+          { key: "b", label: "Junk bond demand", what: "spread", score: 80, rating: "Extreme greed" }] },
+      crypto: { score: 12, rating: "Extreme fear", history: days(366, (i) => 10 + (i % 50)) },
+      volatility: [
+        { symbol: "^VIX", label: "VIX", note: "next 30 days", price: 26.8, change_pct: -5.27, closes: days(366, (i) => 15 + (i % 20)) },
+        { symbol: "^VIX9D", label: "VIX 9-day", price: 29.61, change_pct: 10.98, closes: days(366, (i) => 14 + (i % 25)) },
+        { symbol: "^VIX3M", label: "VIX 3-month", price: 26.29, change_pct: 3.2, closes: days(366, (i) => 17 + (i % 10)), stale: true },
+        { symbol: "^SKEW", label: "SKEW", price: 142.06, change_pct: 2.08, closes: days(366, () => 140) }],
+      term: { near: "VIX", far: "VIX 3-month", ratio: 1.019, state: "backwardation" },
+    };
+
+    await t("sentiment helpers: CNN zones and periods", () => {
+      eq([0, 24.4, 24.6, 44, 45, 55, 55.4, 56, 75, 76, 100].map((v) => zoneOf(v).label),
+        ["Extreme fear", "Extreme fear", "Fear", "Fear", "Neutral", "Neutral", "Neutral", "Greed", "Greed", "Extreme greed", "Extreme greed"]);
+      eq(periodFrom("2026-11-25", 1), "2026-10-25");
+      eq(periodFrom("2026-11-25", 12), "2025-11-25");
+      eq(periodFrom("2026-03-31", 1), "2026-03-03");   // JS month overflow is fine for a range start
+    });
+
+    await t("sentiment: headline, gauge, parts and volatility tables", () => {
+      localStorage.removeItem("dash:ui:sent-1");
+      const b = mount();
+      sentiment(b, SENT, { id: "sent-1" }, SITE);
+      eq(b.querySelector(".quote .price").textContent, "15");
+      eq(b.querySelector(".quote .price").href, "https://www.cnn.com/markets/fear-and-greed");
+      eq(b.querySelector(".fg-rating").textContent, "Extreme fear");
+      eq(b.querySelector(".gauge-marker").style.left, "14.9967%");
+      eq(b.querySelectorAll(".gauge-zone").length, 5);
+      const ago = b.querySelector(".fg-ago").textContent;
+      ok(ago.includes("Prev close 15") && ago.includes("1 month ago 30") && ago.includes("1 year ago 61"), ago);
+      ok(ago.includes("Crypto 12 (Extreme fear)"), ago);
+      const tables = b.querySelectorAll(".sent-tables table");
+      eq(tables.length, 2);
+      const parts = [...tables[0].querySelectorAll("tbody tr")];
+      eq(parts.map((r) => r.cells[2].textContent), ["3", "80"]);
+      eq(parts[0].querySelector(".meter-fill").style.width, "2.8%");
+      const vrows = [...tables[1].querySelectorAll("tbody tr")];
+      eq(vrows.length, 4);
+      eq(vrows[0].querySelector("a").href, "https://finance.yahoo.com/quote/%5EVIX/");
+      ok(vrows[0].cells[2].classList.contains("up") && vrows[1].cells[2].classList.contains("down"),
+        "falling volatility shows as good, rising as bad");
+      ok(vrows[0].cells[2].textContent.startsWith("▼"), "arrow keeps the direction");
+      ok(vrows[2].textContent.includes("stale"), "stale tag");
+      ok(b.textContent.includes("1.02") && b.textContent.includes("backwardation"), "term structure line");
+    });
+
+    await t("sentiment chart: 0-100 axis, zone bands, two indexes, tabs and periods", () => {
+      localStorage.removeItem("dash:ui:sent-2");
+      const b = mount();
+      sentiment(b, SENT, { id: "sent-2" }, SITE);
+      let ch = Chart.getChart(b.querySelector(".tab-panel canvas"));
+      eq([ch.options.scales.y.min, ch.options.scales.y.max], [0, 100]);
+      eq(ch.data.datasets.map((d) => d.label), ["CNN Fear & Greed (stocks)", "Crypto Fear & Greed"]);
+      ok(ch.config.plugins.some((p) => p.id === "bands"), "zone bands plugin");
+      eq(new Date(ch.options.scales.x.min).toISOString().slice(0, 10), "2026-05-25", "6M default");
+      eq(b.querySelectorAll(".tab-panel .legend > span").length, 2);
+
+      b.querySelector('.seg button[data-key="1M"]').click();
+      ch = Chart.getChart(b.querySelector(".tab-panel canvas"));
+      eq(new Date(ch.options.scales.x.min).toISOString().slice(0, 10), "2026-10-25", "1M");
+      ok(ch.data.datasets[0].data.every((p) => p.x >= ch.options.scales.x.min), "points clipped to the period");
+
+      b.querySelector('.tabbar button[data-key="vol"]').click();
+      ch = Chart.getChart(b.querySelector(".tab-panel canvas"));
+      eq(ch.data.datasets.map((d) => d.label), ["VIX", "VIX 9-day", "VIX 3-month"], "SKEW is not on the VIX scale");
+      eq(ch.options.scales.y.min, 0);
+      ok(ch.options.scales.y.max >= 30 && ch.options.scales.y.max % 10 === 0, `vix max ${ch.options.scales.y.max}`);
+      eq(b.querySelectorAll("canvas").length, 1, "old chart replaced");
+
+      const again = mount();   // choices survive a refresh
+      sentiment(again, SENT, { id: "sent-2" }, SITE);
+      ok(again.querySelector('.tabbar button[data-key="vol"]').classList.contains("active"), "tab remembered");
+      ok(again.querySelector('.seg button[data-key="1M"]').classList.contains("active"), "period remembered");
+    });
+
+    await t("sentiment: works with only some parts", () => {
+      const b = mount();
+      sentiment(b, { cnn: null, crypto: null, volatility: SENT.volatility.slice(0, 1), term: null }, { id: "sent-3" }, SITE);
+      ok(!b.querySelector(".fg-head"), "no headline without CNN");
+      eq([...b.querySelectorAll(".tabbar button")].map((x) => x.dataset.key), ["vol"]);
+      ok(Chart.getChart(b.querySelector("canvas")), "VIX chart drawn");
+      const e = mount();
+      sentiment(e, { volatility: [] }, { id: "sent-4" }, SITE);
+      eq(e.textContent, "No data.");
     });
 
     document.getElementById("results").textContent = JSON.stringify(results);

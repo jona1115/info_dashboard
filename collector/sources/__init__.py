@@ -35,4 +35,4 @@ def source(type_name: str, view: str, late: bool = False):
 
 
 # Import modules so they register themselves.
-from . import rss, arxiv, crossref, stock, aaa_gas, costco_gas, macro, treasury, espn, candles, espn_news, calendar, ai_summary  # noqa: E402,F401
+from . import rss, arxiv, crossref, stock, aaa_gas, costco_gas, macro, treasury, espn, candles, espn_news, calendar, ai_summary, sentiment  # noqa: E402,F401

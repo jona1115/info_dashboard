@@ -229,5 +229,8 @@ def test_real_config_sections():
     assert next(w for w in cfg["widgets"] if w["id"] == "isu-sports")["section"] == "sports"
     assert "intc-stock" not in {w["id"] for w in cfg["widgets"]}
     candles = next(w for w in cfg["widgets"] if w["type"] == "candles")
-    assert [t["symbol"] for t in candles["options"]["tickers"]] == ["VOO", "QQQM", "INTC"]
+    assert [t["symbol"] for t in candles["options"]["tickers"]] == [
+        "VOO", "QQQM", "VGT", "SMH", "AVUV", "SCHD", "VXUS", "INTC"]
+    sent = next(w for w in cfg["widgets"] if w["id"] == "market-sentiment")
+    assert sent["type"] == "sentiment" and sent["section"] == "markets" and sent["pinned"] is False
     assert "MTD" not in candles["options"]["periods"] and "YTD" in candles["options"]["periods"]

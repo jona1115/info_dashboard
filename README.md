@@ -24,7 +24,8 @@ GitHub Actions (every 30 min)                       GitHub Pages
 | usd-myr | `stock` | USD → MYR exchange rate (Yahoo `MYR=X`): rate, daily change, 6-month chart, plus Wise's live rate linking to wise.com. Pinned to Home |
 | key-dates | `calendar` | Upcoming Fed meetings (federalreserve.gov), GDP & PCE releases (bea.gov), NYSE holidays/early closes, INTC earnings (Nasdaq, once announced), plus your own dates |
 | markets | `stock` (table) | S&P 500, Dow, Nasdaq; Asia (KLCI, Shanghai, Nikkei 225, KOSPI, TAIEX, STI); VOO, VGT: price, day / 1-month / 6-month change, trend line |
-| etf-candles | `candles` | Tabbed daily candlestick charts with volume (VOO, QQQM, INTC), MA20/50/200, period buttons (1W, 1M, 3M, 6M, YTD, 1Y); add tickers for more tabs |
+| etf-candles | `candles` | Tabbed daily candlestick charts with volume (VOO, QQQM, VGT, SMH, AVUV, SCHD, VXUS, INTC), MA20/50/200, period buttons (1W, 1M, 3M, 6M, YTD, 1Y); add tickers for more tabs |
+| market-sentiment | `sentiment` | CNN Fear & Greed Index (score, gauge, 1 week / 1 month / 1 year ago, its 7 indicators), crypto Fear & Greed (alternative.me) on the same 0–100 chart, and a Volatility tab: VIX, VIX 9-day, VIX 3-month (Yahoo), plus VVIX, SKEW and the VIX ÷ VIX 3-month term structure. Not pinned |
 | sectors | `stock` (table) | The 11 SPDR sector ETFs (XLK, XLF, ...), sorted by today's change. Trend lines are red when the 6-month change is negative |
 | world-economy | `macro` | GDP growth, inflation, unemployment, policy rate, 10Y yield for U.S., euro area, Germany, U.K., Japan, China, India, Korea, Malaysia (OECD, BIS, data.gov.my) |
 | us-yield-curve | `treasury_curve` | U.S. Treasury yield curve vs 1 month / 1 year ago; 10Y−2Y and 10Y−3M spreads |

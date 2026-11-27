@@ -132,8 +132,10 @@ function monthTicks(min, max) {
 /**
  * Line chart over dates.
  * series: [{label, color, dashed, points: [["YYYY-MM-DD", value], ...]}]
+ * yMin / yMax fix the value axis; bands: [{from, to, color, label}] shade horizontal value ranges.
  */
-export function lineChart(container, series, { minMs, maxMs, yFormat = (v) => money(v), short = false } = {}) {
+export function lineChart(container, series,
+  { minMs, maxMs, yFormat = (v) => money(v), short = false, yMin, yMax, bands = [] } = {}) {
   setupChart();
   const box = el("div", { class: short ? "chart short" : "chart" });
   const canvas = el("canvas", { role: "img", "aria-label": series.map((s) => s.label).join(", ") });
@@ -163,7 +165,34 @@ export function lineChart(container, series, { minMs, maxMs, yFormat = (v) => mo
     },
     grid: { display: false }, border: { color: cssVar("--axis") },
   };
-  return new window.Chart(canvas, { type: "line", data: { datasets }, options: opts });
+  if (yMin != null) opts.scales.y.min = yMin;
+  if (yMax != null) opts.scales.y.max = yMax;
+  const plugins = bands.length ? [bandsPlugin(bands)] : [];
+  return new window.Chart(canvas, { type: "line", data: { datasets }, options: opts, plugins });
+}
+
+/** Shaded horizontal value ranges drawn behind the lines, with an optional label at the right edge. */
+function bandsPlugin(bands) {
+  return {
+    id: "bands",
+    beforeDatasetsDraw(chart) {
+      const { ctx, chartArea: a, scales: { y } } = chart;
+      ctx.save();
+      for (const b of bands) {
+        const top = Math.max(a.top, y.getPixelForValue(b.to)), bot = Math.min(a.bottom, y.getPixelForValue(b.from));
+        if (bot <= top) continue;
+        if (b.color) { ctx.fillStyle = b.color; ctx.fillRect(a.left, top, a.right - a.left, bot - top); }
+        if (b.label && bot - top >= 12) {
+          ctx.fillStyle = cssVar("--muted");
+          ctx.font = "10px system-ui, sans-serif";
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          ctx.fillText(b.label, a.right - 4, (top + bot) / 2);
+        }
+      }
+      ctx.restore();
+    },
+  };
 }
 
 function datasetStyle(s, surface) {
