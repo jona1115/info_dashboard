@@ -119,6 +119,16 @@ def load_config(path: Path) -> dict:
         })
     if not widgets:
         raise ConfigError("no widgets configured")
+    # Optional default order of the Home page (pinned widgets); unlisted pinned widgets follow in config order.
+    home_order = site.get("home_order")
+    if home_order is not None:
+        if not isinstance(home_order, list) or not all(isinstance(x, str) for x in home_order):
+            raise ConfigError("site.home_order must be a list of widget ids")
+        unknown = [x for x in home_order if x not in seen]
+        if unknown:
+            raise ConfigError(f"site.home_order: unknown widget id(s) {unknown}")
+        if len(set(home_order)) != len(home_order):
+            raise ConfigError("site.home_order: an id is listed twice")
     return {"site": site, "widgets": widgets}
 
 

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"></head>
+<body>
+  <pre id="results">pending</pre>
+  <script type="module">
+    // Unit tests for js/layout.js (widget order per tab).
+    import { arrange, defaultOrder, sectionOrder, saveOrder, hasCustomOrder, resetOrder, exportLayout } from "/js/layout.js";
+
+    const results = [];
+    async function t(name, fn) {
+      try { await fn(); results.push({ name, ok: true }); }
+      catch (e) { results.push({ name, ok: false, err: String((e && e.stack) || e) }); }
+    }
+    const eq = (a, b, msg = "") => { const A = JSON.stringify(a), B = JSON.stringify(b); if (A !== B) throw new Error(`${msg} expected ${B} got ${A}`); };
+    const ok = (c, msg = "assertion failed") => { if (!c) throw new Error(msg); };
+    localStorage.clear();
+
+    await t("arrange: saved order kept; others go after everything before them by default", () => {
+      eq(arrange(["a", "b", "c", "d"], []), ["a", "b", "c", "d"]);
+      eq(arrange(["a", "b", "c", "d"], ["d", "c", "b", "a"]), ["d", "c", "b", "a"]);
+      eq(arrange(["a", "b", "c", "d"], ["c", "a"]), ["c", "a", "b", "d"], "after everything before it by default");
+      eq(arrange(["a", "b", "c"], ["c", "a"]), ["c", "a", "b"], "b after a");
+      eq(arrange(["a", "b", "c"], ["b", "a"]), ["b", "a", "c"], "a new widget at the end stays at the end");
+      eq(arrange(["new", "a", "b"], ["b", "a"]), ["new", "b", "a"], "nothing before it: goes first");
+      eq(arrange(["a", "b", "x", "c"], ["c", "b", "a"]), ["c", "b", "a", "x"], "x goes after a and b");
+      eq(arrange(["a", "b"], ["gone", "b", "b", "a"]), ["b", "a"], "unknown and duplicate ids dropped");
+      eq(arrange([], ["a"]), []);
+    });
+
+    await t("Home default order comes from site.home_order", () => {
+      const site = { home_order: ["c", "zzz", "a"] };
+      eq(defaultOrder("home", ["a", "b", "c"], site), ["c", "a", "b"]);
+      eq(defaultOrder("markets", ["a", "b", "c"], site), ["a", "b", "c"], "other tabs: config order");
+      eq(defaultOrder("home", ["a", "b"], {}), ["a", "b"]);
+    });
+
+    await t("saved order is per tab; saving the default forgets it", () => {
+      const site = { home_order: ["b"] };
+      saveOrder("markets", ["b", "a"], ["a", "b"], site);
+      eq(sectionOrder("markets", ["a", "b", "c"], site), ["b", "a", "c"]);
+      eq(sectionOrder("home", ["a", "b"], site), ["b", "a"], "home untouched");
+      ok(hasCustomOrder("markets") && !hasCustomOrder("home") && hasCustomOrder(), "flags");
+      saveOrder("home", ["b", "a"], ["a", "b"], site);
+      ok(!hasCustomOrder("home"), "same as default -> not stored");
+      saveOrder("home", ["a", "b"], ["a", "b"], site);
+      eq(JSON.parse(localStorage.getItem("dash:order")), { markets: ["b", "a"], home: ["a", "b"] });
+      resetOrder("home");
+      eq(JSON.parse(localStorage.getItem("dash:order")), { markets: ["b", "a"] });
+      resetOrder();
+      eq(localStorage.getItem("dash:order"), null);
+    });
+
+    await t("corrupt saved data is ignored", () => {
+      localStorage.setItem("dash:order", "not json");
+      eq(sectionOrder("markets", ["a", "b"], {}), ["a", "b"]);
+      localStorage.setItem("dash:order", "[1,2]");
+      eq(sectionOrder("markets", ["a", "b"], {}), ["a", "b"]);
+      localStorage.clear();
+    });
+
+    await t("export lists every tab's order, pins, and widget choices", () => {
+      const site = { sections: [{ id: "home" }, { id: "m" }, { id: "n" }], home_order: ["y"] };
+      const manifest = { widgets: [
+        { id: "x", section: "m", pinned: true }, { id: "y", section: "n", pinned: true }, { id: "z", section: "m" }] };
+      saveOrder("m", ["z", "x"], ["x", "z"], site);
+      localStorage.setItem("dash:pins", JSON.stringify({ z: true }));
+      localStorage.setItem("dash:ui:z", JSON.stringify({ period: "1Y" }));
+      const x = exportLayout(manifest, site);
+      eq(x.home, ["y", "x", "z"]);
+      eq(x.sections, { m: ["z", "x"], n: ["y"] });
+      eq(x.local_changes, { pins: { z: true }, order: { m: ["z", "x"] } });
+      eq(x.widget_ui, { z: { period: "1Y" } });
+      localStorage.clear();
+    });
+
+    document.getElementById("results").textContent = JSON.stringify(results);
+  </script>
+</body>
+</html>

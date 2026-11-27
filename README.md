@@ -47,6 +47,22 @@ GitHub Actions (every 30 min)                       GitHub Pages
 a widget to Home by default. Visitors can pin or unpin any card with its ☆ / ★ button, and that choice
 is saved in their own browser (localStorage). Links like `/#news` open a section directly.
 
+### Rearranging cards
+
+The **Layout** button turns on edit mode: drag a card by its ⠿ handle (mouse or touch), or use its
+↑ / ↓ buttons. Each tab keeps its own order, saved in that browser; **Reset order** goes back to the
+default for the tab. Widgets the saved order doesn't know yet (new in the config, or newly pinned) go
+after everything that comes before them by default.
+
+The default order is the config order. For Home, `site.home_order: [id, ...]` lists pinned widgets
+first in that order; other pinned widgets follow in config order.
+
+**Making your layout the default.** Open the page with `?export` in the URL
+(e.g. `https://dashboard.jonathanstan.com/?export`). A box shows this browser's layout as JSON:
+the order of every tab, pins, and the tab/period choices inside widgets. Copy it, then reorder the
+widgets in `config/widgets.yaml`, set `pinned:` and `site.home_order` to match (or hand the JSON to
+Claude to do it).
+
 ## Adding or changing widgets
 
 Edit `config/widgets.yaml` and push. The workflow runs on push; new or changed widgets are collected right away.

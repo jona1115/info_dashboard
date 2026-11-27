@@ -209,6 +209,16 @@ def test_sections_must_start_with_home_and_be_unique(tmp_path):
         run.load_config(_cfg(tmp_path, "widgets: [{id: a, type: rss, section: news}]"))
 
 
+def test_home_order(tmp_path):
+    w = "widgets: [{id: a, type: rss}, {id: b, type: rss}]"
+    cfg = run.load_config(_cfg(tmp_path, f"site: {{home_order: [b, a]}}\n{w}"))
+    assert cfg["site"]["home_order"] == ["b", "a"]                  # passed through to the page
+    for bad, msg in [("x", "must be a list"), ("[b, zz]", "unknown widget"), ("[a, a]", "listed twice"),
+                     ("[1]", "must be a list")]:
+        with pytest.raises(run.ConfigError, match=msg):
+            run.load_config(_cfg(tmp_path, f"site: {{home_order: {bad}}}\n{w}"))
+
+
 def test_manifest_carries_section_and_pin(tmp_path, fake_source):
     data = tmp_path / "data"
     cfg = _cfg(tmp_path, SECTIONS + "  - {id: one, type: fake, section: markets, pinned: true}\n"

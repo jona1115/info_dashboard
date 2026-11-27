@@ -17,11 +17,19 @@
     <h1 id="site-title">Dashboard</h1>
     <div class="top-actions">
       <span id="generated" class="muted" aria-live="polite"></span>
+      <button id="layout" type="button" title="Rearrange the cards on this tab" aria-pressed="false">Layout</button>
       <button id="refresh" type="button" title="Check for new data now">Refresh</button>
       <button id="theme" type="button" title="Toggle light / dark">Theme</button>
     </div>
   </header>
   <nav id="sections" class="sections" aria-label="Sections" hidden></nav>
+  <div id="layout-bar" class="layout-bar" hidden>
+    <span>Drag <span aria-hidden="true">⠿</span> or use ↑ ↓ to rearrange this tab. Saved in this browser.</span>
+    <span class="layout-actions">
+      <button id="layout-reset" type="button" title="Back to the default order for this tab">Reset order</button>
+      <button id="layout-done" type="button">Done</button>
+    </span>
+  </div>
   <main id="grid">
     <p id="boot" class="muted">Loading…</p>
   </main>

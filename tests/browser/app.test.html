@@ -125,6 +125,117 @@
       ok(g.textContent.includes("collection may be stuck"), g.textContent);
     });
 
+
+    // ------------------------------------------------------------ layout: reorder + export
+    const order = () => JSON.parse(localStorage.getItem("dash:order") || "null");
+    const tool = (id, cls) => doc().querySelector(`#w-${id} .${cls}`);
+    const shownEl = (n) => n && n.offsetParent !== null;
+
+    await t("layout mode: controls appear, ↑ / ↓ reorder this tab only, and it is remembered", async () => {
+      localStorage.removeItem("dash:pins"); localStorage.removeItem("dash:order");
+      await load("/index.html#markets");
+      ok(!shownEl(tool("mkt", "move-up")), "move buttons hidden until Layout is on");
+      doc().getElementById("layout").click();
+      ok(doc().body.classList.contains("editing"), "editing");
+      ok(!doc().getElementById("layout-bar").hidden, "help bar");
+      ok(shownEl(tool("mkt", "move-up")) && shownEl(tool("mkt", "drag")), "controls shown");
+      ok(tool("mkt", "move-up").disabled && !tool("mkt", "move-down").disabled, "first card can't go up");
+      ok(tool("chart", "move-down").disabled, "last card can't go down");
+      ok(doc().getElementById("layout-reset").disabled, "nothing to reset yet");
+      tool("chart", "move-up").click();
+      eq(visible(), ["chart", "mkt"]);
+      eq(order(), { markets: ["chart", "mkt"] });
+      ok(!doc().getElementById("layout-reset").disabled, "reset enabled");
+      ok(tool("chart", "move-up").disabled, "buttons follow the new order");
+      await navTo("home");
+      eq(visible(), ["gas-a", "mkt"], "Home keeps its own order");
+      await load("/index.html#markets");
+      eq(visible(), ["chart", "mkt"], "after reload");
+      ok(!doc().body.classList.contains("editing"), "layout mode is off after a reload");
+    });
+
+    await t("moving a card back to the default order forgets the override", async () => {
+      doc().getElementById("layout").click();
+      tool("chart", "move-down").click();
+      eq(visible(), ["mkt", "chart"]);
+      eq(order(), null);
+      tool("chart", "move-up").click();
+      eq(order(), { markets: ["chart", "mkt"] });
+    });
+
+    await t("drag a card with the pointer (mouse or touch)", async () => {
+      await navTo("home");
+      const win = frame.contentWindow;
+      const a = doc().getElementById("w-gas-a"), b = doc().getElementById("w-mkt");
+      const h = tool("gas-a", "drag").getBoundingClientRect(), r = b.getBoundingClientRect();
+      const ev = (type, x, y) => new win.PointerEvent(type, { bubbles: true, clientX: x, clientY: y, pointerId: 7,
+        pointerType: "touch", isPrimary: true });
+      tool("gas-a", "drag").dispatchEvent(ev("pointerdown", h.x + 2, h.y + 2));
+      ok(a.classList.contains("dragging"), "dragging style");
+      win.dispatchEvent(ev("pointermove", r.right - 8, r.top + r.height / 2));
+      eq(visible(), ["mkt", "gas-a"], "moves while dragging");
+      win.dispatchEvent(ev("pointerup", r.right - 8, r.top + r.height / 2));
+      ok(!a.classList.contains("dragging"), "drop");
+      eq(order(), { markets: ["chart", "mkt"], home: ["mkt", "gas-a"] });
+      tool("gas-a", "drag").dispatchEvent(new win.PointerEvent("pointerdown", { bubbles: true, button: 2, pointerType: "mouse" }));
+      ok(!a.classList.contains("dragging"), "right mouse button doesn't drag");
+    });
+
+    await t("a newly pinned widget goes after the ones before it by default", async () => {
+      await navTo("news");
+      pin("news-a").click();
+      await navTo("home");
+      eq(visible(), ["mkt", "gas-a", "news-a"]);
+    });
+
+    await t("a data refresh keeps the order", async () => {
+      await frame.contentWindow.__dashboard.refresh();
+      eq(visible(), ["mkt", "gas-a", "news-a"]);
+      await navTo("markets");
+      eq(visible(), ["chart", "mkt"]);
+    });
+
+    await t("Reset order: back to the default for this tab only", async () => {
+      await navTo("home");
+      doc().getElementById("layout-reset").click();
+      eq(visible(), ["gas-a", "mkt", "news-a"]);
+      eq(order(), { markets: ["chart", "mkt"] });
+      ok(doc().getElementById("layout-reset").disabled, "nothing left to reset here");
+    });
+
+    await t("Done and Escape leave layout mode", async () => {
+      doc().getElementById("layout-done").click();
+      ok(!doc().body.classList.contains("editing") && doc().getElementById("layout-bar").hidden, "Done");
+      doc().getElementById("layout").click();
+      doc().dispatchEvent(new frame.contentWindow.KeyboardEvent("keydown", { key: "Escape", bubbles: true }));
+      ok(!doc().body.classList.contains("editing"), "Escape");
+      eq(doc().getElementById("layout").getAttribute("aria-pressed"), "false");
+    });
+
+    await t("export is hidden: no button and no dialog without ?export", async () => {
+      ok(!doc().getElementById("export"), "no dialog");
+      ok(![...doc().querySelectorAll("button, a")].some((b) => /export/i.test(b.textContent)), "no export button");
+    });
+
+    await t("?export shows this browser's layout as JSON", async () => {
+      localStorage.setItem("dash:ui:chart", JSON.stringify({ tab: "AAA", period: "1M" }));
+      await load("/index.html?export#news");
+      await until(() => doc().getElementById("export") && doc().getElementById("export").open, "export dialog");
+      const ta = doc().querySelector("#export textarea");
+      const x = JSON.parse(ta.value);
+      eq(x.dashboard_layout, 1);
+      eq(x.home, ["gas-a", "mkt", "news-a"]);
+      eq(x.sections, { markets: ["chart", "mkt"], news: ["news-a"], gas: ["gas-a"] });
+      eq(x.local_changes, { pins: { "news-a": true }, order: { markets: ["chart", "mkt"] } });
+      eq(x.widget_ui.chart, { tab: "AAA", period: "1M" });
+      ok(!Number.isNaN(Date.parse(x.exported)), "timestamp");
+      eq(ta.selectionEnd - ta.selectionStart, ta.value.length, "text selected for copying");
+      eq(doc().querySelector("#sections a.active").textContent, "News", "page still works underneath");
+      doc().querySelector("#export button").click();
+      await until(() => !doc().getElementById("export").open, "dialog closes");
+      localStorage.clear();
+    });
+
     document.getElementById("results").textContent = JSON.stringify(results);
   </script>
 </body>
