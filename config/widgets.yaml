@@ -181,6 +181,7 @@ widgets:
     type: ai_summary
     title: Daily AI Briefing
     section: news
+    enabled: false              # off: needs a paid Anthropic API key (ANTHROPIC_API_KEY secret) - see README
     refresh: 1d
     size: wide
     options:

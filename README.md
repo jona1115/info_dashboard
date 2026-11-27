@@ -28,7 +28,7 @@ GitHub Actions (every 30 min)                       GitHub Pages
 | sectors | `stock` (table) | The 11 SPDR sector ETFs (XLK, XLF, ...), sorted by today's change. Trend lines are red when the 6-month change is negative |
 | world-economy | `macro` | GDP growth, inflation, unemployment, policy rate, 10Y yield for U.S., euro area, Germany, U.K., Japan, China, India, Korea, Malaysia (OECD, BIS, data.gov.my) |
 | us-yield-curve | `treasury_curve` | U.S. Treasury yield curve vs 1 month / 1 year ago; 10Y−2Y and 10Y−3M spreads |
-| ai-briefing | `ai_summary` | Daily AI briefing: Claude summarizes the other widgets' data into ~7 bullets (needs `ANTHROPIC_API_KEY`) |
+| ai-briefing | `ai_summary` | Daily AI briefing: Claude summarizes the other widgets' data into ~7 bullets. **Off by default** (`enabled: false`): needs a paid `ANTHROPIC_API_KEY` |
 | intel-news | `rss` | Yahoo Finance INTC headlines + Google News |
 | headlines-world | `rss` | CNN, WSJ, Reuters (via Google News), Fox News, NYT, BBC |
 | headlines-malaysia | `rss` | Sin Chew 星洲日报 (Chinese headlines via Google News; its own site blocks bots), NST, The Star (via Google News), Malaysiakini EN + 中文 |
@@ -109,7 +109,7 @@ The `ai-briefing` widget runs after the others in a collection run and sends Cla
 what they collected (headlines, market numbers, gas prices, scores, upcoming dates), using
 `claude-opus-5-5` at low effort with structured JSON output. It refreshes once a day.
 
-To turn it on, create an API key at <https://console.anthropic.com> (Settings → API keys) and add it as a
+It is turned off (`enabled: false` in the config) because the API is pay-as-you-go. To turn it on, set `enabled: true`, create an API key at <https://console.anthropic.com> (Settings → API keys) and add it as a
 repository secret named `ANTHROPIC_API_KEY` (Settings → Secrets and variables → Actions). Without it, the
 card shows "ANTHROPIC_API_KEY is not set". Each briefing uses a few thousand tokens, a few cents a day;
 the card's data (`data/widgets/ai-briefing.json`) records the exact token counts. Choose which widgets
