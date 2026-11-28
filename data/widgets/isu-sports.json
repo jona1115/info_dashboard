@@ -1,0 +1,355 @@
+{
+ "id": "isu-sports",
+ "title": "Iowa State Cyclones · Scores",
+ "type": "espn_team",
+ "view": "scores",
+ "config_hash": "4567e3f9a4ad",
+ "attempted": "2026-11-28T10:17:05Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:17:05Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": "Football",
+    "periods": 4,
+    "games": [
+     {
+      "id": "401856869",
+      "date": "2026-11-20T23:00Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/college-football/game/_/gameId/401856869",
+      "teams": [
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": false,
+        "score": 17,
+        "lines": [
+         3,
+         7,
+         7,
+         0
+        ],
+        "winner": false,
+        "us": true
+       },
+       {
+        "abbr": "UCF",
+        "name": "UCF Knights",
+        "home": true,
+        "score": 48,
+        "lines": [
+         3,
+         21,
+         7,
+         17
+        ],
+        "winner": true,
+        "us": false
+       }
+      ]
+     },
+     {
+      "id": "401856859",
+      "date": "2026-11-14T17:00Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/college-football/game/_/gameId/401856859",
+      "teams": [
+       {
+        "abbr": "CIN",
+        "name": "Cincinnati Bearcats",
+        "home": false,
+        "score": 13,
+        "lines": [
+         7,
+         6,
+         0,
+         0
+        ],
+        "winner": false,
+        "us": false
+       },
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": true,
+        "score": 41,
+        "lines": [
+         21,
+         10,
+         0,
+         10
+        ],
+        "winner": true,
+        "us": true
+       }
+      ]
+     },
+     {
+      "id": "401856853",
+      "date": "2026-11-07T17:00Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/college-football/game/_/gameId/401856853",
+      "teams": [
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": false,
+        "score": 31,
+        "lines": [
+         10,
+         7,
+         0,
+         14
+        ],
+        "winner": false,
+        "us": true
+       },
+       {
+        "abbr": "BAY",
+        "name": "Baylor Bears",
+        "home": true,
+        "score": 42,
+        "lines": [
+         0,
+         21,
+         14,
+         7
+        ],
+        "winner": true,
+        "us": false
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "label": "Men's Basketball",
+    "periods": 2,
+    "games": [
+     {
+      "id": "401920533",
+      "date": "2026-11-27T18:00Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/mens-college-basketball/game/_/gameId/401920533",
+      "teams": [
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": false,
+        "score": 75,
+        "lines": [
+         40,
+         35
+        ],
+        "winner": false,
+        "us": true
+       },
+       {
+        "abbr": "SJU",
+        "name": "St. John's Red Storm",
+        "home": true,
+        "score": 80,
+        "lines": [
+         38,
+         42
+        ],
+        "winner": true,
+        "us": false
+       }
+      ]
+     },
+     {
+      "id": "401920529",
+      "date": "2026-11-26T20:30Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/mens-college-basketball/game/_/gameId/401920529",
+      "teams": [
+       {
+        "abbr": "TENN",
+        "name": "Tennessee Volunteers",
+        "home": false,
+        "score": 75,
+        "lines": [
+         31,
+         44
+        ],
+        "winner": true,
+        "us": false
+       },
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": true,
+        "score": 64,
+        "lines": [
+         19,
+         45
+        ],
+        "winner": false,
+        "us": true
+       }
+      ]
+     },
+     {
+      "id": "401909775",
+      "date": "2026-11-24T22:30Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/mens-college-basketball/game/_/gameId/401909775",
+      "teams": [
+       {
+        "abbr": "SDSU",
+        "name": "San Diego State Aztecs",
+        "home": false,
+        "score": 68,
+        "lines": [
+         34,
+         34
+        ],
+        "winner": false,
+        "us": false
+       },
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": true,
+        "score": 81,
+        "lines": [
+         41,
+         40
+        ],
+        "winner": true,
+        "us": true
+       }
+      ]
+     }
+    ]
+   },
+   {
+    "label": "Women's Basketball",
+    "periods": 4,
+    "games": [
+     {
+      "id": "401917933",
+      "date": "2026-11-27T21:00Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/womens-college-basketball/game/_/gameId/401917933",
+      "teams": [
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": false,
+        "score": 89,
+        "lines": [
+         18,
+         20,
+         30,
+         21
+        ],
+        "winner": true,
+        "us": true
+       },
+       {
+        "abbr": "BEL",
+        "name": "Belmont Bruins",
+        "home": true,
+        "score": 54,
+        "lines": [
+         4,
+         13,
+         7,
+         30
+        ],
+        "winner": false,
+        "us": false
+       }
+      ]
+     },
+     {
+      "id": "401917932",
+      "date": "2026-11-22T20:00Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/womens-college-basketball/game/_/gameId/401917932",
+      "teams": [
+       {
+        "abbr": "DRKE",
+        "name": "Drake Bulldogs",
+        "home": false,
+        "score": 42,
+        "lines": [
+         5,
+         7,
+         13,
+         17
+        ],
+        "winner": false,
+        "us": false
+       },
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": true,
+        "score": 62,
+        "lines": [
+         13,
+         17,
+         15,
+         17
+        ],
+        "winner": true,
+        "us": true
+       }
+      ]
+     },
+     {
+      "id": "401917931",
+      "date": "2026-11-19T00:00Z",
+      "state": "post",
+      "status": "Final",
+      "url": "https://www.espn.com/womens-college-basketball/game/_/gameId/401917931",
+      "teams": [
+       {
+        "abbr": "ISU",
+        "name": "Iowa State Cyclones",
+        "home": false,
+        "score": 72,
+        "lines": [
+         18,
+         19,
+         18,
+         17
+        ],
+        "winner": true,
+        "us": true
+       },
+       {
+        "abbr": "UNI",
+        "name": "Northern Iowa Panthers",
+        "home": true,
+        "score": 57,
+        "lines": [
+         17,
+         14,
+         16,
+         10
+        ],
+        "winner": false,
+        "us": false
+       }
+      ]
+     }
+    ]
+   }
+  ]
+ }
+}

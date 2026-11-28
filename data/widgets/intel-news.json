@@ -1,0 +1,81 @@
+{
+ "id": "intel-news",
+ "title": "Intel Stock News",
+ "type": "rss",
+ "view": "list",
+ "config_hash": "6c2a1ac6c5ed",
+ "attempted": "2026-11-28T10:17:00Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:17:00Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": null,
+    "items": [
+     {
+      "title": "Intel Options Spot-On: On November 27th, 468.48K Contracts Were Traded, With 7.79 Million Open Interest",
+      "url": "https://news.google.com/rss/articles/CBMiogFBVV95cUxPT21TZmQtTVFiaHMtMEFRX3dNTFprWC1HZTRKMnVLQnd6NXBfTFJ0MjUwM251NF93VFF5SzV4YmdBajVqOENSR1k0eUp0bXBNVjZvQW1NRFo2WXhqbFJkYkktVGRkUXhPQkgwYmMxc3dqbzRHZ2xwQVdzWEVjemJZYkNrNEdSSEFiajVnYmhtSEI4SDI4djNIMEhtd3BOSXdkdkE?oc=5",
+      "source": "Moomoo",
+      "date": "2026-11-27T21:30:01Z"
+     },
+     {
+      "title": "Intel Stocks Climb 2.86% as Court Filings Detail Washington's 10% Stake Push",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/intel-stocks-climb-2-86-192124489.html?.tsrc=rss",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T19:21:24Z"
+     },
+     {
+      "title": "INTC DEADLINE ALERT: Faruqi & Faruqi, LLP Reminds Intel (INTC) In",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxQbVFka2JpTmxVNWxoVC1TUzFlSmFDMXZtWk5FS3hpWmY0U1dGZHUwNkhKX0N5T1UxVmkxeHhQU2F5d1RuQmhXMTc4RGlPQjhlM0NDck9WVjBXTVEwNmtsdEVOSDktSmN4ejFYdDZhOWFfdGo4MlNYanBzdUx0b29uSU5RRFhWTGNYR0p4cnptRTIwX1JPbjZqWWF1TUpoZThUSTZmV1g1aWsxZw?oc=5",
+      "source": "The National Law Review",
+      "date": "2026-11-27T16:20:58Z"
+     },
+     {
+      "title": "No Threat to TSMC Before 2028: Intel’s Foundry Gap Is Still Huge",
+      "url": "https://247wallst.com/investing/2026/11/27/no-threat-to-tsmc-before-2028-intels-foundry-gap-is-still-huge/?.tsrc=rss",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T15:45:12Z"
+     },
+     {
+      "title": "AMD Rises 4% Despite Erste Group Downgrade on Valuation; Marvell Climbs 6%, Intel Gains 5%",
+      "url": "https://247wallst.com/investing/2026/11/27/amd-rises-4-despite-erste-group-downgrade-on-valuation-marvell-climbs-6-intel-gains-5/?.tsrc=rss",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T14:02:55Z"
+     },
+     {
+      "title": "Intel Stock $57: Chip Rebound Lifts INTC 5% Before Open",
+      "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxNUWhmTVBHSnl5WUJZZ0JUQ1hvZzcwZ0F6eUhqQnNWS3puY0p0QjEzd2ttaWFGb2hHMWYtbGh6MmJMT2NjdWdrUEVWNTFkeDdoRi1NV29YeTJOc19HMGY2STMtOEFuYnhzUVdZa1R5a3Rzb1pWdGZCVFFuNFRZTml2OEpUNU41UFVKaFNqLTJ0QUdTeFRDb25kZ2R5YUVsdw?oc=5",
+      "source": "FinanceFeeds",
+      "date": "2026-11-27T13:16:40Z"
+     },
+     {
+      "title": "How Much More Could You Lose In Intel Stock?",
+      "url": "https://www.trefis.com/stock/intc/articles/629327/how-much-more-could-you-lose-in-intel-stock/2026-11-27?.tsrc=rss",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T11:59:07Z"
+     },
+     {
+      "title": "Why Is Intel Stock Rallying Today?",
+      "url": "https://investorshub.advfn.com/market-news/article/40792/why-is-intel-stock-rallying-today?.tsrc=rss",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T11:54:08Z"
+     },
+     {
+      "title": "Intel Stock Option Guide: AI Chip Sector Sees Broad-Based Rally—Can the Rebound Continue?",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNOGhQMWE4cjNlUnNEZkZnTTNYT21xNWNFRmdjay15OWhmVXBYSGM3dER2QUF1YnotTzdLa1dWb250MkFtbnFnWFlPdFJuejBKcTdPUG5sN1NNcHAyTTNFN2RNVEtYcTlKcUwtdWk3NThScGJZMDVIWHhGZHJuRFZUbV91SGZBV3ZDWDVPa2NROVJmcWpiRnA2d2RPT2haRWZ5?oc=5",
+      "source": "富途牛牛",
+      "date": "2026-11-27T10:09:27Z"
+     },
+     {
+      "title": "Intel (INTC) Unusual Options Activity Guide: AI Chip Sector Shows Broad Recovery; Can the Rebound Continue?",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxOeEhNanBHaGF1OWVMa0tLWjBTak8xQUt0NWN5UWZDLUZoTmkyQWJHRVJTdWFMZlJxSXpmdkVOQ1lTajZraUtOR0UtSEJHaS1jNGFnMHp0XzNDRTU3OHdXZnNQWGRueTQ3aEQ2OEJPLTZ3a1BkcldaZm1yZUtVdDJFYXJEa0ltSGE5c3Q2ckVjRXhkclMzOHl5X0N2dGMzanFNX0xqMFhWSXk?oc=5",
+      "source": "富途牛牛",
+      "date": "2026-11-27T10:04:24Z"
+     }
+    ]
+   }
+  ]
+ }
+}

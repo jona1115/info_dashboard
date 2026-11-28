@@ -1,0 +1,184 @@
+{
+ "id": "costco-gas",
+ "title": "Costco Gas · Austin",
+ "type": "costco_gas",
+ "view": "costco",
+ "config_hash": "4f7d04f53fc0",
+ "attempted": "2026-11-28T10:16:37Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:16:37Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "as_of": "2026-11-28",
+  "warehouses": [
+   {
+    "id": "681",
+    "name": "Austin",
+    "address": "10401 Research Blvd",
+    "distance_mi": 8.9,
+    "prices": {
+     "regular": 2.759,
+     "premium": 3.399
+    },
+    "gas_hours": [
+     "Mon-Fri. 6:00am - 10:00pm",
+     "Sat. 6:00am - 8:30pm",
+     "Sun. 6:00am - 7:30pm"
+    ]
+   },
+   {
+    "id": "1322",
+    "name": "Pflugerville",
+    "address": "1901 Kelly Ln",
+    "distance_mi": 16.6,
+    "prices": {
+     "regular": 2.799,
+     "premium": 3.399
+    },
+    "gas_hours": [
+     "Mon-Fri. 6:00am - 10:00pm",
+     "Sat. 6:00am - 8:30pm",
+     "Sun. 6:00am - 7:30pm"
+    ]
+   },
+   {
+    "id": "1629",
+    "name": "Kyle",
+    "address": "19086 IH 35",
+    "distance_mi": 17.5,
+    "prices": {
+     "regular": 2.899,
+     "premium": 3.499
+    },
+    "gas_hours": [
+     "Mon-Fri. 6:00am - 10:00pm",
+     "Sat. 6:00am - 8:30pm",
+     "Sun. 6:00am - 7:30pm"
+    ]
+   },
+   {
+    "id": "1152",
+    "name": "Cedar Park",
+    "address": "4601 183A Toll Rd",
+    "distance_mi": 18.5,
+    "prices": {
+     "regular": 2.679,
+     "premium": 3.329
+    },
+    "gas_hours": [
+     "Mon-Fri. 6:00am - 10:00pm",
+     "Sat. 6:00am - 8:30pm",
+     "Sun. 6:00am - 7:30pm"
+    ]
+   },
+   {
+    "id": "1767",
+    "name": "Liberty Hill",
+    "address": "595 US 183",
+    "distance_mi": 27.2,
+    "prices": {
+     "regular": 2.779,
+     "premium": 3.329
+    },
+    "gas_hours": [
+     "Mon-Fri. 6:00am - 10:00pm",
+     "Sat. 6:00am - 8:30pm",
+     "Sun. 6:00am - 7:30pm"
+    ]
+   }
+  ],
+  "history": {
+   "681": [
+    [
+     "2026-11-22",
+     2.759
+    ],
+    [
+     "2026-11-23",
+     2.749
+    ],
+    [
+     "2026-11-24",
+     2.749
+    ],
+    [
+     "2026-11-25",
+     2.759
+    ],
+    [
+     "2026-11-26",
+     2.759
+    ],
+    [
+     "2026-11-27",
+     2.759
+    ],
+    [
+     "2026-11-28",
+     2.759
+    ]
+   ],
+   "1322": [
+    [
+     "2026-11-22",
+     2.719
+    ],
+    [
+     "2026-11-23",
+     2.719
+    ],
+    [
+     "2026-11-24",
+     2.699
+    ],
+    [
+     "2026-11-25",
+     2.699
+    ],
+    [
+     "2026-11-26",
+     2.749
+    ],
+    [
+     "2026-11-27",
+     2.799
+    ],
+    [
+     "2026-11-28",
+     2.799
+    ]
+   ],
+   "1629": [
+    [
+     "2026-11-22",
+     2.699
+    ],
+    [
+     "2026-11-23",
+     2.659
+    ],
+    [
+     "2026-11-24",
+     2.699
+    ],
+    [
+     "2026-11-25",
+     2.849
+    ],
+    [
+     "2026-11-26",
+     2.849
+    ],
+    [
+     "2026-11-27",
+     2.899
+    ],
+    [
+     "2026-11-28",
+     2.899
+    ]
+   ]
+  }
+ }
+}

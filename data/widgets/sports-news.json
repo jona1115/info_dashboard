@@ -1,0 +1,202 @@
+{
+ "id": "sports-news",
+ "title": "Sports · Game Results",
+ "type": "espn_news",
+ "view": "list",
+ "config_hash": "170a4d8a1c95",
+ "attempted": "2026-11-28T10:17:04Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:17:04Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": "NFL",
+    "items": [
+     {
+      "title": "Inspired Steelers move on from Rodgers' exit with cathartic 27-5 win over sloppy Broncos",
+      "url": "https://www.espn.com/nfl/recap?gameId=401873083",
+      "source": "ESPN",
+      "date": "2026-11-28T01:04:32Z"
+     }
+    ]
+   },
+   {
+    "label": "NBA",
+    "items": [
+     {
+      "title": "Spurs ride second-half surge to earn spot in NBA Cup knockout round with 99-96 victory over Lakers",
+      "url": "https://www.espn.com/nba/recap?gameId=401909333",
+      "source": "ESPN",
+      "date": "2026-11-28T05:34:32Z"
+     },
+     {
+      "title": "Isaiah Joe scores 22 points, Pistons' reserves power NBA Cup win over Bucks",
+      "url": "https://www.espn.com/nba/recap?gameId=401909327",
+      "source": "ESPN",
+      "date": "2026-11-28T05:28:32Z"
+     },
+     {
+      "title": "Trail Blazers beat the Warriors 116-94 to advance to the NBA Cup quarterfinals",
+      "url": "https://www.espn.com/nba/recap?gameId=401909336",
+      "source": "ESPN",
+      "date": "2026-11-28T05:27:32Z"
+     },
+     {
+      "title": "Jamal Murray scores 36 to lead Nuggets past Jazz 120-107",
+      "url": "https://www.espn.com/nba/recap?gameId=401909334",
+      "source": "ESPN",
+      "date": "2026-11-28T05:05:32Z"
+     },
+     {
+      "title": "Pelicans beat Clippers 105-104 in NBA Cup group finale",
+      "url": "https://www.espn.com/nba/recap?gameId=401909335",
+      "source": "ESPN",
+      "date": "2026-11-28T05:04:33Z"
+     }
+    ]
+   },
+   {
+    "label": "NCAA Football",
+    "items": [
+     {
+      "title": "Wisconsin trounces Minnesota 28-5 to regain possession of Paul Bunyan's Axe",
+      "url": "https://www.espn.com/ncf/recap?gameId=401858544",
+      "source": "ESPN",
+      "date": "2026-11-28T09:54:33Z"
+     },
+     {
+      "title": "Dampier throws for 5 TDs, 393 yards as No. 2 Utah routs West Virginia to reach 12-0",
+      "url": "https://www.espn.com/ncf/recap?gameId=401856880",
+      "source": "ESPN",
+      "date": "2026-11-28T07:05:32Z"
+     },
+     {
+      "title": "Arch Manning and No. 5 Texas grind past Texas A&M 16-6 to secure SEC title game spot",
+      "url": "https://www.espn.com/ncf/recap?gameId=401856756",
+      "source": "ESPN",
+      "date": "2026-11-28T05:41:33Z"
+     },
+     {
+      "title": "Jadan Baugh helps No. 20 Florida beat Florida State for third straight time, 26-10",
+      "url": "https://www.espn.com/ncf/recap?gameId=401856759",
+      "source": "ESPN",
+      "date": "2026-11-28T01:58:32Z"
+     },
+     {
+      "title": "Sibley runs for 2 TDs as New Mexico beats Air Force to clinch home field in MWC title game",
+      "url": "https://www.espn.com/ncf/recap?gameId=401864546",
+      "source": "ESPN",
+      "date": "2026-11-28T01:03:34Z"
+     }
+    ]
+   },
+   {
+    "label": "NCAA Basketball",
+    "items": [
+     {
+      "title": "No. 17 Minnesota women move to 8-0 with 69-50 win over Cincinnati in the Cancun Challenge",
+      "url": "https://www.espn.com/ncw/recap?gameId=401903575",
+      "source": "ESPN",
+      "date": "2026-11-28T04:40:32Z"
+     },
+     {
+      "title": "No. 24 North Carolina women beat Army 85-65 behind Kate Harping's 23 points",
+      "url": "https://www.espn.com/ncw/recap?gameId=401906095",
+      "source": "ESPN",
+      "date": "2026-11-28T02:36:33Z"
+     },
+     {
+      "title": "Taliah Scott scores 19 and No. 25 Baylor women defeat Penn State 84-56 at Paradise Jam",
+      "url": "https://www.espn.com/ncw/recap?gameId=401916121",
+      "source": "ESPN",
+      "date": "2026-11-28T00:53:34Z"
+     },
+     {
+      "title": "Williams scores 18 to lead No. 9 LSU past Villanova 84-65 to remain unbeaten",
+      "url": "https://www.espn.com/ncw/recap?gameId=401912971",
+      "source": "ESPN",
+      "date": "2026-11-28T00:34:32Z"
+     },
+     {
+      "title": "Strack, Swords lead way as No. 11 Kentucky women roll to 74-28 win over Maine",
+      "url": "https://www.espn.com/ncw/recap?gameId=401915877",
+      "source": "ESPN",
+      "date": "2026-11-27T23:53:32Z"
+     }
+    ]
+   },
+   {
+    "label": "Soccer · Clubs",
+    "items": [
+     {
+      "title": "Crew eliminate defending champion Inter Miami, Messi from playoffs",
+      "url": "https://www.espn.com/soccer/report/_/gameId/401933727",
+      "source": "ESPN",
+      "date": "2026-11-28T04:03:00Z"
+     },
+     {
+      "title": "Jesus stunner helps Forest dump Chelsea for another big home win",
+      "url": "https://www.espn.com/soccer/report/_/gameId/401879225",
+      "source": "ESPN",
+      "date": "2026-11-27T22:10:43Z"
+     },
+     {
+      "title": "Injury-hit Bayern beaten by Lille to suffer 1st UCL loss",
+      "url": "https://www.espn.com/soccer/report/_/gameId/401915377",
+      "source": "ESPN",
+      "date": "2026-11-25T22:27:29Z"
+     },
+     {
+      "title": "Lammens errors cost Man United win despite bizarre Fernandes goal",
+      "url": "https://www.espn.com/soccer/report/_/gameId/401915373",
+      "source": "ESPN",
+      "date": "2026-11-25T22:19:51Z"
+     },
+     {
+      "title": "Alexander Isak nets brace as Liverpool comfortably beat Club Brugge",
+      "url": "https://www.espn.com/soccer/report/_/gameId/401915292",
+      "source": "ESPN",
+      "date": "2026-11-25T22:00:36Z"
+     }
+    ]
+   },
+   {
+    "label": "NHL",
+    "items": [
+     {
+      "title": "Kakko scores twice in 3rd as Kraken hand Oilers their 5th straight loss",
+      "url": "https://www.espn.com/nhl/recap?gameId=401892809",
+      "source": "ESPN",
+      "date": "2026-11-28T04:17:32Z"
+     },
+     {
+      "title": "Penguins snap a 5-game skid with a 6-3 victory over the Sabres",
+      "url": "https://www.espn.com/nhl/recap?gameId=401892808",
+      "source": "ESPN",
+      "date": "2026-11-28T04:06:33Z"
+     },
+     {
+      "title": "Connor scores twice and the Jets beat the Islanders 3-1 for 3rd straight win",
+      "url": "https://www.espn.com/nhl/recap?gameId=401892807",
+      "source": "ESPN",
+      "date": "2026-11-28T03:13:33Z"
+     },
+     {
+      "title": "Kaskimaki's go-ahead goal helps Blues to 5-3 win over Stars",
+      "url": "https://www.espn.com/nhl/recap?gameId=401892798",
+      "source": "ESPN",
+      "date": "2026-11-28T01:32:32Z"
+     },
+     {
+      "title": "Mangiapane scores twice, Knight makes 30 saves to help Blackhawks edge Rangers 2-1",
+      "url": "https://www.espn.com/nhl/recap?gameId=401892806",
+      "source": "ESPN",
+      "date": "2026-11-28T01:24:32Z"
+     }
+    ]
+   }
+  ]
+ }
+}

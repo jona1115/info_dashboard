@@ -1,0 +1,175 @@
+{
+ "id": "fpga-venues",
+ "title": "FPGA Research · TRETS / FPL / FPT",
+ "type": "crossref",
+ "view": "list",
+ "config_hash": "52fcb1eb0d88",
+ "attempted": "2026-11-27T16:43:19Z",
+ "status": "ok",
+ "updated": "2026-11-27T16:43:19Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": "TRETS",
+    "items": [
+     {
+      "title": "A Real-time SpDMM-Chain Accelerator for GCN Inference on FPGA",
+      "url": "https://doi.org/10.1145/3871847",
+      "source": "TRETS",
+      "date": "2026-11-25T00:00:00Z",
+      "date_label": "Nov 25, 2026",
+      "meta": "Feng Yan, Oliver Sinnen"
+     },
+     {
+      "title": "OLA+: Multi-FPGA Overlay Accelerator System for Fully Homomorphic Encryption",
+      "url": "https://doi.org/10.1145/3856805",
+      "source": "TRETS",
+      "date": "2026-11-23T00:00:00Z",
+      "date_label": "Nov 23, 2026",
+      "meta": "Yang Yang, Rajgopal Kannan, Viktor K. Prasanna"
+     },
+     {
+      "title": "A Novel SRAM-Based Cross-Coupled BRAM PUF Featuring Entropy-Driven Addressing for AMD FPGAs",
+      "url": "https://doi.org/10.1145/3848637",
+      "source": "TRETS",
+      "date": "2026-11-23T00:00:00Z",
+      "date_label": "Nov 23, 2026",
+      "meta": "Ahmad Al Khas, Salih Bayar, Ihsan Cicek"
+     },
+     {
+      "title": "Accelerating Recommender Model ETL with a Streaming FPGA–GPU Dataflow",
+      "url": "https://doi.org/10.1145/3871842",
+      "source": "TRETS",
+      "date": "2026-11-23T00:00:00Z",
+      "date_label": "Nov 23, 2026",
+      "meta": "Yu Zhu, Wenqi Jiang, Piyumi Jasin Pathiranage et al."
+     },
+     {
+      "title": "Cut Topology-Based FPGA Logic Architecture with Powerful Logic Capacity and Area Efficiency",
+      "url": "https://doi.org/10.1145/3830470",
+      "source": "TRETS",
+      "date": "2026-10-21T00:00:00Z",
+      "date_label": "Oct 21, 2026",
+      "meta": "Xianfeng Cao, Jiangnan Li, Chenyu Jiang et al."
+     },
+     {
+      "title": "S2MM: Scalable FPGA Acceleration of Secure Matrix Multiplication with Homomorphic Encryption",
+      "url": "https://doi.org/10.1145/3839563",
+      "source": "TRETS",
+      "date": "2026-10-21T00:00:00Z",
+      "date_label": "Oct 21, 2026",
+      "meta": "Zhihan Xu, Rajgopal Kannan, Viktor Prasanna"
+     }
+    ]
+   },
+   {
+    "label": "FPL",
+    "items": [
+     {
+      "title": "Jack of All Scales: A Versatile FPGA Tensor Block for MXFP Precisions",
+      "url": "https://doi.org/10.23919/fplcps00026.2026.00034",
+      "source": "FPL",
+      "date": "2026-09-01T00:00:00Z",
+      "date_label": "Sep 2026",
+      "meta": "Marwan Mekhemer, Ahmed Elsousy, Balaji Venkatesh et al."
+     },
+     {
+      "title": "Rena: An HLS Accelerator for Resonator Networks on FPGAs",
+      "url": "https://doi.org/10.23919/fplcps00026.2026.00025",
+      "source": "FPL",
+      "date": "2026-09-01T00:00:00Z",
+      "date_label": "Sep 2026",
+      "meta": "Caio Vieira, Antonio Carlos Schneider Beck"
+     },
+     {
+      "title": "Scalable Packet Tracking on FPGAs for Erasure-Coded RDMA over Lossy WANs",
+      "url": "https://doi.org/10.23919/fplcps00026.2026.00046",
+      "source": "FPL",
+      "date": "2026-09-01T00:00:00Z",
+      "date_label": "Sep 2026",
+      "meta": "Yicheng Qian, Konstantin Taranov, Yevgeny Yankilevich et al."
+     },
+     {
+      "title": "RQP: Resource-Oriented Quantiser Pruning for Neural Networks on FPGAs",
+      "url": "https://doi.org/10.23919/fplcps00026.2026.00052",
+      "source": "FPL",
+      "date": "2026-09-01T00:00:00Z",
+      "date_label": "Sep 2026",
+      "meta": "Changhong Li, Biswajit Basu, Shreejith Shanker"
+     },
+     {
+      "title": "In-Path Packet Inspection at Line Rate with FPGAs",
+      "url": "https://doi.org/10.23919/fplcps00026.2026.00078",
+      "source": "FPL",
+      "date": "2026-09-01T00:00:00Z",
+      "date_label": "Sep 2026",
+      "meta": "Ilie-Victor Hurbean, Si-Jun Kwon, Lukas Stasytis et al."
+     },
+     {
+      "title": "Demo: Event-Based Motion Estimation via FPGA-Accelerated Contrast Maximization",
+      "url": "https://doi.org/10.23919/fplcps00026.2026.00080",
+      "source": "FPL",
+      "date": "2026-09-01T00:00:00Z",
+      "date_label": "Sep 2026",
+      "meta": "Marcin Kowalczyk, Michal Filipkowski, Tomasz Kryjak"
+     }
+    ]
+   },
+   {
+    "label": "FPT",
+    "items": [
+     {
+      "title": "An Efficient FPGA Accelerator for Learning Image Compression",
+      "url": "https://doi.org/10.1109/icfpt67023.2025.00017",
+      "source": "FPT",
+      "date": "2025-12-02T00:00:00Z",
+      "date_label": "Dec 2, 2025",
+      "meta": "Shengtao Zhao, Yingchang Mao, Zhaohui Guo et al."
+     },
+     {
+      "title": "Pairl: Physical-Aware Iterative Retiming with Configurable Latches for FPGA Optimization",
+      "url": "https://doi.org/10.1109/icfpt67023.2025.00036",
+      "source": "FPT",
+      "date": "2025-12-02T00:00:00Z",
+      "date_label": "Dec 2, 2025",
+      "meta": "Kaixiang Zhu, Jide Zhang, Wai-Shing Luk et al."
+     },
+     {
+      "title": "Toward Domain-Aware Energy-Efficient Reconfigurable Architectures",
+      "url": "https://doi.org/10.1109/icfpt67023.2025.00055",
+      "source": "FPT",
+      "date": "2025-12-02T00:00:00Z",
+      "date_label": "Dec 2, 2025",
+      "meta": "Ensieh Aliagha, Diana Göhringer"
+     },
+     {
+      "title": "CAN't Be Hacked: A Decision Tree-Based Intrusion Detection System for CAN Security",
+      "url": "https://doi.org/10.1109/icfpt67023.2025.00015",
+      "source": "FPT",
+      "date": "2025-12-02T00:00:00Z",
+      "date_label": "Dec 2, 2025",
+      "meta": "Hyungchul Im, Sangmin Park, Sua Shin et al."
+     },
+     {
+      "title": "Neurocore: A GNN Approach to Configurable IP Core Identification in FPGA Netlists",
+      "url": "https://doi.org/10.1109/icfpt67023.2025.00026",
+      "source": "FPT",
+      "date": "2025-12-02T00:00:00Z",
+      "date_label": "Dec 2, 2025",
+      "meta": "Dallin Dahl, Keenan Faulkner, James Usevitch et al."
+     },
+     {
+      "title": "High-Dimension Linear System Computation Based on Efficient Integrated Online Arithmetic",
+      "url": "https://doi.org/10.1109/icfpt67023.2025.00019",
+      "source": "FPT",
+      "date": "2025-12-02T00:00:00Z",
+      "date_label": "Dec 2, 2025",
+      "meta": "Chifeng Song, He Li"
+     }
+    ]
+   }
+  ]
+ }
+}

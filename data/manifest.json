@@ -1,0 +1,260 @@
+{
+ "site": {
+  "title": "Dashboard",
+  "timezone": "America/Chicago",
+  "refresh_minutes": 5,
+  "sections": [
+   {
+    "id": "home",
+    "title": "Home"
+   },
+   {
+    "id": "markets",
+    "title": "Markets & Economy"
+   },
+   {
+    "id": "news",
+    "title": "News"
+   },
+   {
+    "id": "sports",
+    "title": "Sports"
+   },
+   {
+    "id": "gas",
+    "title": "Gas Prices"
+   }
+  ]
+ },
+ "generated": "2026-11-28T10:17:07Z",
+ "widgets": [
+  {
+   "id": "gas-aaa",
+   "title": "Gas Prices · AAA",
+   "view": "gas",
+   "size": "wide",
+   "section": "gas",
+   "pinned": true,
+   "refresh": "6h",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:37Z",
+   "attempted": "2026-11-28T10:16:37Z"
+  },
+  {
+   "id": "costco-gas",
+   "title": "Costco Gas · Austin",
+   "view": "costco",
+   "size": "normal",
+   "section": "gas",
+   "pinned": true,
+   "refresh": "3h",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:37Z",
+   "attempted": "2026-11-28T10:16:37Z"
+  },
+  {
+   "id": "usd-myr",
+   "title": "USD → MYR",
+   "view": "stock",
+   "size": "normal",
+   "section": "markets",
+   "pinned": true,
+   "refresh": "1h",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:37Z",
+   "attempted": "2026-11-28T10:16:37Z"
+  },
+  {
+   "id": "markets",
+   "title": "Markets",
+   "view": "stock",
+   "size": "wide",
+   "section": "markets",
+   "pinned": true,
+   "refresh": "30m",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:38Z",
+   "attempted": "2026-11-28T10:16:38Z"
+  },
+  {
+   "id": "etf-candles",
+   "title": "Stock & ETF Charts · Daily Candles",
+   "view": "candles",
+   "size": "wide",
+   "section": "markets",
+   "pinned": false,
+   "refresh": "30m",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:41Z",
+   "attempted": "2026-11-28T10:16:41Z"
+  },
+  {
+   "id": "market-sentiment",
+   "title": "Market Sentiment · Fear & Greed",
+   "view": "sentiment",
+   "size": "wide",
+   "section": "markets",
+   "pinned": false,
+   "refresh": "30m",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:44Z",
+   "attempted": "2026-11-28T10:16:44Z"
+  },
+  {
+   "id": "sectors",
+   "title": "S&P 500 Sectors · SPDR ETFs",
+   "view": "stock",
+   "size": "wide",
+   "section": "markets",
+   "pinned": false,
+   "refresh": "30m",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:45Z",
+   "attempted": "2026-11-28T10:16:45Z"
+  },
+  {
+   "id": "world-economy",
+   "title": "World Economy",
+   "view": "macro",
+   "size": "wide",
+   "section": "markets",
+   "pinned": false,
+   "refresh": "12h",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:49Z",
+   "attempted": "2026-11-28T10:16:49Z"
+  },
+  {
+   "id": "us-yield-curve",
+   "title": "U.S. Treasury Yield Curve",
+   "view": "yield_curve",
+   "size": "normal",
+   "section": "markets",
+   "pinned": false,
+   "refresh": "3h",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:56Z",
+   "attempted": "2026-11-28T10:16:56Z"
+  },
+  {
+   "id": "key-dates",
+   "title": "Key Dates",
+   "view": "calendar",
+   "size": "normal",
+   "section": "markets",
+   "pinned": false,
+   "refresh": "12h",
+   "status": "ok",
+   "updated": "2026-11-28T10:16:57Z",
+   "attempted": "2026-11-28T10:16:57Z"
+  },
+  {
+   "id": "intel-news",
+   "title": "Intel Stock News",
+   "view": "list",
+   "size": "normal",
+   "section": "news",
+   "pinned": false,
+   "refresh": "1h",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:00Z",
+   "attempted": "2026-11-28T10:17:00Z"
+  },
+  {
+   "id": "headlines-world",
+   "title": "Headlines · U.S. & World",
+   "view": "list",
+   "size": "wide",
+   "section": "news",
+   "pinned": false,
+   "refresh": "1h",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:01Z",
+   "attempted": "2026-11-28T10:17:01Z"
+  },
+  {
+   "id": "headlines-malaysia",
+   "title": "Headlines · Malaysia",
+   "view": "list",
+   "size": "wide",
+   "section": "news",
+   "pinned": false,
+   "refresh": "1h",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:01Z",
+   "attempted": "2026-11-28T10:17:01Z"
+  },
+  {
+   "id": "ai-news",
+   "title": "AI News",
+   "view": "list",
+   "size": "wide",
+   "section": "news",
+   "pinned": false,
+   "refresh": "1h",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:03Z",
+   "attempted": "2026-11-28T10:17:03Z"
+  },
+  {
+   "id": "sports-news",
+   "title": "Sports · Game Results",
+   "view": "list",
+   "size": "wide",
+   "section": "sports",
+   "pinned": false,
+   "refresh": "1h",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:04Z",
+   "attempted": "2026-11-28T10:17:04Z"
+  },
+  {
+   "id": "isu-sports",
+   "title": "Iowa State Cyclones · Scores",
+   "view": "scores",
+   "size": "wide",
+   "section": "sports",
+   "pinned": false,
+   "refresh": "30m",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:05Z",
+   "attempted": "2026-11-28T10:17:05Z"
+  },
+  {
+   "id": "fpga-venues",
+   "title": "FPGA Research · TRETS / FPL / FPT",
+   "view": "list",
+   "size": "wide",
+   "section": "news",
+   "pinned": false,
+   "refresh": "1d",
+   "status": "ok",
+   "updated": "2026-11-27T16:43:19Z",
+   "attempted": "2026-11-27T16:43:19Z"
+  },
+  {
+   "id": "fpga-arxiv",
+   "title": "FPGA / ASIC Preprints · arXiv",
+   "view": "list",
+   "size": "normal",
+   "section": "news",
+   "pinned": false,
+   "refresh": "6h",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:06Z",
+   "attempted": "2026-11-28T10:17:06Z"
+  },
+  {
+   "id": "fpga-news",
+   "title": "FPGA / ASIC Industry News",
+   "view": "list",
+   "size": "normal",
+   "section": "news",
+   "pinned": false,
+   "refresh": "3h",
+   "status": "ok",
+   "updated": "2026-11-28T10:17:06Z",
+   "attempted": "2026-11-28T10:17:06Z"
+  }
+ ]
+}

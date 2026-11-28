@@ -1,0 +1,226 @@
+{
+ "id": "headlines-world",
+ "title": "Headlines · U.S. & World",
+ "type": "rss",
+ "view": "list",
+ "config_hash": "787a9f02bd38",
+ "attempted": "2026-11-28T10:17:01Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:17:01Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": "CNN",
+    "items": [
+     {
+      "title": "What voters who backed Democrats want from the next Congress, according to the data",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNaWRmM1BPTTNuR0tFeVg3TFo5VzR1X1kyOXhLRUVMOVFqcHNvcFpPT3Fqc3c1NnZLVE9BR2xOaHQ2SnJjckVkNWhhRmpvbTZEb2tzVmNmVUxKellfS0d6aWVQWVBBb29BQUZJR1dESjh6ejZ2bllWcmUtVUdrR2VFQlhiMDFqbHUtVmNNUlpBbmZEajA?oc=5",
+      "source": "CNN",
+      "date": "2026-11-28T10:00:15Z"
+     },
+     {
+      "title": "Five Heroes, Five Remarkable Stories - CNN 5 Things - Podcast on CNN Podcasts",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxNVW5BX2tVOEp4cGt5R3NjLVlwYnBWX2RYaHlxRzBuNmx5TUlRVEg0OU8ySU9CbEJvWlJqaHB3cEVWUWVJNGU1djFpSWc3NnNxMDlkRVg2ZG1vTS0wNHAxQzNrS2k2NDFHZ1NwYVBsNXQ1QzIzVlJkYU9XaWxMWGVYZU9TYUxNTDJKQTNTMGdYNXZjVFk?oc=5",
+      "source": "CNN",
+      "date": "2026-11-28T09:33:53Z"
+     },
+     {
+      "title": "We found the best deals on kitchen gadgets this Black Friday | CNN Underscored",
+      "url": "https://news.google.com/rss/articles/CBMihgFBVV95cUxOTjJPSnlpaDh4VXgtSS0zQ0wtWnB4am4xZl9GMWwwdkhXRFJJbGF6QUlla2JGNUh2TDl2b1lOR0NZZkk5QWdMZmp2OGY2RzlVTjRXMGVQYmJOQjJWTEk1SFoxc3hrWjJkcTBydjhXNnFBN2tqODFCTTFycXR3djZDd2w3bm9kdw?oc=5",
+      "source": "CNN",
+      "date": "2026-11-28T08:52:38Z"
+     },
+     {
+      "title": "Hundreds of tarantulas seized from travelers’ luggage in Peru",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPa3oxWDhTc3dFTDBZSEhCMGtUSG1XN0tkMzQ3TUNIRDI5Mk5ybmU4WlgyWTVtcHcwZEJJQURkajl0Tjh6MHVVVjdWUzBzRHhnU1N2blduLUVuVDB2dVhVRUJQN0Y4bXc4SWtKaVBjbUtQbzdvcS1vUnVaVm05ek93TEMxOXJmeWdQTG1hVmJVWnp0RlpjN2xyX2RBTUdFNFQ3MHRTTmxweFhyOGpBNU43dkhBaWpqdGNEVUJkX2pqVlQ?oc=5",
+      "source": "CNN",
+      "date": "2026-11-28T08:49:04Z"
+     },
+     {
+      "title": "Tons of top vacuums are up to 55% off for Black Friday. I found the 24 best deals | CNN Underscored",
+      "url": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNbWgtWkNVQXZUV1o0YkFFWWp2Z3d2T1dtZWJsSndRWUlnV0xtZUEwZWdiUWNhRmdtY2NRVGFhN3pUM2xEZWtxZmRicEtWcDljXzZxMVZWRmY5RUhCSk45aGRCZ2lJampRZW1xeUxpR0lJUmFnS1F4YzdLZXc0WVNJYlpfQzM?oc=5",
+      "source": "CNN",
+      "date": "2026-11-28T08:14:40Z"
+     }
+    ]
+   },
+   {
+    "label": "Wall Street Journal",
+    "items": [
+     {
+      "title": "The 315 Best Black Friday 2026 Deals",
+      "url": "https://news.google.com/rss/articles/CBMijwFBVV95cUxQMl9PWlBDZmlpSFd3dkRsQ2JFWVJtclNGakJRa2ZIdFFNak9COE53SHBXS2tnOGhEWWRmS2tnTUtrVUZQOGk1VS01VDk0aDVqWVEyb2EyX0FNYXpfRm5HVEZXNHBET1NiZDZBdEs3OWdhZ0pkY2xlSVZEcFdsSFB5SkZSeUV0NFRVeEVBZ2hTQQ?oc=5",
+      "source": "WSJ",
+      "date": "2026-11-28T10:06:42Z"
+     },
+     {
+      "title": "The 135 Best Black Friday Home and Kitchen Deals",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxQZnVta29tMm5nOGFJc3BmcWNpcU9ZM0prdjF1VTV4OWtrTkt5d0RVbWJlbENIRE1pcEZ4U1FwUkU3bEdfdEFvbnQ2Wll4aFl4dDNxdzlUc1hKM0JkREQ0WmVLc1B1eEdDQVJ6R1VLbTRfR3ZkZk1WaXNxNmNvX1hPS0stcmJsVUVLb0NYUkZ6X05jb2ZDTGhZUjhqNHA5SlZB?oc=5",
+      "source": "WSJ",
+      "date": "2026-11-28T09:33:14Z"
+     },
+     {
+      "title": "HP Offers ‘Prudent’ Guidance Amid Rising Memory Costs",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOQlZHNU1nUDNxN2FlNkoxa2hTakxDSDM4cXFvSkY2d2loOUtsdEFWNjBoTG90eWNZeVhKVF9QUnRCV2hPSVRhQnAwYTBsWU9xRWktSzFpam1QeXRrbTFTeU5IZzlpWkNpam9Ka0NoRThnUlpENXdYN3I4VC10NDNYOGV6aWFEcUpVMzE3REM2RXNEdncxal9zRlhMQVYtRms?oc=5",
+      "source": "WSJ",
+      "date": "2026-11-28T09:25:29Z"
+     },
+     {
+      "title": "UniCredit Seeks Commerzbank Chair Role for CEO Orcel After Takeover Clears Final Hurdle",
+      "url": "https://news.google.com/rss/articles/CBMilgFBVV95cUxQTFhLQXl6czBRZVFKUlRsdjU1VlFPYW9yTkZDQzRlSFFaSGpCeFZoMU93cHdfczlKemFWaHFiS3A2aVpJcVVTS01CSUk5TXZHMWFVbi1JcWVwSzRrRFRWeksybWVRZnhRM1h1VElnLWx6Y094U253THFBZlU1bHV3WU5zOUVEbVNLT3pIdmlDalFpTWlYUWc?oc=5",
+      "source": "WSJ",
+      "date": "2026-11-28T09:13:03Z"
+     },
+     {
+      "title": "Anarchy Breaks Out at One of America’s Most Beloved Public Golf Courses",
+      "url": "https://news.google.com/rss/articles/CBMihwFBVV95cUxQMkJZNzE1NWtucThjNi1KVlZTdFQ5ZWJhZlhEMzlsZ05TS3U3Vmc2dFlVcFRNc1ZjSENkelNIVG82bDNyQ0R3ZC01bDRvTUswNmdGeWxJLTEyTml2bnJvNUxUdkNOZF9ZQUdHaHdfaV9xQkFPc2FXdW1DTml6MHJsNmx0YlUxS0E?oc=5",
+      "source": "WSJ",
+      "date": "2026-11-28T09:01:29Z"
+     }
+    ]
+   },
+   {
+    "label": "Fox News",
+    "items": [
+     {
+      "title": "Shop Small Business Saturday for fruit trees, Advent calendars and more",
+      "url": "https://www.foxnews.com/deals/shopping-with-friends-small-business-saturday",
+      "source": "Fox News",
+      "date": "2026-11-28T10:00:48Z"
+     },
+     {
+      "title": "Why Mamdani’s move to close infamous NYC jail could be 'massive hit' that reverberates for years: expert",
+      "url": "https://www.foxnews.com/politics/why-mamdanis-move-close-infamous-nyc-jail-could-be-massive-hit-reverberates-years-expert",
+      "source": "Fox News",
+      "date": "2026-11-28T10:00:03Z"
+     },
+     {
+      "title": "Arch Manning, Longhorns avoid scare against Texas A&M to punch ticket to SEC Championship Game",
+      "url": "https://www.foxnews.com/outkick-sports/arch-manning-longhorns-avoid-scare-against-texas-am-punch-ticket-sec-championship-game",
+      "source": "Fox News",
+      "date": "2026-11-28T04:25:11Z"
+     },
+     {
+      "title": "Former SEC head coach who landed in the Group of 5 abruptly steps down after underwhelming five-year run",
+      "url": "https://www.foxnews.com/outkick-sports/former-sec-head-coach-landed-group-5-abruptly-steps-down-underwhelming-five-year-run",
+      "source": "Fox News",
+      "date": "2026-11-28T03:45:17Z"
+     },
+     {
+      "title": "Former Bears star Revie Sorey, who blocked for Walter Payton, dead at 73",
+      "url": "https://www.foxnews.com/outkick-sports/former-bears-star-revie-sorey-blocked-walter-payton-dead-73",
+      "source": "Fox News",
+      "date": "2026-11-28T03:20:42Z"
+     }
+    ]
+   },
+   {
+    "label": "New York Times",
+    "items": [
+     {
+      "title": "Princess Catherine’s Cancer Documentary ‘Heal’: 3 Takeaways",
+      "url": "https://www.nytimes.com/2026/11/27/world/europe/princess-catherine-kate-heal-cancer-documentary.html",
+      "source": "NYT",
+      "date": "2026-11-28T08:55:26Z"
+     },
+     {
+      "title": "Trump’s Embrace of Xi and Huang Stuns China Critics in Washington",
+      "url": "https://www.nytimes.com/2026/11/28/us/politics/trump-china-critics-nvidia.html",
+      "source": "NYT",
+      "date": "2026-11-28T05:19:36Z"
+     },
+     {
+      "title": "Andrea Stewart-Cousins, New York’s First Female Senate Majority Leader, Dies",
+      "url": "https://www.nytimes.com/2026/11/27/us/andrea-stewart-cousins-dead.html",
+      "source": "NYT",
+      "date": "2026-11-28T03:28:49Z"
+     },
+     {
+      "title": "Supreme Court Rulings Cheered by Republicans Wound Up Hurting Them",
+      "url": "https://www.nytimes.com/2026/11/27/us/politics/supreme-court-rulings-midterms-voting.html",
+      "source": "NYT",
+      "date": "2026-11-28T02:46:33Z"
+     },
+     {
+      "title": "Planning Board to Hold Last-Minute Meeting to Consider Trump’s D.C. Construction",
+      "url": "https://www.nytimes.com/2026/11/27/us/politics/planning-board-trump-construction-meeting.html",
+      "source": "NYT",
+      "date": "2026-11-28T02:33:52Z"
+     }
+    ]
+   },
+   {
+    "label": "Reuters",
+    "items": [
+     {
+      "title": "Explosion reported at school in Afghanistan, official says",
+      "url": "https://news.google.com/rss/articles/CBMiqgFBVV95cUxNcVRKa09nUTkyZHR6Tnp6aTFwNzFYOHd0WGRtWjFEU2Z4RmFvRzVETWJwbEF4WHROdnpCVU9NMVBYYUJtbVU5NzVqNEVkaEVhNUtmMHFrbFE0cW5OQmdXYkpiV0JvbGoteXRYamR6Mjl0clR1cmp2elB5LU9IOUFjZzcwSXFjTXVxcy1XbmJHdGQwbjZMREhfNzRwS29Jck8zbURsQkdoTXMtZw?oc=5",
+      "source": "Reuters",
+      "date": "2026-11-28T08:05:25Z"
+     },
+     {
+      "title": "Russia says it downed 1,246 Ukrainian drones overnight",
+      "url": "https://news.google.com/rss/articles/CBMitwFBVV95cUxQVUhoaFdkUkNnYk9wZHlFSGtuU1pyVFFULU1LdEJpNXRJbTZveWdTWWtzSWdfVlVtZlBWLXlYYkQ3LXlDLTBHN3JtbHNVcnFRem1LT25YQm9vRHJDTG9yQXhXWlBTRVpIb0VWN1ZQd0pwSXJITUtNQnpiTks5eVpYek43Z0UwUGRLeDduWlp3TXZvR1ZWVll2UnlROE9Na1M1YTFHendLaFdnTjYzVDlHVGE5MU5UMWM?oc=5",
+      "source": "Reuters",
+      "date": "2026-11-28T07:25:00Z"
+     },
+     {
+      "title": "Iran's flogging of singer was warning from anxious hardliners, insiders say",
+      "url": "https://news.google.com/rss/articles/CBMiuwFBVV95cUxPdHEwNVJXaUs1bXFUR0FoQUQ2TTJWNThDakwyUkMxZk41VlYwYUthWVdNck1vT3pIY1BZdjQ4S3RIOFZuUlRjRUZoRUxxTmRaOVI1ZjU2RURfVzJMSGo0RVpnZ29XTmlXeV9zbExvOWMwdEZ6a0ozQzBZNkhsQWpsamFrTnlLMUgwTnpHd2htUTdrRUw3a0F5V1lTUDI2dDRTbjQ1UjBObzdKUm50N2hfTHNzVE1hSDNGMng0?oc=5",
+      "source": "Reuters",
+      "date": "2026-11-28T07:14:00Z"
+     },
+     {
+      "title": "US military repelled drones at UK airbase this month, FT reports",
+      "url": "https://news.google.com/rss/articles/CBMikwFBVV95cUxPLVBLa19DdUlDcGg5RVY2bjFfYS1QYXJRQmE0Z1ZfNm02WmI5RnBhcEhKSGdRR01XdUJhandJSzQ0SEF5bWRlZlBUbUJPbVJLbjROSUozYnJseGhLekl6bEhTTU5tbEVQMWtCU3Z1YzJiTTZNcnBrdVNYQ3ZudHpLVFREbWhkcUNWSVQ0bHdCVUF5RU0?oc=5",
+      "source": "Reuters",
+      "date": "2026-11-28T05:18:00Z"
+     },
+     {
+      "title": "India's bottled-water crackdown widens as new Bisleri sample found with bacteria",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxPVVo0MmV3VWE5bkFxdlExTW5Qa1VRUm4tcHZnbmJKbmNwSjJiNjVuRFlwbHZqcFJYR2pHekJKdFptbDJlekZ0Z0VSRTV3bm5ydUNNNmdLMU5sZkFMLU95SVpnNW9MaXNPNllyZFJleUFWcHEteFZGczZzNHdBY1o3bERlTVp6a3lvd0E1RjFZNXNmRVFpdVVkNVR3MVpJa1dsVW0zcGVTM1I5UmRBVU5icmdB?oc=5",
+      "source": "Reuters",
+      "date": "2026-11-28T05:09:00Z"
+     }
+    ]
+   },
+   {
+    "label": "BBC",
+    "items": [
+     {
+      "title": "Actor and comedian PJ Gallagher dies aged 51",
+      "url": "https://www.bbc.co.uk/news/articles/cwp83j2k31g3o?at_medium=RSS&at_campaign=rss",
+      "source": "BBC",
+      "date": "2026-11-28T10:11:18Z"
+     },
+     {
+      "title": "'I was trying to be someone I wasn't' – Steward on All Blacks shot",
+      "url": "https://www.bbc.co.uk/sport/rugby-union/articles/c67420k9jyxgo?at_medium=RSS&at_campaign=rss",
+      "source": "BBC",
+      "date": "2026-11-28T09:11:50Z"
+     },
+     {
+      "title": "Pensions and benefits services still down after 'cyber incident'",
+      "url": "https://www.bbc.co.uk/news/articles/cm1wrgqyq4d8o?at_medium=RSS&at_campaign=rss",
+      "source": "BBC",
+      "date": "2026-11-28T09:10:32Z"
+     },
+     {
+      "title": "Set time aside for children to read for pleasure, schools to be told",
+      "url": "https://www.bbc.co.uk/news/articles/c65y1vp4ndqjo?at_medium=RSS&at_campaign=rss",
+      "source": "BBC",
+      "date": "2026-11-28T08:27:17Z"
+     },
+     {
+      "title": "Ranking the Premier League's ultimate free-kick specialists",
+      "url": "https://www.bbc.co.uk/sport/football/articles/cjzx97dz149qo?at_medium=RSS&at_campaign=rss",
+      "source": "BBC",
+      "date": "2026-11-28T08:14:24Z"
+     }
+    ]
+   }
+  ]
+ }
+}

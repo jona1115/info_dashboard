@@ -1,0 +1,105 @@
+{
+ "id": "ai-news",
+ "title": "AI News",
+ "type": "rss",
+ "view": "list",
+ "config_hash": "c6b27c760785",
+ "attempted": "2026-11-28T10:17:03Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:17:03Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": null,
+    "items": [
+     {
+      "title": "Anthropic Finishes First Full Week Above IPO Price",
+      "url": "https://news.google.com/rss/articles/CBMitgFBVV95cUxPeVhwM1d4VGtCX3pRUlBUcWljb2JSOENMbHhNcW9WRDFCNnBrd2I5MzdkLVdOSkViVWFXeHNPQ1lwN0Rwd1kwR19XdGs0Ykd2NzBlNUVoaUMyVW5GRHFWYTl5MHlPQ0dibURnUkc5al8xczVnMmluV1ptWUhDVkQtNm9VYl9RWU1VWnVtQll3a0ZMQjFERHQ0T3F4ek80MjE4bWZWcHE0MF9Eb1ZZSzVuZk9EVHNSUQ?oc=5",
+      "source": "Bloomberg.com",
+      "date": "2026-11-28T09:13:47Z"
+     },
+     {
+      "title": "Anthropic now has a price. But who puts a price on the risk?",
+      "url": "https://news.google.com/rss/articles/CBMigAFBVV95cUxQU1hFRmNFUjhwWHZILXkydXVDZ3YxQUdGeXBoYjFVMlVWZFRHSUkxZmZvQ3hDNFdRVWh4bmFVVS1IckxCNlEwaWRSaHRKUm50WEFKM1RCM3pUdzg1N2xoWmRXVHFvMUpNc3VIOEhYU0VEc3djZzdkTzRHWWI3b0FvQw?oc=5",
+      "source": "Fast Company",
+      "date": "2026-11-28T09:04:25Z"
+     },
+     {
+      "title": "OpenAI’s 457 MW TensorWave Deal Could Be Worth Up To $9.1B, Say Analysts: What It Means For AMD Stock",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxPNGRqM2NVZ1N5V1hJY2lGNV80RGlqRk94Tl9fTkJJWUxUYWRzNkxqY0J3YkZieWZXV2YtOHNNbi1Kc296ZGRGOVNyX0RoQlRMQWM0MFcwUXBXblpxYjFvWWpmVHBmZnA0RnlqaUtjU1E0cmNIT3VZTzNxQ1JackdTSnh1RGhIaGxnS2FZZkxUaXUwUVV2T1h1Zg?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-28T08:29:50Z"
+     },
+     {
+      "title": "Here's Why Anthropic Stock Rallied on Friday -- and Why Wall Street Analysts Say It's Still a Buy Right Now",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxOX0tBaVVMMEhVcW8xV0hHZkMtTHdtcmd6QXBGTnhnd1NobXRYa0hwcThnR3hjTGFoWHZRaDhYeVIzc0RacTN2WExzVHQ5MWFidmtRbkNwQkNCMDYwcnZsTE9ka01uMG1XMVA3NTRZcUIwT2hiWkczRVJnNG50NDlPOGo0VllVUGpCM0ZxQzNZZS15Q0VIOEVFbWhQeTF6cW8?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-28T02:15:00Z"
+     },
+     {
+      "title": "OpenAI says a spy handed Apple secret plans for AI devices that could 'outcompete' the iPhone maker on its 'own turf'",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxQWmROekpXeTBPR2Fqd2xTbjhkTWRQcm5LZVEtcFJjZlRhMGloQXFBY1ctTW5lX1JEODloRnRKYTJuSVRnRU9PQ1RlRjdlOFI3eWJBSFBmaTdnNXN5VUZ6VVhRX1h6cTF0S3VTMFVFazVGN21FVzVrUFNRa3c3U2szS3FpTmxWVlhHaEJnaFI0eVc1djdPY0Zz?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-28T01:00:00Z"
+     },
+     {
+      "title": "3 AI Infrastructure Stocks to Watch As Apple OpenAI Fight Tests Chip Demand",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPSld3TDJPS2R6Y3RhcHdMN3RMMTVTaU04aUF2ZVY5emp5dGpuYnJDdkRKeXlsZUpuR01FRmoydzlhMVIzVEFfcXRWVWo1dFhzaGUtdGZkME56dWVBN2NTbDR4SEV4MWxvaTZuNEJCbmw0QmxzUS1zS0xqbEJua3hMeV91akFGSzNWb1lFS1BCZ1kzYVFiRzZLVU1BYnM?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-28T00:14:00Z"
+     },
+     {
+      "title": "OpenAI Says Apple Pressured Suppliers to Shun Its Devices",
+      "url": "https://news.google.com/rss/articles/CBMirAFBVV95cUxPV0xaWXJoMk5iSnR5QTZlS2ZUeWNxZlVmQU9NZEs4TnpYVWRGYWdoeW1yWVdlNlUxRDZ2QmZtbVJncGxJUW5HcjBrbzFISUJKYkxGVzJmN2NvWW9QeWtmNkVOTHBpNkZBYXRwdjBOUjRyeDBHMWplZmQ4YUx0cjNMcE9naVV4bzZuSlVBZTB4WHg0RUlsZkRxLVdobWpUUFlUbmNVYkxMX3ZPQlQw?oc=5",
+      "source": "Bloomberg.com",
+      "date": "2026-11-27T22:44:24Z"
+     },
+     {
+      "title": "Anthropic vs. Coinbase: One Stock Is Overhyped, One Is Oversold, Says Top Investor",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNUVltTGRqWWxTUnI1YU1BREhVTTdrTkVucGJtd0luT2JoRW43LU5NQ1FfajZUdkNpYjNnNW1SYW4wS1VTdUgtN24xWm9GdWFDTVFXdk9LTWhhRWFyd044cU53cHg0cXpJendRb1M1cTJDamsxdlpySkk0TTBaN2lkXy1tSGxCVmZsRld5WC0wNTZocXNYaThWVDZpRGM?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T22:12:05Z"
+     },
+     {
+      "title": "Anthropic Stock Is Up 11% From Its IPO Price, and One Analyst Still Sees 63% Upside. Should You Buy?",
+      "url": "https://news.google.com/rss/articles/CBMimAFBVV95cUxNQnVRRktwajNYOURkR3lPSDhPbmJqcmJNN3RoaUlDR3FwNHk0U3hXbjFjcl9nWTBBSVZ6Qy1GTVFhUzUtb1ZGaUJhSlJsOXRvR3B1ay1XeFhHMG5rOVdMbll6elVrZlY1bnB1TWZEN2RFNk9kMU82bTZQZ09FdUJXb1lzN1YtbUFPa1NNQVhPaERXNXFqVUlUcQ?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T21:23:36Z"
+     },
+     {
+      "title": "OpenAI countersues Apple over allegations of stealing trade secrets",
+      "url": "https://news.google.com/rss/articles/CBMiggFBVV95cUxQOEVla3J3WEZiTHJkbFdpNnN0STJ5eWljb0hEc21KNzVOYWtLaDBwS19ZeVp4UmN3SFhqeTZOXzZvci00MWsyWDRCZFRpRmRYeVJhenF1cVFfRTJaQmdyeHEyNWFoeWxZQnpBTzZkQnFsOTVidlNJMmg0ZnRkbVZLSjhB?oc=5",
+      "source": "CBS News",
+      "date": "2026-11-27T21:18:00Z"
+     },
+     {
+      "title": "OpenAI Reportedly Fires Back At Apple Over Trade Secrets And Hardware Suppliers",
+      "url": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQd2dlMkphRnNBTlNCMzdGZW51YllkVGxwSU5PbU9OUWEyRkRPS0FSRWlIVmZZaENURkpQZVI1M1NwaTl5LU9vS2VfUm1FcHl2U2gzaUdDNDcyQ040TFRXWE5WSjlxQjV0ZGRpbFdIcDZ2OU9GWTlQTTF1WjZfbmZ6VExWVjhNb3F4TDBSUC1SU1ZxNTEybE5aLS12Nmd6eFk?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-27T20:13:53Z"
+     },
+     {
+      "title": "OpenAI countersues Apple in ongoing trade secrets fight",
+      "url": "https://news.google.com/rss/articles/CBMibEFVX3lxTE5XTW11Wi1QV2lsNzVvRlYyVklERHdsUkxKLXdRbjRjbDk2eC1UYmM1LXNZN2FPdEdhRC1lci1SYU56M3ZSOWMxM3p6OXB0c2h0dTFVVjBHSWNVSEZJSnNuSnBJMU5HZGd6STY3Sg?oc=5",
+      "source": "CNN",
+      "date": "2026-11-27T19:58:31Z"
+     },
+     {
+      "title": "OpenAI Countersues Apple And Accuses It Of Stealing Trade Secrets",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPX3FiOEtHMXhvNzJzUmVNUUZVMEUtWGZoWThRUG1jWmJWMVduTk5sekljODZnSEtiYlh0ckw4VHhva3ZXeVNwLTByVllEU2tYNDZzZ0FObF9UYU9qTTN2NGZtNVRnUHJNc3lYOXhaeWM3bW1tZDRnZkh0b3dKSmxhd1hPRG9lNnRMci0wWmdpWVJzMXNfWkI3YnNTZ0k1N1l5?oc=5",
+      "source": "Engadget",
+      "date": "2026-11-27T19:44:38Z"
+     },
+     {
+      "title": "Anthropic Jumps 11% As Tech Stocks Rebound",
+      "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNeW4tTWszM09YN2pmTl9ib2RndDFBODJEV0x6d2xOaGZCUW1mc09MR1RjWTZTUHdRNDBPUjJpTGFrQlRiU210bHZMRW9acVBlVnY0Qi1YbmxhMnJqeDlRVEIyNVdoRFppVjhvSXduV1puSjBTa1ZGOVBseVNEY0hQN0tXa181Y2tXV3ExUHNCcGZLdzI2T2owZUx5cTc?oc=5",
+      "source": "Forbes",
+      "date": "2026-11-27T18:44:57Z"
+     }
+    ]
+   }
+  ]
+ }
+}

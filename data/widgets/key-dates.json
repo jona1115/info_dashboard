@@ -1,0 +1,99 @@
+{
+ "id": "key-dates",
+ "title": "Key Dates",
+ "type": "calendar",
+ "view": "calendar",
+ "config_hash": "895b161a4a6a",
+ "attempted": "2026-11-28T10:16:57Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:16:57Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "as_of": "2026-11-28",
+  "horizon_days": 90,
+  "events": [
+   {
+    "date": "2026-12-08",
+    "end": "2026-12-09",
+    "time": "2:00 PM ET (decision)",
+    "title": "FOMC meeting · rate decision + economic projections",
+    "category": "Fed",
+    "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    "note": "Decision Dec 9"
+   },
+   {
+    "date": "2026-12-23",
+    "end": null,
+    "time": "8:30 AM ET",
+    "title": "GDP (Third Estimate), Industries, Corporate Profits, State GDP, and State Personal Income, 3rd Quarter 2026",
+    "category": "Data",
+    "url": "https://www.bea.gov/news/schedule",
+    "note": "BEA"
+   },
+   {
+    "date": "2026-12-23",
+    "end": null,
+    "time": "8:30 AM ET",
+    "title": "Personal Income and Outlays, November 2026",
+    "category": "Data",
+    "url": "https://www.bea.gov/news/schedule",
+    "note": "BEA"
+   },
+   {
+    "date": "2026-12-24",
+    "end": null,
+    "time": null,
+    "title": "Early close 1:00 PM ET · Christmas Eve",
+    "category": "Market",
+    "url": null,
+    "note": null
+   },
+   {
+    "date": "2026-12-25",
+    "end": null,
+    "time": null,
+    "title": "Markets closed · Christmas",
+    "category": "Market",
+    "url": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-01",
+    "end": null,
+    "time": null,
+    "title": "Markets closed · New Year's Day",
+    "category": "Market",
+    "url": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-18",
+    "end": null,
+    "time": null,
+    "title": "Markets closed · Martin Luther King Jr. Day",
+    "category": "Market",
+    "url": null,
+    "note": null
+   },
+   {
+    "date": "2027-01-26",
+    "end": "2027-01-27",
+    "time": "2:00 PM ET (decision)",
+    "title": "FOMC meeting · rate decision",
+    "category": "Fed",
+    "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+    "note": "Decision Jan 27"
+   },
+   {
+    "date": "2027-02-15",
+    "end": null,
+    "time": null,
+    "title": "Markets closed · Presidents' Day",
+    "category": "Market",
+    "url": null,
+    "note": null
+   }
+  ]
+ }
+}

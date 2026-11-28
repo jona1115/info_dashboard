@@ -1,0 +1,91 @@
+{
+ "id": "fpga-arxiv",
+ "title": "FPGA / ASIC Preprints · arXiv",
+ "type": "arxiv",
+ "view": "list",
+ "config_hash": "0582f65419a0",
+ "attempted": "2026-11-28T10:17:06Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:17:06Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": null,
+    "items": [
+     {
+      "title": "WADJET: Whole-Job Authorization and Dispatch for Job Execution Trust on FPGA System-on-Chip Accelerators",
+      "url": "https://arxiv.org/abs/2611.33406v1",
+      "source": "arXiv cs.AR",
+      "date": "2026-11-24T20:31:55Z",
+      "meta": "Mohamed El-Hadedy"
+     },
+     {
+      "title": "Low-Power Spiking Neural Network Acceleration with Differential Time Representation: A Modular Hardware Framework",
+      "url": "https://arxiv.org/abs/2611.32758v1",
+      "source": "arXiv cs.NE",
+      "date": "2026-11-24T15:00:56Z",
+      "meta": "Daniel Windhager, Lothar Ratschbacher, Bernhard A. Moser et al."
+     },
+     {
+      "title": "OpenWoud: Vendor-Unlocked Scalable Adaptive Random Forest Accelerator",
+      "url": "https://arxiv.org/abs/2611.32662v1",
+      "source": "arXiv cs.AR",
+      "date": "2026-11-24T14:14:26Z",
+      "meta": "Ewout van Nimwegen, Elijah Seth Cishugi, Hendrik Folmer et al."
+     },
+     {
+      "title": "Power Side-Channel Evaluation using Multi-FPGA Systems",
+      "url": "https://arxiv.org/abs/2611.32652v1",
+      "source": "arXiv cs.CR",
+      "date": "2026-11-24T14:09:36Z",
+      "meta": "Yaswanth Tavva, Geng Luo, Trevor E. Carlson et al."
+     },
+     {
+      "title": "Trading BRAM for LUTs: Hybrid Bit-Level Weight Storage for FPGA-Based Spiking Neural Networks",
+      "url": "https://arxiv.org/abs/2611.32288v2",
+      "source": "arXiv cs.AR",
+      "date": "2026-11-24T09:50:02Z",
+      "meta": "Dimitrios Sekertzis, Giorgos Dimitrakopoulos"
+     },
+     {
+      "title": "On the Design of a Slow Control Interlock System for the European GateMate FPGA",
+      "url": "https://arxiv.org/abs/2611.32275v1",
+      "source": "arXiv cs.AR",
+      "date": "2026-11-24T09:42:42Z",
+      "meta": "Vitalii Burtsev, Daniele Passaretti, Daniel Anders et al."
+     },
+     {
+      "title": "ExitLUT: Boolean Early Exits for Efficient FPGA-Based Neural Network Inference",
+      "url": "https://arxiv.org/abs/2611.31540v1",
+      "source": "arXiv cs.AR",
+      "date": "2026-11-23T20:49:33Z",
+      "meta": "Oliver Cassidy, Marta Andronic, George A. Constantinides"
+     },
+     {
+      "title": "EdgeALM: An Efficient and Unified Edge Accelerator for Large Audio Language Models via Full-Stack Hardware-Software Co-Design and Agent-Driven Recursive Optimization",
+      "url": "https://arxiv.org/abs/2611.30216v1",
+      "source": "arXiv cs.AR",
+      "date": "2026-11-23T07:50:16Z",
+      "meta": "Chenglin Yang, Feifan Xu, Xingyuan Li et al."
+     },
+     {
+      "title": "Motivo: A Motif-Based Algorithm-Architecture Co-Design for Fast and Energy-Efficient Graph-Based Genome Analysis",
+      "url": "https://arxiv.org/abs/2611.29410v1",
+      "source": "arXiv cs.AR",
+      "date": "2026-11-22T11:25:32Z",
+      "meta": "Eirini Maria Tzermpou, Konstantina Koliogeorgi, Konstantinos Kanellopoulos et al."
+     },
+     {
+      "title": "SWIFT: A Handcrafted, Arithmetic-Minimal FPGA Engine for Real-Time Audio Deepfake Detection",
+      "url": "https://arxiv.org/abs/2611.29315v1",
+      "source": "arXiv cs.SD",
+      "date": "2026-11-22T08:22:17Z",
+      "meta": "Chirantan Banerjee, Soumita Chatterjee, Bhargab B. Bhattacharya et al."
+     }
+    ]
+   }
+  ]
+ }
+}

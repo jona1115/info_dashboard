@@ -1,0 +1,81 @@
+{
+ "id": "fpga-news",
+ "title": "FPGA / ASIC Industry News",
+ "type": "rss",
+ "view": "list",
+ "config_hash": "1e3beee5f17d",
+ "attempted": "2026-11-28T10:17:06Z",
+ "status": "ok",
+ "updated": "2026-11-28T10:17:06Z",
+ "error": null,
+ "warnings": [],
+ "data": {
+  "groups": [
+   {
+    "label": null,
+    "items": [
+     {
+      "title": "Artificial black hole on an FPGA reproduces an event horizon",
+      "url": "https://news.google.com/rss/articles/CBMisgFBVV95cUxNcWwtZGhFbEg0OVF3RUtudGhmQlZOdXowUTZPWDFybWpqQ2Y2bWFRMWkxMlZqOTJfS014NXd5bFdjYlVrVHdKY0FOWHp0NkpNWWdTb3hhWDNpUEQyWF83SDFrMzdEYmZneGRhQmNmLXNkbkRZam9rWHZDN2NXWVlXeE96b0VhRGI1eFg0Xy11dWRTSnpJbnBLWG1PRGRrMnhGNFA0dEVFMWR6Wll6MFI2bTFR?oc=5",
+      "source": "Foro3D",
+      "date": "2026-11-27T11:55:45Z"
+     },
+     {
+      "title": "Enclustra launches Singapore HQ to drive R&D growth",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPSTVtSTE0QmpTdGt3SEt2ZUVTUkJEQ0VselctbHBjVzVaMDJxRmtKOVJLeXZzVVc0NWhYOXZ6X0NsRE1admt3YTBZTVZEQmF5VURuQVdIVzhDYWE3b0EzUnpPR1ZCTE12WmpJcVRwemVKS2xHbzdjZXBFbTNBR05oOEdqXzdYRFBselVESDlURnk0VFdpd1l3?oc=5",
+      "source": "Singapore Economic Development Board (EDB)",
+      "date": "2026-11-27T10:18:43Z"
+     },
+     {
+      "title": "MEMTECH Unveils MemoryProto FPGA Memory Platform",
+      "url": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxPS2NIZl9uUlZUcC0yY3cwNjZZdWFlUkdySDNMSjl2RnR4bTRLSXRsNjJ3eHF3YW84T2M5RmdlNVU0N3lkMnJUSFdwVmpidlV5bHNSTUY2aEFjLUNQUGYyS1BUTkhGa1FjQWlwYzNxZU5LSFNHUzFscmVodjd2WlhSVW9fSnRpVEZPMVctLVJzUERXR2kwRG9leGZURTB0Vlc4OTlfNGNmdjI?oc=5",
+      "source": "Wisevoter",
+      "date": "2026-11-26T11:30:52Z"
+     },
+     {
+      "title": "Why Is the FPGA Market Becoming a High-Growth Investment",
+      "url": "https://news.google.com/rss/articles/CBMilwFBVV95cUxPcV9BbWx2cmctVktySElfbkd6eXpVTE1LNGlscUFjd05nc3VzQzNHb3AxVWNZakRXNHlsNWdJLW9RdkxJSjNCa1JaWXg1ZVp2VUhORzFwLTc4aW1lVDlYbFo5UlpGRHRpa1BFTmtoWEdhRDJhcnZRY2lBXzk0eV9xQjhlbTRrTU9rTFhxQi1vNjNSazJsWUg0?oc=5",
+      "source": "openPR.com",
+      "date": "2026-11-26T07:34:27Z"
+     },
+     {
+      "title": "Microchip Technology (MCHP) Could Be 35% Undervalued Following New FPGA And Auto Network Wins",
+      "url": "https://news.google.com/rss/articles/CBMioAFBVV95cUxPRXRTbWhlNmNpN3JZaHBueUxBQ2g2Q2dmNnFyNHI0RHZmbXJoRktaS2R6SzBPU0pheU4zMFl4dmNmVjZZUDM0QWZBeHVXQ3RjU2R6bExNTXdndmVtZ2M3cklnTjBNRWtzbUpsYmtJdHVwYjJRbmpWTUJfTmV4MXBCOWhkdTBiZEZqb2xEdmM1NVV2SEY3d2hrYmszMzNBcW52?oc=5",
+      "source": "Yahoo Finance",
+      "date": "2026-11-25T20:11:09Z"
+     },
+     {
+      "title": "Turkey's first domestic FPGA SoC chip SAKA passes initial silicon tests",
+      "url": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxOWWNuXzh1QmlSZWljVXk3UHljN0FFZ2h6UXZ2QXdEcThMd1hYTU15YnNJZUMxNFlIRThTNzFheDRvY2JTSm9wYlRZVGE4V2s4b2JBdUlzRFExQm5Qb0gxT3pDR3ZFVFJlbFE3eE9hVllRU21Ra0hIWTRFTDhOQUJ6ZlAwZHdxb3BWQmIyaGtaRlZobUM1dEpNYnlQNzlXMzhjdzllMElVMWFWelZaMWFFc0ZvV3Nfd3Zz?oc=5",
+      "source": "ssbulten.com.tr",
+      "date": "2026-11-25T17:52:15Z"
+     },
+     {
+      "title": "Hybrid Binary-Stochastic Computing Reduces FPGA Energy Use for Neural Diabetes Screening",
+      "url": "https://news.google.com/rss/articles/CBMiswFBVV95cUxQcGQxU0lkTnRsRDRRUWRfM19vaHhENE9pLUlfZG1VXzZnb3VZZ3h1TzJNWlU5RThhcmRsM2NqRFY2dGdxcFNXOVNEVlFfUTkycTFXY2Y3UHA2RWxUd0FtZ3BWR3EtUGNNaGUzWm5Bakg2eHVOWndreDVlcTFnR00wZlFIcS1lb1FscE5yRjNjcjdBaU9fcW1PdVB6RE0xVUlfeVlDMGF6aERyelVHVXc3NGVfNA?oc=5",
+      "source": "Bioengineer.org",
+      "date": "2026-11-25T09:10:33Z"
+     },
+     {
+      "title": "AI in FPGA Design Flows - Hype, Help or Transformation?",
+      "url": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxPOXRLQ2IzRHdFdVZWZHhmTEszZ1pwdVJHWXA0UlVRbmdOMmYyZS1HSGJHTUcyTFdMVVhoaVM2MUF3QlV4Vmtxdl9JSUFKQklYMlc4REp5MElDVGNhSWdwRkZIdkk2MXFzOUp1ZHJZQ0JhUHU0dFB3UUtmT01aRlJ4RmxxRG5MU01BZ1VmZjNQVEgwVTU5M3EwYkFwMnRKWGtITllhNHBZZXhqQ3dSS0ptM3VNckhLQkluYUNmMVJhenc?oc=5",
+      "source": "Superpower Daily",
+      "date": "2026-11-25T04:59:13Z"
+     },
+     {
+      "title": "7 FPGA Retro Consoles Recreate Classic Gaming Hardware",
+      "url": "https://news.google.com/rss/articles/CBMigwJBVV95cUxQc2c3clFJX2VKU0Vkc1l6NzRJYlFqVG1NU015WXFSa3VMQUxOUExLOTFLSkJBSzdoYWlmenNrcHBQcjdhX09WQ0VwSmFONWNYb2dCRzFpX1VBUGIteWdSaGk4RU1fZklReU12S2lISVpneFpOZVhmc2Rpc3VCdXE3ckgxTzRUMmNWOUdOWUVQZG54Y1lySlZ3UVgwUHhvU2RJcVNQQjZvSkJfZHA4NzItckc2OUZJYXdHWVNYemo1YXQ4SHNUWnl3NlZUS01HSllaZkluTEpRa2N4cmlFNnZvOUVmWE5ieHBXdzNJaWlWX2hxMkZ3V0J5SmJjOW44WEk2UHJj?oc=5",
+      "source": "Electronic Design",
+      "date": "2026-11-24T15:44:50Z"
+     },
+     {
+      "title": "'Kaos', a compact Sega Master System & Game Gear FPGA Console, Appears Online",
+      "url": "https://news.google.com/rss/articles/CBMiugFBVV95cUxNZUUzdFhwdUJGdUF1Tkc2eWtoWVZZWVBhQ3hDakJNNEZXSEd3UGlydFdzOXQ2TmhoN0JBY2lKWnpnQ1dXS2Nqa0dGWDJaaTczbzZiNVhyREVPZTJ1UC0yeXFXeXNPNG9Jd3VuUGVNR3pfQXJ2MzJpTkxhNGdFcUFRS3J5ZFE3TGZULWp1U0tRbndRWnc2UHhJMlRxOHV0bU5uWWJ2eklaUTNBR1I2Uk5aeXlPV1V1TWpRb0E?oc=5",
+      "source": "Time Extension",
+      "date": "2026-11-23T14:00:00Z"
+     }
+    ]
+   }
+  ]
+ }
+}
